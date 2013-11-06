@@ -1,4 +1,4 @@
-(function(w,d,$, _){
+//(function(w,d,$, _){
 
 	var agility_webrtc = {
 
@@ -455,5 +455,5 @@
 
 	agility_webrtc.init();
 
-})(window, document, $, _)
+//})(window, document, $, _)
 
