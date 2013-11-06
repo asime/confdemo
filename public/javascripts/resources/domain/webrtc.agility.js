@@ -176,23 +176,23 @@
 				}
 			})	
 
-			//Check if username is not being displayed in list:
+			// //Check if username is not being displayed in list:
 
-			var channel_member_on_list = $(".list-group-item[data-uuid='" + message.user.uuid + "']");
+			// var channel_member_on_list = $(".list-group-item[data-uuid='" + message.user.uuid + "']");
 
-			if(channel_member_on_list.length > 0 && message.user.uuid !== agility_webrtc.currentUser.uuid){
+			// if(channel_member_on_list.length > 0 && message.user.uuid !== agility_webrtc.currentUser.uuid){
 
-				if($(channel_member_on_list).data("username") === ""){
+			// 	if($(channel_member_on_list).data("username") === ""){
 
-					var content = '<span class="glyphicon glyphicon-user"></span>';
-					content += ' ' + message.user.name;
-					content += ' - Online';
-					content += '<span class="glyphicon glyphicon-facetime-video pull-right"></span>';
-					$(channel_member_on_list).html(content);
+			// 		var content = '<span class="glyphicon glyphicon-user"></span>';
+			// 		content += ' ' + message.user.name;
+			// 		content += ' - Online';
+			// 		content += '<span class="glyphicon glyphicon-facetime-video pull-right"></span>';
+			// 		$(channel_member_on_list).html(content);
 
-				}
+			// 	}
 
-			}
+			// }
 
 
 			
