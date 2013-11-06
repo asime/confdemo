@@ -364,6 +364,8 @@
 
 			var uuid = $(".list-group-item.active").data("uuid");
 
+			console.log("Connected to " + uuid);
+
 			var stream = _.find(self.streams, function(stream){ return stream.who === "mine"; }).stream;
 
 			self.currentUser.publish({
