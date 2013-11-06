@@ -324,6 +324,8 @@
 
 			$(document).on("click", "#send", function(e){
 
+				e.preventDefault();
+
 				var message = $("#message").val().trim();
 
 				if (message !== "") {
