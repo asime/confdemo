@@ -77,12 +77,31 @@
 									<button id="send" class="btn btn-success">SEND</button>
 									<button id="stream" class="btn btn-warning pull-right">STREAM</button>
 								</div> -->
-								<div class="form-group">
-									<div id="chat_container" class="form-group">
+
+<!-- 								<div id="chatbox">
+									
+									<p id="title">CHAT</p>
+									
+									<div>
+										<input id="text_input" placeholder="Type message here">
+										<div id="dummyinput"></div>
+									</div>
+
+									<input id="username-input" style="bottom: 10px; left: 10px; position: absolute;" placeholder="put your name here">
+									<div class="youricon">
+										<div id="yourname">YOU</div>
+									</div>
+									<div id="chat-box"></div>
+
+								</div> -->
+								
+								<div class="form-group" id="chat_container">
+									<div id="channel_messages" class="form-group">
 										<h4>Chat</h4>
 									</div>										
 									<label class="sr-only" for="message">Message</label>
-									<input type="text" class="form-control" id="message" placeholder="Message">
+									<input id="username-input" class="form-control" placeholder="What's your name?">
+									<input type="text" class="form-control" id="message" placeholder="Message" autocomplete="off">
 									<button id="send" class="btn btn-default">SEND</button>
 								</div>
 
@@ -96,7 +115,6 @@
 			</div>
 
 		</div>
-
 
 	<script src="javascripts/resources/vendor/jquery.min.js"></script>
 	<script src="javascripts/resources/vendor/underscore-1.5.2.js"></script>

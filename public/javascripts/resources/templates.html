@@ -24,6 +24,7 @@
 
 </script>
 
+
 <script type="text/template" id="channel_chat">
 
 	<h4>Chat in channel: <%= app.channelName %></h4>
@@ -33,7 +34,7 @@
 		<% _.each(messages, function(chat){ %>
 			<small>
 				<span class="glyphicon glyphicon-comment"></span>
-				<%= chat.message %>
+				<%= chat.from %>: <%= chat.message %>
 			</small>
 			<br>
 		<%});%>	

@@ -19,6 +19,8 @@
 
 			var self = this;
 
+			$("#chat_container").hide();
+
 			self.loadTemplates({
 				templates_url : "javascripts/resources/templates.html"
 			}, function(){
@@ -31,6 +33,8 @@
 					audio : false
 				},function(stream){
 					
+
+
 					self.streams = self.streams || [];
 					self.streams.push({ who : "mine", stream : stream });
 					self.showStream({ who : "mine" , container : '#me'});
@@ -59,6 +63,7 @@
 					});
 
 					self.connectToChannel();
+
 
 
 				}, function(error){
@@ -153,12 +158,12 @@
 			self.messages = self.messages || [];
 
 			self.messages.push({
-				from	: uuid,
-				message : message
+				from	: message.user.name,
+				message : message.text
 			})
 			
 			self.render({
-				container 	: "#chat_container",
+				container 	: "#channel_messages",
 				template 	: "#channel_chat",
 				data 		: {
 					messages 	: self.messages,
@@ -173,6 +178,8 @@
 			var self = agility_webrtc;
 
 			console.log(uuid + ' connected to ' + self.channelName);
+
+			$("#chat_container").show();
 
 		},
 
@@ -322,6 +329,18 @@
 		setBinds			: function(){
 
 
+
+			$(document).on("keyup", "#message", function(e){
+
+
+				if((e.keyCode || e.charCode) === 13){
+					
+					$("#send").trigger("click");
+
+				}
+				
+			});
+
 			$(document).on("click", "#send", function(e){
 
 				e.preventDefault();
@@ -330,13 +349,29 @@
 
 				if (message !== "") {
 					agility_webrtc.currentUser.publish({
-						channel: agility_webrtc.channelName,
-						message: message
+						channel : agility_webrtc.channelName,
+						message : { user : {
+							uuid : agility_webrtc.currentUser.UUID,
+							name : agility_webrtc.currentUser.db.get('username') || "Guest"
+						}, text : message }
 					});
 					$("#message").val("").focus();
 				}
 
 			})
+
+			$(document).on("keyup", "#username-input", function(e){
+
+				e.preventDefault();
+
+				var username = $(this).val().trim();
+
+				if(username !== ""){
+					agility_webrtc.currentUser.db.set( 'username', username );
+				}
+
+
+			});
 
 			$(document).on("click", ".list-group-item:not(.you)", function(e){
 
