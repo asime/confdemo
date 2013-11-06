@@ -89,7 +89,7 @@
 
 		},
 
-		onPresence 		 : function(event){
+		onChannelPresence 		 : function(event){
 
 			var self = agility_webrtc;
 			
@@ -157,9 +157,10 @@
 
 			self.messages = self.messages || [];
 
+
 			self.messages.push({
 				from	: message.user.name,
-				message : message.text
+				message : message.text.replace( /[<>]/g, '' )
 			})
 			
 			self.render({
@@ -169,7 +170,30 @@
 					messages 	: self.messages,
 					app 		: self
 				}
-			})			
+			})	
+
+			//Check if username is not being displayed in list:
+
+			var channel_member_on_list = $(".list-group-item[data-uuid='" + message.user.uuid + "']");
+
+			if(channel_member_on_list.length > 0 && message.user.uuid !== agility_webrtc.currentUser.uuid){
+
+				if($(channel_member_on_list).data("username") === ""){
+
+					var content = '<span class="glyphicon glyphicon-user"></span>';
+					content += ' ' + message.user.name;
+					content += ' - Online';
+					content += '<span class="glyphicon glyphicon-facetime-video pull-right"></span>';
+					$(channel_member_on_list).html(content);
+
+				}
+
+			}
+
+
+			
+
+		
 
 		},
 
@@ -178,6 +202,14 @@
 			var self = agility_webrtc;
 
 			console.log(uuid + ' connected to ' + self.channelName);
+
+			agility_webrtc.currentUser.publish({
+				channel : agility_webrtc.channelName,
+				message : { user : {
+					uuid : agility_webrtc.currentUser.UUID,
+					name : agility_webrtc.currentUser.db.get('username') || "Guest"
+				}, text : "Connect" }
+			});			
 
 			$("#chat_container").show();
 
@@ -195,10 +227,12 @@
 
 			var self = this;
 
+			self.currentUser.db.set('username' , "Guest");
+
 			self.currentUser.subscribe({
 				channel 	: self.channelName,  
 				callback 	: self.onChannelMessage,
-				presence 	: self.onPresence, 
+				presence 	: self.onChannelPresence, 
 				connect 	: self.onChannelConnect
 			});
 

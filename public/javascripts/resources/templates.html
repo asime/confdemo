@@ -12,7 +12,7 @@
 
 		<% _.each(users, function(user){ %>
 			<% if(app.uuid !== user.uuid){%>
-				<a href="#" data-uuid="<%= user.uuid %>" class="list-group-item">
+				<a href="#" data-uuid="<%= user.uuid %>" data-username="" class="list-group-item">
 					<span class="glyphicon glyphicon-user"></span> 
 					<%= user.uuid %> - <%= (user.status === "join" ? "Online" : user.status) %> <span class="glyphicon glyphicon-facetime-video pull-right"></span>
 
