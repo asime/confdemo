@@ -1,0 +1,43 @@
+<script type="text/template" id="channels_users_list">
+
+	<h4>
+	<%= _.filter(users, function(user){ return user.status === "join"; }).length %> 
+	users connected to 
+	<%= app.channelName %>
+	</h4>
+
+	<div class="list-group">
+
+		<a href="#" class="list-group-item you"><span class="glyphicon glyphicon-user"></span> You (<%= app.uuid %>)</a>
+
+		<% _.each(users, function(user){ %>
+			<% if(app.uuid !== user.uuid){%>
+				<a href="#" data-uuid="<%= user.uuid %>" class="list-group-item">
+					<span class="glyphicon glyphicon-user"></span> 
+					<%= user.uuid %> - <%= (user.status === "join" ? "Online" : user.status) %> <span class="glyphicon glyphicon-facetime-video pull-right"></span>
+
+				</a>
+			<% } %>
+		<%});%>	
+		
+	</div>
+
+</script>
+
+<script type="text/template" id="channel_chat">
+
+	<h4>Chat in channel: <%= app.channelName %></h4>
+
+	<div class="pull-left">
+
+		<% _.each(messages, function(chat){ %>
+			<small>
+				<span class="glyphicon glyphicon-comment"></span>
+				<%= chat.message %>
+			</small>
+			<br>
+		<%});%>	
+		
+	</div>
+
+</script>
