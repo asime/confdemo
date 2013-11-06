@@ -369,7 +369,7 @@
 				agility_webrtc.messages = [];
 
 				$("#channel_messages").slideUp(300, function(){
-					$(this).find("small").remove();
+					$("#messages_container").empty();
 					$(this).slideDown(300);
 				})
 

@@ -29,7 +29,7 @@
 
 	<h4>Chat in channel: <%= app.channelName %><span class="glyphicon glyphicon-trash pull-right" id="empty_messages"></span></h4>
 
-	<div class="pull-left">
+	<div class="pull-left" id="messages_container">
 		<% _.each(messages, function(chat){ %>
 			<small>
 				<span class="glyphicon glyphicon-comment"></span>
