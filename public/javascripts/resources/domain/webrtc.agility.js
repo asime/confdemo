@@ -358,6 +358,21 @@
 
 		},
 
+		onStreamConnection 	: function(){
+
+			var self = agility_webrtc;
+
+			var uuid = $(".list-group-item.active").data("uuid");
+
+			var stream = _.find(self.streams, function(stream){ return stream.who === "mine"; }).stream;
+
+			self.currentUser.publish({
+				user: uuid,
+				stream: stream
+			});
+
+		},
+
 		onStreamError 		: function(error){
 
 			console.log("Stream error :S");
@@ -435,7 +450,8 @@
 					user 		: userToConnectTo,
 					stream 		: agility_webrtc.onStreamReceived,
 					disconnect  : agility_webrtc.onStreamDisconnected,
-					error 		: agility_webrtc.onStreamError
+					error 		: agility_webrtc.onStreamError,
+					connect 	: agility_webrtc.onStreamConnection
 				})
 
 
