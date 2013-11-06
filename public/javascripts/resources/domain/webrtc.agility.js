@@ -87,6 +87,10 @@
 
 			$(video).fadeIn(300);
 
+			if(options.container === "#you"){
+				$(".streaming_container").css({height : "500px"});
+			}
+
 		},
 
 		onChannelPresence 		 : function(event){
