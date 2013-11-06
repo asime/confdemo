@@ -30,7 +30,7 @@
 				setBinds().
 				startStreaming({
 					video : true,
-					audio : true
+					audio : false
 				},function(stream){
 					
 
