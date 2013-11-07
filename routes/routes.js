@@ -10,6 +10,16 @@ var routes = function (params) {
 
 	})
 
+	app.get('/demo', function(req, res){
+
+		res.render('demo.ejs',{
+			id : "",
+			name : ""
+		});
+
+
+	})	
+
 
 
 }
