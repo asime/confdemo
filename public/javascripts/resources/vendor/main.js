@@ -242,7 +242,7 @@ $(document).ready(function() {
 						return myStream = stream;
 					};
 					navigator.webkitGetUserMedia({
-						audio: false,
+						audio: true,
 						video: true
 					}, gotStream);
 					return pages.login.className += ' active';
