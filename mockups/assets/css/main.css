@@ -1,0 +1,322 @@
+html {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+}
+
+body{
+  background: #476176;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  line-height: 1.1;
+  color: inherit;
+}
+
+.top-container {
+  padding-top: 10px;
+  padding-bottom: 0;
+  margin-right: auto;
+  margin-left: auto;
+  background: #3ca996;
+}
+
+.leftBorder{
+  border-left:1px solid #9ed4cb;
+}
+
+.winWrap{
+  border: 7px solid #fff;
+  background: rgba(255,255,255,0.5);
+  border-radius: 6px;
+}
+
+.playerWindowWrap{
+  height: auto;  
+  margin-left: 10px;
+}
+.sliderWrap{
+  height: auto;
+}
+.sliderWrap .slider{
+  width: 100%;
+  height: 517px;
+  background: #000;
+}
+.sliderWrap .slideHeader{
+  height: 50px;
+  margin: 0;
+  background: #cfeae5;
+}
+.sliderWrap .slideHeader .af-brand{
+  display: block;
+  float: left;
+  height: 50px;
+  width: 120px;
+  margin-left:10px;
+  background:center no-repeat;
+  background-image:  url('../images/af-brand.png');
+}
+@media 
+(-webkit-min-device-pixel-ratio: 2), 
+(min-resolution: 192dpi) { 
+  .sliderWrap .slideHeader .af-brand{
+    background-image:  url('../images/af-brand@2x.png');
+    background-size: 120px 40px;
+  }
+}
+.sliderWrap .slideHeader .rightText{
+  float: right;
+  margin-right: 10px;
+  line-height: 50px;
+  font-size: 18px;
+  color:#476176;
+}
+.sliderControls{
+  height: 80px;
+  padding: 10px 0;
+}
+.sliderControls .prevSlide,
+.sliderControls .nextSlide{
+  width: 110px;
+  height: 58px;
+  background: rgba(255,255,255,0.5);
+  font-size: 26px;
+  float: left;
+  border-radius: 6px;
+  text-align: center;
+  color: #3ca996;
+  cursor: pointer;
+}
+.sliderControls .nextSlide{
+  float: right;  
+}
+.sliderControls .prevSlide:hover,
+.sliderControls .nextSlide:hover{
+  background: rgba(255,255,255,0.75);
+  color: #476176;
+}
+.sliderControls .prevSlide .textSpan,
+.sliderControls .nextSlide .textSpan{
+  margin: 0 5px;
+}
+.sliderControls .prevSlide .glyphicon,
+.sliderControls .nextSlide .glyphicon{
+  margin: 0;
+  display: inline-block;
+  font-size: 22px;
+  line-height: 52px;
+}
+.sliderControls ul.slideCount{
+  margin: 2px 120px;
+  height: 24px;
+  width: auto;
+  text-align: center;  
+  padding: 0;
+}
+.sliderControls ul.slideCount li{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  background: #9ed4cb;
+  line-height: 20px;
+  box-sizing: border-box;
+  border: 2px solid #9ed4cb;
+  cursor: pointer;
+  font-weight: 700;
+  color: #476176;
+}
+.sliderControls ul.slideCount li:hover{
+  border: 2px solid #fff;
+}
+.sliderControls ul.slideCount li.active{
+  border: 2px solid #fff;
+  background: #fff;
+}
+.sliderControls ul.slideCount li.active:hover{
+  border: 2px solid #fff;
+  background: #9ed4cb;
+}
+
+/*Comments*/
+.commentsWindowWrap{
+  height: auto;  
+  margin-right: 10px;
+}
+.commentsWindowWrap .commentHeader{
+  height: 50px;
+  margin: 0;
+  background: #cfeae5;
+}
+.commentsWindowWrap .commentHeader span.leftText{
+  margin-left: 10px;
+  line-height: 50px;
+  font-size: 20px;
+  color: #476176;
+}
+.commentsWindowWrap .commentHeader .actionsWrap{
+  position: relative;
+  float: right;
+  margin-top: 12px;
+}
+.doneBtn{
+  display: none;
+  width: auto;
+  height: 26px;
+  float: left;
+  margin: 0;
+  padding: 0 5px;
+  background: #b22f2e; 
+  font-size: 14px;
+  line-height: 26px;
+  text-align: center;
+  color: #fff;
+  cursor: pointer;
+  margin-right: 10px;
+  border-radius: 4px;
+}
+.doneBtn:hover{
+  background: #fff; 
+  color: #b22f2e; 
+}
+.doneBtn.blue{
+  background: #476176; 
+}
+.doneBtn.blue:hover{
+  background: #fff; 
+  color: #476176; 
+}
+
+.commentsWindowWrap .commentHeader .actionsWrap .initialCall{
+  position: absolute;
+  top:0;
+  right: 0;
+  margin-right: 10px;
+  width: 91px
+}
+.commentsWindowWrap .commentHeader .actionsWrap .initialCall > span{
+  width: 45px;
+  height: 26px;
+  display: block;
+  float: left;
+  margin: 0;
+  padding: 0 4px;
+  background: #b0c7c3; 
+  font-size: 14px;
+  line-height: 26px;
+  text-align: center;
+  color: #fff;
+  cursor: pointer;
+}
+.commentsWindowWrap .commentHeader .actionsWrap .initialCall > span:hover{
+  background: #fff;
+  color: #476176;
+}
+
+.commentsWindowWrap .commentHeader .actionsWrap .initialCall .cameraCall{
+ border-top-left-radius: 4px;
+ border-bottom-left-radius: 4px;
+ font-size: 14px;
+ line-height: 28px;
+}
+
+.commentsWindowWrap .commentHeader .actionsWrap .initialCall .commentsCall{
+ border-top-right-radius: 4px;
+ border-bottom-right-radius: 4px;
+ border-left: 1px solid #b7dbd5;
+}
+
+.commentsWindowWrap .commentsList{
+  height: 585px;
+  overflow: scroll;
+}
+.commentsWindowWrap .commentsList .commentItem{
+  position: relative;
+  padding-right: 0;
+  padding-bottom: 10px;
+  margin: 10px;
+  border-bottom:1px solid rgba(255,255,255,0.50); 
+  color:#476176;
+}
+.commentsWindowWrap .commentsList .commentItem.active{
+  padding-right: 30px;
+}
+.commentsWindowWrap .commentsList .commentItem:last-child{
+  border: none;
+  margin-bottom: 0;
+}
+.commentsWindowWrap .commentsList .commentItem:first-child{
+  border-bottom:1px solid rgba(255,255,255,0.50); 
+}
+
+
+.commentsWindowWrap .commentsList .commentItem .commentText,
+.commentsWindowWrap .commentsList .commentItem .commentAuthor{
+  display: block;
+}
+.commentsWindowWrap .commentsList .commentItem .commentAuthor{
+  font-weight: 700;
+}
+.commentsWindowWrap .commentsList .commentItem .cameraBtn{display: none;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  margin-top: -15px;
+  width: auto;
+  height: 24px;
+  font-size: 20px;
+  text-align: right;
+  color: #476176;
+  cursor: pointer;
+}
+.commentsWindowWrap .commentsList .commentItem .cameraBtn:hover{
+  color: #fff;
+}
+.commentsWindowWrap .commentsList .commentItem .deleteBtn{display: none;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  margin-top: -15px;
+  width: auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background: #b22f2e;
+  cursor: pointer;
+}
+.commentsWindowWrap .commentsList .commentItem .deleteBtn .lineDel{
+  display: block;
+  width: 12px;
+  height: 4px;
+  margin: 8px auto;
+  background: #fff;
+}
+.commentsWindowWrap .commentsList .commentItem .deleteBtn:hover{
+  background: #ff0200;
+}
+
+
+
+
+
+
+
+
