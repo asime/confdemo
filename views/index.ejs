@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<title>AgilityFeat</title>
-		<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css" />
 		<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap-theme.css" />
 		<meta http-equiv="X-UA-Compatible" content="chrome=1"/>
 
@@ -33,7 +33,7 @@
 				float: left;
 				overflow: hidden;
 			}
-			.form-group{clear: both;}
+			.form-group{clear: both;margin-top: 10px;}
 			.form_container{width: 90%;}
 			@media (min-width: 768px){
 				.form-inline .form-group {
@@ -44,6 +44,62 @@
 					width: 90%;
 				}			
 			}
+			.connected_people_container{margin:10px 0px;}
+			.connected_people_list{list-style-type: none;}
+
+			.modal-backdrop {
+				position: fixed;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				z-index: 1040;
+				background-color: #000;
+				opacity: .8;
+			}
+
+			.modal {
+				position: fixed;
+				top: 10%;
+				left: 50%;
+				z-index: 1050;
+				width: 560px;
+				margin-left: -280px;
+				background-color: #fff;
+				border: 1px solid #999;
+				border: 1px solid rgba(0,0,0,.3);
+				border-radius: 6px;
+				box-shadow: 0 3px 7px rgba(0,0,0,.3);
+				background-clip: padding-box;
+				outline: 0;
+				height: 218px;
+			}
+			.modal-header {
+				padding: 9px 15px;
+				border-bottom: 1px solid #eee;
+			}
+			.modal-body {
+				position: relative;
+				overflow-y: auto;
+				max-height: 400px;
+				padding: 15px;
+			}			
+			.modal-footer {
+				padding: 14px 15px 15px;
+				margin-bottom: 0;
+				text-align: right;
+				background-color: #f5f5f5;
+				border-top: 1px solid #ddd;
+				border-radius: 0 0 6px 6px;
+				box-shadow: inset 0 1px 0 #fff;
+			}	
+			li.user{
+				border-bottom: solid 1px #e1e1e1;
+				padding: 5px;
+				text-align: left;		
+				overflow: hidden;		
+			}	
+
 		</style>
 	</head>
 	<body>
@@ -60,9 +116,20 @@
 								<video autoplay id="me"></video>
 							</div>
 
+							<div class="span12" id="video-controls" style="display: none;">
+								<a href="#" class="btn btn-danger" id="hangup">Hang Up</a>
+								<span id="time">00:00</span>
+                            </div>
+
 							<div class="form_container pull-left">
 								
-								<div class="connected_people" id="connected_people"></div>
+								<div class="connected_people_container">
+									<h4>Connected people</h4>
+									<ul id="connected_people_list" class="connected_people_list">
+									</ul>
+								</div>
+
+								<!-- <div class="connected_people" id="connected_people"></div> -->
 								
 								<!-- <div class="form-group">
 									<h4>Your id is: <br><span id="my_id"></span></h4>
@@ -96,6 +163,7 @@
 
 								</div> -->
 								
+<!-- 								
 								<div class="form-group" id="chat_container">
 									<div id="channel_messages" class="form-group">
 										<h4>Chat</h4>
@@ -104,9 +172,43 @@
 									<input id="username-input" class="form-control" placeholder="What's your name?">
 									<input type="text" class="form-control" id="message" placeholder="Message" autocomplete="off">
 									<button id="send" class="btn btn-default">SEND</button>
+								</div> 
+							-->
+
+								<div class="form-group" id="login_container" style="display:none">
+
+									<label class="sr-only" for="message">Username</label>
+									<input id="username" class="form-control" placeholder="What's your name?" autocomplete="off">
+									<button id="login" class="btn btn-default">LOGIN</button>
+
+								</div>
+								
+								<div id="answer-modal" class="modal hide">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+										<h3 id="myModalLabel">Incoming Call</h3>
+									</div>
+									<div class="modal-body">
+										<p class="caller">(User) is calling...</p>
+									</div>
+									<div class="modal-footer">
+										<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Ignore</button>
+										<button class="btn btn-success" id="answer">Answer</button>
+									</div>
 								</div>
 
-								
+								<div id="calling-modal" class="modal hide">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+										<h3 id="myModalLabel">Outgoing Call</h3>
+									</div>
+									<div class="modal-body">
+										<p class="calling">Calling (User)...</p>
+									</div>
+									<div class="modal-footer">
+										<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</button>
+									</div>
+								</div>								
 
 							</div>						
 
@@ -116,6 +218,13 @@
 			</div>
 
 		</div>
+
+		<audio loop id="ringer">
+			<source src="medias/ring.mp3" type="audio/mpeg">
+		</audio>		
+
+		
+
 
 	<script src="javascripts/resources/vendor/jquery.min.js"></script>
 	<script src="javascripts/resources/vendor/underscore-1.5.2.js"></script>

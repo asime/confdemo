@@ -66,9 +66,9 @@ $(document).ready(function() {
 					});
 					login = function(name) {
 						uuid = name;
-						if (plusClient != null) {
-							plusClient.getContacts(function(result) {});
-						}
+						// if (plusClient != null) {
+						// 	plusClient.getContacts(function(result) {});
+						// }
 						window.pubnub = PUBNUB.init({
 							publish_key: 'pub-c-7070d569-77ab-48d3-97ca-c0c3f7ab6403',
 							subscribe_key: 'sub-c-49a2a468-ced1-11e2-a5be-02ee2ddab7fe',
@@ -105,10 +105,11 @@ $(document).ready(function() {
 							callback: function(message) {},
 							presence: function(data) {
 								var item, newItem;
-								if (data.action === "join" && data.uuid !== uuid) {
+								if (data.action === "join") {
 									newItem = userTemplate({
 										name: data.uuid.split('-')[1],
-										id: data.uuid
+										uuid: data.uuid,
+										is_you : data.uuid === uuid
 									});
 									return userList.append(newItem);
 								} else if (data.action === "leave" && data.uuid !== uuid) {

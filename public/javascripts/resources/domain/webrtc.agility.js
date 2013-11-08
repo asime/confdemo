@@ -2,79 +2,102 @@
 
 	var agility_webrtc = {
 
+		uuid : null,
+
 		currentUser : null,
 
-		streams 	: null,
+		currentCallUUID : null,
 
-		uuid 		: PUBNUB.uuid(),
-		
+		currentCallTime : 0,
+
+		currentCallInterval : null,
+
+		channelMessages : [],
+
 		channelName : "agility_webrtc",
 
-		credentials : {
-			publish_key 	: 'pub-c-1e01c529-bfa1-46b5-a9bd-85e5a7ad800f',//'pub-c-8f61dc72-875d-4e34-9461-9c870d7c9f57',
-			subscribe_key 	: 'sub-c-7376a62c-45c8-11e3-a44d-02ee2ddab7fe'//'sub-c-f5e33bbe-44f8-11e3-83cf-02ee2ddab7fe'
-		},
+		streams 	: [],
 
+		credentials : {
+			publish_key 	: 'pub-c-8f61dc72-875d-4e34-9461-9c870d7c9f57',
+			subscribe_key 	: 'sub-c-f5e33bbe-44f8-11e3-83cf-02ee2ddab7fe'
+		},
 		init : function(){
 
-			var self = this;
-
-			$("#chat_container").hide();
+			var self = agility_webrtc;
 
 			self.loadTemplates({
 				templates_url : "javascripts/resources/templates.html"
-			}, function(){
+			}, function(){			
 
-				self.
-				setGetUserMedia().
-				setBinds().
-				startStreaming({
-					video : true,
-					audio : false
-				},function(stream){
-					
+				self.setBinds();
 
+				var user = sessionStorage.getItem("user");
 
-					self.streams = self.streams || [];
-					self.streams.push({ who : "mine", stream : stream });
-					self.showStream({ who : "mine" , container : '#me'});
+				if(user){
 
-					self.credentials.uuid = self.uuid;
-					
-					self.currentUser = PUBNUB.init(self.credentials);
+					$("#username").val(user);
+					$("#login").trigger("click");
 
-					self.currentUser.onNewConnection(function(uuid){
-
-						var self = agility_webrtc;
-
-						if( uuid !== self.uuid ){
-				
-							var stream = _.find(self.streams, function(stream){ return stream.who === "mine"; }).stream;
-
-							if(stream){
-								self.currentUser.publish({
-									user: uuid,
-									stream: stream
-								});
-							}
-
-						}
-
-					});
-
-					self.connectToChannel();
-
-
-
-				}, function(error){
-					throw JSON.stringify(error);
-				});
+				} else {
+					$("#login_container").slideDown(200);
+				}
 
 
 			})
 
 		},
+		hideControls : function(){
 
+			$('#video-controls').hide();
+
+		},
+		showControls : function(){
+
+			$('#video-controls').show();
+
+		},
+		setCurrentCallTime : function(time){
+
+			$('#video-controls #time').html(time);
+
+		},
+		hideStream : function(options){
+
+			$(options.who)[0].src = "";
+
+			if(options.who === "#you"){
+				$(".streaming_container").css({height : "300px"});
+			}
+
+		},
+		login : function(){
+
+			var name = $("#username").val().trim();
+
+			agility_webrtc.uuid = name;
+
+			agility_webrtc.credentials.uuid = name;
+
+			agility_webrtc.currentUser = PUBNUB.init(agility_webrtc.credentials);	
+
+			agility_webrtc.currentUser.onNewConnection(function(uuid) {
+
+				agility_webrtc.publishStream({ uuid : uuid });
+
+			});					
+
+			agility_webrtc.connectToListChannel();
+
+			agility_webrtc.connectToCallChannel();
+
+			agility_webrtc.connectToAnswerChannel();
+
+
+
+			return this;
+		
+		},
 		showStream  	: function(options){
 
 			var stream = _.find(this.streams, function(stream){
@@ -91,78 +114,100 @@
 				$(".streaming_container").css({height : "500px"});
 			}
 
-		},
+		},		
+		requestStream : function(options,callback, errorCallback){
 
-		onChannelPresence 		 : function(event){
+			var stream = _.find(agility_webrtc.streams, function(stream){ return stream.who === "mine"; });			
 
-			var self = agility_webrtc;
-			
-			var users = self.channelUsers || [];
-
-			var user = _.find(users, function(user){
-				return user.uuid === event.uuid;
-			})
-
-			if(user){
-				user.status = event.action;
+			if(stream != null){
+				callback(stream.stream);
 			} else {
-				users.push({
-					uuid 	: event.uuid,
-					status 	: event.action 
-				})
+
+				navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia ||navigator.mozGetUserMedia ||navigator.msGetUserMedia);	
+				
+				if(navigator.getUserMedia != null){
+
+					navigator.getUserMedia(options, function(stream) {
+					
+						if(typeof callback === 'function'){
+							callback(stream);
+						}
+
+					}, function(e) {
+
+						console.log('No access to getUserMedia!', e);
+						
+						if(typeof errorCallback === 'function'){
+							errorCallback(e);
+						}
+						
+
+					});					
+
+				}
+
 			}
 
-			self.channelUsers = users;
-
-			self.render({
-				container 	: "#connected_people",
-				template 	: "#channels_users_list",
-				data 		: {
-					users 		: users,
-					app 		: self
-				}
-			})
-
-
-			// self.currentUser.here_now({
-			// 	channel:  self.channelName,
-			// 	callback: function(channel){
-
-			// 		self.render({
-			// 			container 	: "#connected_people",
-			// 			template 	: "#channels_users_list",
-			// 			data 		: {
-			// 				users 		: channel.uuids,
-			// 				app 		: self
-			// 			}
-			// 		})
-
-			// 		// var content 		= 	_.template($(options.template).html(), options.data );
-
-			// 		// $(options.container).html(content);	
-
-			// 		// $("#connected_people").empty();
-			// 		// $("#connected_people").append('<ul>');
-			// 		// _.each(channel.uuids,function(uuid){
-			// 		// 	$("#connected_people").append("<li>"+( uuid === self.uuid ? "You" : uuid )+"</li>");		 
-			// 		// })
-			// 		// $("#connected_people").append('</ul>');
-
-			// 	}
-			// });
-		
 		},
+		publishStream : function(options){
 
-		onChannelMessage : function(message, uuid){
+			var stream = _.find(agility_webrtc.streams, function(stream){ return stream.who === "mine"; });
 
-			//arguments
+			var resumeStreaming = function(stream){
+
+				//Show my stream:
+
+				agility_webrtc.showStream({ who : "mine" , container : '#me'});
+
+				agility_webrtc.currentUser.publish({ user: options.uuid, stream: stream });
+				
+				agility_webrtc.currentUser.subscribe({
+					user: options.uuid,
+					stream: function(bad, event) {
+						agility_webrtc.streams.push({ who 	: "you", stream 	: event.stream });
+						agility_webrtc.showStream({ who : "you" , container : '#you'});
+					},
+					disconnect: function(uuid, pc) {
+						agility_webrtc.hideStream({who : "#you"})
+						agility_webrtc.onEndCall();
+					}
+				});				
+
+
+			}
+
+			
+
+			if(stream == null){
+
+				agility_webrtc.requestStream({
+					video : true,
+					audio : true
+				}, function(stream){
+
+					agility_webrtc.streams.push({ who : "mine", stream : stream });
+
+					resumeStreaming(stream);
+
+
+				}, function(){
+
+					alert("Unable to get stream");
+
+				})
+
+			} else {
+
+				resumeStreaming(stream.stream);
+
+			}
+
+		},
+		onChannelListMessage : function(message){
 
 			var self = agility_webrtc;
 
-			self.messages = self.messages || [];
-
-
-			self.messages.push({
+			self.channelMessages.push({
 				from	: message.user.name,
 				message : message.text.replace( /[<>]/g, '' )
 			})
@@ -176,306 +221,305 @@
 				}
 			})	
 
-			// //Check if username is not being displayed in list:
-
-			// var channel_member_on_list = $(".list-group-item[data-uuid='" + message.user.uuid + "']");
-
-			// if(channel_member_on_list.length > 0 && message.user.uuid !== agility_webrtc.currentUser.uuid){
-
-			// 	if($(channel_member_on_list).data("username") === ""){
-
-			// 		var content = '<span class="glyphicon glyphicon-user"></span>';
-			// 		content += ' ' + message.user.name;
-			// 		content += ' - Online';
-			// 		content += '<span class="glyphicon glyphicon-facetime-video pull-right"></span>';
-			// 		$(channel_member_on_list).html(content);
-
-			// 	}
-
-			// }
-
-
-			
-
-		
-
 		},
+		onChannelListPresence : function(person){
 
-		onChannelConnect : function(uuid, peerConnection){
+			var item, newItem;
 
-			var self = agility_webrtc;
+			$("#connected_people_list li[data-user=\"" + person.uuid + "\"]").remove();
 
-			console.log(uuid + ' connected to ' + self.channelName);
+			if (person.action === "join") {
 
-			agility_webrtc.currentUser.publish({
-				channel : agility_webrtc.channelName,
-				message : { user : {
-					uuid : agility_webrtc.currentUser.UUID,
-					name : agility_webrtc.currentUser.db.get('username') || "Guest"
-				}, text : "Connect" }
-			});			
+				person.id  		= person.uuid;
+				person.is_you  	= person.uuid === agility_webrtc.uuid;
 
-			$("#chat_container").show();
+				var content = _.template($("#user-item-template").html(), person );
 
-		},
+				$("#connected_people_list").append(content);
 
-		onChannelDisconnect : function(uuid, peerConnection){
-
-			var self = agility_webrtc;
-
-			console.log(uuid + ' disconnected to ' + self.channelName);
-
-		},
-
-		connectToChannel : function(options, callback, errorCallback){
-
-			var self = this;
-
-			self.currentUser.db.set('username' , "Guest");
-
-			self.currentUser.subscribe({
-				channel 	: self.channelName,  
-				callback 	: self.onChannelMessage,
-				presence 	: self.onChannelPresence, 
-				connect 	: self.onChannelConnect
-			});
-
-		},
-		onNewConnection : function(uuid){
-
-			var self = this;
-
-			if( uuid !== self.uuid ){
-	
-				var stream = _.find(self.streams, function(stream){ return stream.who === "mine"; }).stream;
-
-				if(stream){
-					self.currentUser.publish({
-						user: uuid,
-						stream: stream
-					});
-				}
-
-			}			
-
-			// self.currentUser.onNewConnection(function (uuid) {
-			  
-			// 	if( uuid !== self.uuid ){
-				  
-			// 		var stream = _.find(self.streams, function(stream){ return stream.who === "mine"; }).stream;
-
-			// 		if(stream){
-			// 			pubnub.publish({
-			// 				user: uuid,
-			// 				stream: stream
-			// 			});
-			// 		}
-
-			// 	}
-
-			// });	
-
-		},
-
-		setGetUserMedia : function(){
-			navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia ||navigator.mozGetUserMedia ||navigator.msGetUserMedia);	
-			return this;
-		
-		},
-
-		startStreaming : function(options, callback, errorCallback){
-
-			if(navigator.getUserMedia){
-
-				navigator.getUserMedia(options, function(stream) {
+			} else if (person.action === "leave" && person.uuid !== agility_webrtc.uuid) {
 				
-					if(typeof callback === 'function'){
-						callback(stream);
-					}
-
-				}, function(e) {
-
-					console.log('No access to getUserMedia!', e);
-					
-					if(typeof errorCallback === 'function'){
-						errorCallback(e);
-					}
-					
-
-				});	
-
-			} else {
+				var person_element = $("#connected_people_list li[data-user=\"" + person.uuid + "\"]");
 				
-				if(typeof errorCallback === 'function'){
-					errorCallback({error:"getUserMedia not available in this browser"});
-				}
+				$(person_element).slideUp(200, function(){
+					$(this).empty().remove();
+				})
 				
 			}
 
-
-			return this;
-		
 		},
+		onChannelListConnect 	: function(){
 
-		subscribeToChannel : function(){
+			sessionStorage.setItem('user', agility_webrtc.uuid);
 
+			$("#login_container").slideUp(100);
 
-			return this;
-		
 		},
+		connectToListChannel : function(){
 
-		loadTemplates 		: function(options, callback){
+			agility_webrtc.currentUser.subscribe({
+				channel 	: agility_webrtc.channelName,
+				callback 	: agility_webrtc.onChannelListMessage,
+				presence 	: agility_webrtc.onChannelListPresence,
+				connect 	: agility_webrtc.onChannelListConnect
+			});
 
+		},
+		connectToCallChannel : function(){
+
+			agility_webrtc.currentUser.subscribe({
+				channel: 'call',
+				callback: function(data) {
+					if (data.callee ===  agility_webrtc.uuid) {
+						agility_webrtc.incomingCallFrom = data.caller;
+						agility_webrtc.onIncomingCall(data.caller);
+					}					
+				}
+			});
+
+		},
+		connectToAnswerChannel : function(){
+
+			agility_webrtc.currentUser.subscribe({
+				channel: 'answer',
+				callback: function(data) {
+
+					if (data.caller === agility_webrtc.uuid) {
+						
+						agility_webrtc.publishStream({ uuid :  data.callee });
+
+						var modalCalling = $("#calling-modal");
+
+						modalCalling.modal('hide');
+
+						$("#ringer")[0].pause();
+
+						//The user answer the call
+
+						agility_webrtc.onCallStarted();
+
+
+					}
+
+				}
+			});
+
+		},
+		incrementTimer 		: function(){
+
+
+			var minutes, seconds;
+			agility_webrtc.currentCallTime += 1;
+			var minutes = Math.floor(agility_webrtc.currentCallTime / 60);
+			var seconds = agility_webrtc.currentCallTime % 60;
+			if (minutes.toString().length === 1) {
+				minutes = "0" + minutes;
+			}
+			if (seconds.toString().length === 1) {
+				seconds = "0" + seconds;
+			}
+			agility_webrtc.setCurrentCallTime("" + minutes + ":" + seconds);
+
+		},
+		stopTimer 			: function(){
+
+			clearInterval(agility_webrtc.timeInterval);
+
+		},
+		callPerson 			: function(who){
+
+			agility_webrtc.currentCallUUID = who;
+
+			var modalCalling = $("#calling-modal");
+
+			modalCalling.find('.calling').text("Calling " + who + "...");
+
+			modalCalling.modal('show');
+
+			$("#ringer")[0].play()
+
+			modalCalling.removeClass("hide");
+
+			agility_webrtc.currentUser.publish({
+				channel: 'call',
+				message: {
+					caller: agility_webrtc.uuid,
+					callee: who
+				}
+			});
+
+		},
+		onIncomingCall 		: function(whoIsCalling){
+
+			var modalAnswer = $("#answer-modal");
+
+			modalAnswer.removeClass("hide");			
+
+			modalAnswer.find('.caller').text("" + whoIsCalling + " is calling...");
+			
+			modalAnswer.modal('show');
+
+			$("#ringer")[0].play()
+
+		},
+		onCallStarted 		: function(){
+
+			agility_webrtc.showControls();
+			agility_webrtc.setCurrentCallTime("00:00")
+			agility_webrtc.currentCallTime = 0;
+			agility_webrtc.timeInterval = setInterval(agility_webrtc.incrementTimer, 1000);
+
+		},
+		answerCall 		: function(from){
+
+		 	//agility_webrtc.currentCallUUID = from;
+
+		 	agility_webrtc.requestStream({
+		 		video : true,
+		 		audio : true
+		 	}, function(stream){
+
+		 		agility_webrtc.streams.push({ who : "mine", stream : stream });
+
+			 	agility_webrtc.publishStream({ uuid : from  });
+
+				var modalAnswer = $("#answer-modal");
+
+				modalAnswer.modal("hide");	
+				
+				$("#ringer")[0].pause()
+
+				agility_webrtc.currentUser.publish({
+					channel: 'answer',
+					message: {
+						caller: agility_webrtc.incomingCallFrom,
+						callee: agility_webrtc.uuid
+					}
+				});
+
+
+		 	}, function(){
+		 		alert("Unable to access stream");
+		 	})
+			
+		},
+		onEndCall 		: function(){
+
+			agility_webrtc.hideControls();
+			agility_webrtc.stopTimer();
+
+		},
+		render 				: function(options){
+
+			var content = _.template($(options.template).html(), options.data );
+
+			$(options.container).html(content);	
+
+		},
+		loadTemplates : function(options, callback){
 
 			$("#templatesContainer").empty().remove();
 
 			$('<div id="templatesContainer"></div>').appendTo('body');
 			
-			$('#templatesContainer').load((options.templates_url + "?r=" + Date.now()), function(){
+			$('#templatesContainer').load(("javascripts/resources/templates.html?r=" + Date.now()), function(){
 
-				if(typeof callback === 'function'){
-					callback()
+				if(typeof callback === "function"){
+					callback();
 				}
-
-			});				
-
-		},
-		
-		onStreamReceived 	: function(data, event){
-
-			console.log("Stream received");
-
-			var self = agility_webrtc;
-
-			self.streams.push({ who : "you", stream : event.stream });
-			self.showStream({ who : "you" , container : '#you'});			
-
-		},
-
-		onStreamDisconnected : function(data, event){
-
-			console.log("Stream disconnected");
-
-		},
-
-		onStreamConnection 	: function(){
-
-			var self = agility_webrtc;
-
-			var uuid = $(".list-group-item.active").data("uuid");
-
-			console.log("Connected to " + uuid);
-
-			var stream = _.find(self.streams, function(stream){ return stream.who === "mine"; }).stream;
-
-			self.currentUser.publish({
-				user: uuid,
-				stream: stream
-			});
-
-		},
-
-		onStreamError 		: function(error){
-
-			console.log("Stream error :S");
-
-		},
-
-		setBinds			: function(){
-
-
-
-			$(document).on("click", "#empty_messages", function(e){
-
-				agility_webrtc.messages = [];
-
-				$("#channel_messages").slideUp(300, function(){
-					$("#messages_container").empty();
-					$(this).slideDown(300);
-				})
 
 			})
 
-			$(document).on("keyup", "#message", function(e){
+		},
+		hangupCall : function(){
 
-
-				if((e.keyCode || e.charCode) === 13){
-					
-					$("#send").trigger("click");
-
-				}
+			agility_webrtc.currentUser.peerConnection(agility_webrtc.incomingCallFrom, function(peerConnection) {
 				
+				peerConnection.close();
+				
+				agility_webrtc.onEndCall();
+
 			});
 
-			$(document).on("click", "#send", function(e){
+		},
+		setBinds : function(){
+
+			$(document).on("click", "#hangup", function(e){
 
 				e.preventDefault();
 
-				var message = $("#message").val().trim();
+				agility_webrtc.hangupCall();
 
-				if (message !== "") {
-					agility_webrtc.currentUser.publish({
-						channel : agility_webrtc.channelName,
-						message : { user : {
-							uuid : agility_webrtc.currentUser.UUID,
-							name : agility_webrtc.currentUser.db.get('username') || "Guest"
-						}, text : message }
-					});
-					$("#message").val("").focus();
-				}
 
 			})
 
-			$(document).on("keyup", "#username-input", function(e){
+			$(document).on("click", "[data-user]", function(e){
 
 				e.preventDefault();
+				e.stopPropagation();
 
-				var username = $(this).val().trim();
+				var name;
 
-				if(username !== ""){
-					agility_webrtc.currentUser.db.set( 'username', username );
-				}
+				var callingTo = $(this).data('user');
 
+				agility_webrtc.requestStream({
+					video : true,
+					audio : true
+				}, function(stream){
 
-			});
+					agility_webrtc.streams.push({ who : "mine", stream : stream });
 
-			$(document).on("click", ".list-group-item:not(.you)", function(e){
+					agility_webrtc.callPerson(callingTo);
 
-				e.preventDefault();
+				}, function(){
 
-				$(".list-group-item").removeClass("active");
-				$(this).addClass("active");
+					alert("To call someone please allow access to audio and video...");
 
-				var userToConnectTo = $(this).data("uuid");
-
-				agility_webrtc.currentUser.subscribe({
-					user 		: userToConnectTo,
-					stream 		: agility_webrtc.onStreamReceived,
-					disconnect  : agility_webrtc.onStreamDisconnected,
-					error 		: agility_webrtc.onStreamError,
-					connect 	: agility_webrtc.onStreamConnection
 				})
 
+				
+
+
+			})
+
+			$(document).on("click", ".modal [data-dismiss]", function(e){
+				e.preventDefault();
+				$("#ringer")[0].pause()
+				$(this).parents('.modal').hide();
+			});
+
+			$(document).on("click", "#answer", function(e){
+
+				e.preventDefault();
+				e.stopPropagation();
+
+				agility_webrtc.answerCall(agility_webrtc.incomingCallFrom);
+
+			})
+
+			$(document).on("click", "#login", function(e){
+
+				e.preventDefault();
+
+				var name = $("#username").val().trim();
+
+				if(name !== ""){
+
+					agility_webrtc.login();
+
+				}
 
 			})
 
 
 
 			return this;
-
-		},
-
-		render 				: function(options){
-
-			var content 		= 	_.template($(options.template).html(), options.data );
-
-			$(options.container).html(content);	
-
+		
 		}
 
 	}
 
 	agility_webrtc.init();
 
-//})(window, document, $, _)
 
+//})(window, document, $, _);

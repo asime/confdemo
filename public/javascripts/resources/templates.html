@@ -43,8 +43,11 @@
 </script>
 
 <script type="text/template" id="user-item-template">
-	<li class="user" data-user="<%= id %>">
-		<span class="name"><%= name %></span>
-		<a href="#" class="btn btn-success" data-user="<%= id %>">Call</a>
+	<li class="user" data-user="<%= uuid %>">
+		<span class="glyphicon glyphicon-user"></span> 
+		<span class="name"><%= is_you ? "You" : uuid %></span>
+		<% if(!is_you){%>
+			<a href="#" class="btn btn-success pull-right" data-user="<%= uuid %>">Call</a>
+		<%}%>
 	</li>
 </script>
