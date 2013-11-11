@@ -39,14 +39,26 @@ jQuery(document).ready(function () {
   });
   
 	var parHeight = $(window).height(); /*Get Screen Height*/
-	$('.commentsWindowWrap .commentsList').css('height',parHeight-288); /*Update Card Holder Height*/
-	$('.sliderWrap .slider').css('height',parHeight-355); /*Update Card Holder Height*/
+	$('.commentsWindowWrap .commentsList.resize').css('height',parHeight-288); /*Update Card Holder Height*/
+	$('.sliderWrap .slider.resize').css('height',parHeight-355); /*Update Card Holder Height*/
+
+  //Show Hide Comments Smaller Devices
+	$(".commentsWindowWrap .btnShow").click(function () {
+    $(".commentsWindowWrap").fadeOut("fast");
+    $(".playerWindowWrap").fadeIn("fast");
+	});
+	$(".playerWindowWrap .btnShow").click(function () {
+    $(".playerWindowWrap").fadeOut("fast");
+    $(".commentsWindowWrap").fadeIn("fast");
+	});
 
 
 
 });
-	$(window).resize(function() {
-		var wHeight = $(window).height();
-  	$('.commentsWindowWrap .commentsList').css('height',wHeight-288); /*Update Card Holder Height*/
-  	$('.sliderWrap .slider').css('height',wHeight-355); /*Update Card Holder Height*/
-	});		
+
+//Height Resize Refresh
+$(window).resize(function() {
+	var wHeight = $(window).height();
+	$('.commentsWindowWrap .commentsList').css('height',wHeight-288); /*Update Card Holder Height*/
+	$('.sliderWrap .slider').css('height',wHeight-355); /*Update Card Holder Height*/
+});		

@@ -385,3 +385,47 @@ footer{
   margin-left: 1px;
   border-radius: 9px;
 }
+
+
+/*Responsive Stuff*/
+.btnShow{
+  display: none;
+  width: auto;
+  float: right;
+  height: 35px;
+  margin: 8px 0 0;
+  padding: 0 8px;
+  background: #476176; 
+  font-size: 14px;
+  line-height: 35px;
+  text-align: center;
+  color: #fff;
+  cursor: pointer;
+  margin-right: 10px;
+  border-radius: 4px;
+}
+.timeLapseWrap{
+  display: none;
+  padding: 10px 15px; 
+}
+.timeLapseWrap span{
+  font-size: 20px;
+  color: #ffffff;
+}
+.timeLapseWrap .timer{
+  height: auto;
+  width: auto;
+  padding: 10px;
+  font-size: 30px;
+  line-height: 30px;
+  font-weight: bold;
+  color: #476176;
+  background: #edf0f2;
+  text-align: center;
+  margin-top: 5px;
+  border-radius: 5px;
+}
+
+
+
+
