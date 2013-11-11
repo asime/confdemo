@@ -20,6 +20,31 @@
     <!--[if lt IE 9]>
       <script src="js/html5shiv.js"></script>
     <![endif]-->
+    <style>
+      .commentsWindowWrap .commentsList{
+        height: 518px;
+      }
+      .sliderWrap .slider{
+        height: 450px;
+      }
+      .barBad{
+        width:20% !important;
+        background: #ff4800;
+      }
+      .barGood{
+        width:10% !important;
+        background: #b76434;
+      }
+      .barGreat{
+        width:40% !important;
+        background: #478a7b;
+      }
+      .barAwesome{
+        width:80% !important;
+        background: #49be9f;
+      }
+    </style>
+    
   </head>
   <body>
         
@@ -28,7 +53,7 @@
       <div class="row">
       
         <!-- LEFT COLUMN -->
-        <div class="col-md-8">
+        <div class="col-sm-8">
           <div class="playerWindowWrap ">
 
             <!-- PRESENTATION SLIDER -->
@@ -66,7 +91,7 @@
         <!-- //LEFT COLUMN -->
 
         <!-- RIGHT COLUMN -->
-        <div class="col-md-4 leftBorder">
+        <div class="col-sm-4 leftBorder">
           <div class="winWrap commentsWindowWrap">
             
             <div class="commentHeader">
@@ -176,6 +201,88 @@
       </div>
     
     </div>
+    
+    <footer>
+      <div class="row">
+      
+        <!-- GRAPH COLUMN -->
+        <div class="col-sm-9 graphWrap">
+          <div class="row">
+            <div class="col-sm-10 col-sm-offset-1 linesWarp">
+              
+            </div>
+          </div>
+          <div class="row guideWarp">
+            <div class="col-sm-1 col-sm-offset-1">
+              <div class="ciclerMark"></div>
+            </div>
+            <div class="col-sm-1">
+              <div class="ciclerMark"></div>
+            </div>
+            <div class="col-sm-1">
+              <div class="ciclerMark"></div>
+            </div>
+            <div class="col-sm-1">
+              <div class="ciclerMark"></div>
+            </div>
+            <div class="col-sm-1">
+              <div class="ciclerMark"></div>
+            </div>
+            <div class="col-sm-1">
+              <div class="ciclerMark"></div>
+            </div>
+            <div class="col-sm-1">
+              <div class="ciclerMark"></div>
+            </div>
+            <div class="col-sm-1">
+              <div class="ciclerMark"></div>
+            </div>
+            <div class="col-sm-1">
+              <div class="ciclerMark"></div>
+            </div>
+            <div class="col-sm-1">
+              <div class="ciclerMark"></div>
+            </div>
+          </div>
+        </div>
+        <!-- //GRAPH COLUMN -->
+        <!-- GRAPH COLUMN -->
+        <div class="col-sm-3 colGraphWrap">
+
+          <div class="graphLabel">
+            <span class="name">AWESOME</span>
+            <div class="barGraphBg">
+              <div class="bar barAwesome"></div>
+              <span>10</span>
+            </div>
+          </div>
+
+          <div class="graphLabel">
+            <span class="name">GREAT</span>
+            <div class="barGraphBg">
+              <div class="bar barGreat"></div>
+              <span>10</span>
+            </div>
+          </div>
+
+          <div class="graphLabel">
+            <span class="name">GOOD</span>
+            <div class="barGraphBg">
+              <div class="bar barGood"></div>
+              <span>10</span>
+            </div>
+          </div>
+
+          <div class="graphLabel">
+            <span class="name">BAD</span>
+            <div class="barGraphBg">
+              <div class="bar barBad"></div>
+              <span>10</span>
+            </div>
+          </div>
+        </div>
+        <!-- //GRAPH COLUMN -->
+    </footer>
     
     <!-- Load JS here for greater good =============================-->
     <script src="assets/js/jquery-2.0.3.min.js"></script>

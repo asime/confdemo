@@ -37,6 +37,16 @@ jQuery(document).ready(function () {
   $( ".deleteBtn" ).click(function() {
     alert( "Deleting Comment" );
   });
-
   
+	var parHeight = $(window).height(); /*Get Screen Height*/
+	$('.commentsWindowWrap .commentsList').css('height',parHeight-288); /*Update Card Holder Height*/
+	$('.sliderWrap .slider').css('height',parHeight-355); /*Update Card Holder Height*/
+
+
+
 });
+	$(window).resize(function() {
+		var wHeight = $(window).height();
+  	$('.commentsWindowWrap .commentsList').css('height',wHeight-288); /*Update Card Holder Height*/
+  	$('.sliderWrap .slider').css('height',wHeight-355); /*Update Card Holder Height*/
+	});		
