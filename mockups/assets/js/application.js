@@ -39,8 +39,9 @@ jQuery(document).ready(function () {
   });
   
 	var parHeight = $(window).height(); /*Get Screen Height*/
-	$('.commentsWindowWrap .commentsList.resize').css('height',parHeight-288); /*Update Card Holder Height*/
-	$('.sliderWrap .slider.resize').css('height',parHeight-355); /*Update Card Holder Height*/
+	$('.commentsWindowWrap .commentsList').css('height',parHeight-288); /*Update Card Holder Height*/
+	$('.sliderWrap .slider').css('height',parHeight-355); /*Update Card Holder Height*/
+	$('.sliderWrap .sliderEspectador').css('height',parHeight-320); /*Update Card Holder Height*/
 
   //Show Hide Comments Smaller Devices
 	$(".commentsWindowWrap .btnShow").click(function () {
@@ -61,4 +62,5 @@ $(window).resize(function() {
 	var wHeight = $(window).height();
 	$('.commentsWindowWrap .commentsList').css('height',wHeight-288); /*Update Card Holder Height*/
 	$('.sliderWrap .slider').css('height',wHeight-355); /*Update Card Holder Height*/
+	$('.sliderWrap .sliderEspectador').css('height',wHeight-320); /*Update Card Holder Height*/
 });		

@@ -14,6 +14,7 @@
 
     <!-- Loading UI Styles-->
     <link href="assets/css/main.css" rel="stylesheet">
+    <link href="assets/css/media-query.css" rel="stylesheet">
     <link rel="shortcut icon" href="img/favicon.ico">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
@@ -63,11 +64,12 @@
               <div class="slideHeader">
                 <span class="af-brand"></span>
                 <span class="rightText">Code Samples : agilityfeat.com/cs</span>
+                <div class="btnShow">View Comments</div>
               </div>  
               <!-- //SLIDER HEADER -->
 
               <!-- SLIDER -->
-              <div class="slider">slide</div>
+              <div class="sliderEspectador">slide</div>
               <!-- SLIDER -->
 
 
@@ -75,9 +77,7 @@
             <!-- //PRESENTATION SLIDER -->
 
             <!-- SLIDE CONTROLS -->
-            <div class="sliderControls">
-              <div class="prevSlide"><span class="glyphicon glyphicon-chevron-left"></span><span class="textSpan">Prev</span></div> 
-              <div class="nextSlide"><span class="textSpan">Next</span><span class="glyphicon glyphicon-chevron-right"></div> 
+            <div class="sliderControls sliderControlsEspectador">
               <ul class="slideCount">
                 <li>1</li>
                 <li class="active">2</li>
@@ -96,19 +96,7 @@
             
             <div class="commentHeader">
               <span class="leftText">Comments</span>
-              <div class="actionsWrap">
-                
-                <!-- INITIAL CALL -->
-                <span class="initialCall">
-                  <span class="cameraCall"><span class="glyphicon glyphicon-facetime-video"></span></span>
-                  <span class="commentsCall">Edit</span>
-                </span>
-                <!-- //INITIAL CALL -->
-
-                <!-- DONE CALL -->
-                <span class="doneBtn">Done</span>
-                <!-- //DONE CALL -->
-              </div>
+              <div class="btnShow">Current Slide</div>
             </div>
 
             <!-- COMMENTS WRAP -->
@@ -205,83 +193,41 @@
     <footer>
       <div class="row">
       
-        <!-- GRAPH COLUMN -->
-        <div class="col-sm-9 graphWrap">
-          <div class="row">
-            <div class="col-sm-10 col-sm-offset-1 linesWarp">
-              
-            </div>
-          </div>
-          <div class="row guideWarp">
-            <div class="col-sm-1 col-sm-offset-1">
-              <div class="ciclerMark"></div>
-            </div>
-            <div class="col-sm-1">
-              <div class="ciclerMark"></div>
-            </div>
-            <div class="col-sm-1">
-              <div class="ciclerMark"></div>
-            </div>
-            <div class="col-sm-1">
-              <div class="ciclerMark"></div>
-            </div>
-            <div class="col-sm-1">
-              <div class="ciclerMark"></div>
-            </div>
-            <div class="col-sm-1">
-              <div class="ciclerMark"></div>
-            </div>
-            <div class="col-sm-1">
-              <div class="ciclerMark"></div>
-            </div>
-            <div class="col-sm-1">
-              <div class="ciclerMark"></div>
-            </div>
-            <div class="col-sm-1">
-              <div class="ciclerMark"></div>
-            </div>
-            <div class="col-sm-1">
-              <div class="ciclerMark"></div>
+        <!-- RATE -->
+        <div class="col-sm-6">
+          <div class="rateSlideWrap">
+            <span>Rate current slide:</span>
+            <div class="rateOptionsWrap">
+              <div class="floatClear"></div>
+              <div class="rateBg"></div>
+              <span class="rateOption rateBad">
+                <span class="inneCircle"></span>
+                <span class="label">Bad</span>
+              </span>
+              <span class="rateOption rateGood">
+                <span class="inneCircle"></span>
+                <span class="label">Good</span>
+              </span>
+              <span class="rateOption rateGreat">
+                <span class="inneCircle"></span>
+                <span class="label">Great</span>
+              </span>
+              <span class="rateOption rateAwesome">
+                <span class="inneCircle"></span>
+                <span class="label">Awesome</span>
+              </span>
             </div>
           </div>
         </div>
-        <!-- //GRAPH COLUMN -->
-        <!-- GRAPH COLUMN -->
-        <div class="col-sm-3 colGraphWrap">
-
-          <div class="graphLabel">
-            <span class="name">AWESOME</span>
-            <div class="barGraphBg">
-              <div class="bar barAwesome"></div>
-              <span>10</span>
-            </div>
-          </div>
-
-          <div class="graphLabel">
-            <span class="name">GREAT</span>
-            <div class="barGraphBg">
-              <div class="bar barGreat"></div>
-              <span>10</span>
-            </div>
-          </div>
-
-          <div class="graphLabel">
-            <span class="name">GOOD</span>
-            <div class="barGraphBg">
-              <div class="bar barGood"></div>
-              <span>10</span>
-            </div>
-          </div>
-
-          <div class="graphLabel">
-            <span class="name">BAD</span>
-            <div class="barGraphBg">
-              <div class="bar barBad"></div>
-              <span>10</span>
-            </div>
+        <!-- RATE -->
+        <!-- COMMENT -->
+        <div class="col-sm-6">
+          <div class="rateSlideWrap">
+            <span>Comment</span>
           </div>
         </div>
-        <!-- //GRAPH COLUMN -->
+        <!-- COMMENT -->
+
     </footer>
     
     <!-- Load JS here for greater good =============================-->
