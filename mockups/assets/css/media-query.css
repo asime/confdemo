@@ -49,6 +49,13 @@
     .hideCommentBox{
       display: inline-block !important;  
     }
+    .sliderWrap .slider img,
+    .sliderWrap .sliderEspectador img{
+      max-width: none;
+      max-height: none;
+      width: 100%;
+      height: auto;
+    }
   }
  
   /* Mobile Landscape Size to Tablet Portrait (devices and browsers) */

@@ -39,9 +39,18 @@ jQuery(document).ready(function () {
   });
   
 	var parHeight = $(window).height(); /*Get Screen Height*/
-	$('.commentsWindowWrap .commentsList').css('height',parHeight-288); /*Update Card Holder Height*/
-	$('.sliderWrap .slider').css('height',parHeight-355); /*Update Card Holder Height*/
-	$('.sliderWrap .sliderEspectador').css('height',parHeight-320); /*Update Card Holder Height*/
+	var parWidth = $(window).width(); /*Get Screen Width*/
+	
+	if(parWidth > 769){
+  	$('.commentsWindowWrap .commentsList').css('height',parHeight-288); /*Update Card Holder Height*/
+    $('.sliderWrap .slider').css('height',parHeight-355); /*Update Card Holder Height*/
+    $('.sliderWrap .sliderEspectador').css('height',parHeight-320); /*Update Card Holder Height*/
+  };
+	if(parWidth < 768){
+  	$('.commentsWindowWrap .commentsList').css('height','auto'); /*Update Card Holder Height*/
+    $('.sliderWrap .slider').css('height','auto'); /*Update Card Holder Height*/
+    $('.sliderWrap .sliderEspectador').css('height','auto'); /*Update Card Holder Height*/
+  };
 
   //Show Hide Comments Smaller Devices
 	$(".commentsWindowWrap .btnShow").click(function () {
@@ -74,7 +83,16 @@ jQuery(document).ready(function () {
 //Height Resize Refresh
 $(window).resize(function() {
 	var wHeight = $(window).height();
-	$('.commentsWindowWrap .commentsList').css('height',wHeight-288); /*Update Card Holder Height*/
-	$('.sliderWrap .slider').css('height',wHeight-355); /*Update Card Holder Height*/
-	$('.sliderWrap .sliderEspectador').css('height',wHeight-320); /*Update Card Holder Height*/
+	var wWidth = $(window).width();
+
+	if(wWidth > 769){
+  	$('.commentsWindowWrap .commentsList').css('height',wHeight-288); /*Update Card Holder Height*/
+    $('.sliderWrap .slider').css('height',wHeight-355); /*Update Card Holder Height*/
+    $('.sliderWrap .sliderEspectador').css('height',wHeight-320); /*Update Card Holder Height*/
+  };
+	if(wWidth < 769){
+  	$('.commentsWindowWrap .commentsList').css('height','auto'); /*Update Card Holder Height*/
+    $('.sliderWrap .slider').css('height','auto'); /*Update Card Holder Height*/
+    $('.sliderWrap .sliderEspectador').css('height','auto'); /*Update Card Holder Height*/
+  };
 });		
