@@ -437,6 +437,8 @@ footer{
 }
 .rateSlideWrap{
   margin-top: 10px;
+  height: 105px;
+  
 }
 .rateSlideWrap > span{
   font-size: 20px;
@@ -448,20 +450,7 @@ footer{
   position: relative;
   width: auto;
   height: 60px;
-}
-.rateOptionsWrap .rateBg{
-  height: 10px;
-  width: auto;
-  display: block;
-  margin: 23px 20px 0;
-  background: #fc4a02; /* Old browsers */
-  background: -moz-linear-gradient(left,  #fc4a02 15%, #3ca996 85%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, right top, color-stop(15%,#fc4a02), color-stop(85%,#3ca996)); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(left,  #fc4a02 15%,#3ca996 85%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(left,  #fc4a02 15%,#3ca996 85%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(left,  #fc4a02 15%,#3ca996 85%); /* IE10+ */
-  background: linear-gradient(to right,  #fc4a02 15%,#3ca996 85%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fc4a02', endColorstr='#3ca996',GradientType=1 ); /* IE6-9 */
+  margin: 0 20px;  
 }
 .rateOptionsWrap .rateOption{
   position: absolute;
@@ -472,23 +461,25 @@ footer{
   border-radius: 20px;
   cursor: pointer;
 }
+.rateOptionsWrap .rateOption.rateHorrible{
+  left: 0;
+  background: #fc4a02;
+}
 .rateOptionsWrap .rateOption.rateBad{
- margin-left: 18px; 
- background: #ff4800
+  left: 25%;
+  background: #c17036
 }
 .rateOptionsWrap .rateOption.rateGood{
-  left: 33%;  
-  margin-left: -5px;
-  background: #b76434;
+  left: 50%;
+  background: #938e5e;
 }
 .rateOptionsWrap .rateOption.rateGreat{
-  left: 66%;  
-  margin-left: -25px;
-  background: #478a7b;
+  left: 75%;  
+  background: #6ba882;
 }
 .rateOptionsWrap .rateOption.rateAwesome{
-  right:18px;
-  background: #49be9f;
+  left: 100%;  
+  background: #4ebb9a;
 }
 .rateOptionsWrap .rateOption:hover{
   background: #ccc;
@@ -504,7 +495,6 @@ footer{
   line-height: 24px;
   color: #476176;
   font-size: 14px;
-  font-weight: bold;
 }
 .rateOptionsWrap .rateOption span.label{ 
   position: absolute;
@@ -519,9 +509,20 @@ footer{
   line-height: 14px;
   color: #fff;;
   font-size: 12px;
+  font-weight: 300;
 }
 
-
+.commentSlideWrap{
+  margin-top: 10px;
+  height: auto;
+  
+}
+.commentSlideWrap > span{
+  font-size: 20px;
+  color: #ffffff;
+  display: block;
+  margin-top: 30px;
+}
 
 
 

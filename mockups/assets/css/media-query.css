@@ -55,7 +55,12 @@
     .timeLapseWrap{
       display: block;
     }
-    
+    .rateSlideWrap > span{
+      margin-top: 0;
+    }
+    .commentSlideWrap > span{
+      margin-top: 10px;
+    }
     
   }
   
