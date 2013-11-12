@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>WebRTC Demo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable = no">
+    <meta name="format-detection" content="telephone=no">
 
     <!-- Loading Goolge Fonts -->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,300,400,700' rel='stylesheet' type='text/css'>
@@ -225,8 +226,13 @@
         <!-- RATE -->
         <!-- COMMENT -->
         <div class="col-sm-6">
+          <span class="showCommentBox">Add Comments</span>
           <div class="commentSlideWrap">
             <span>Comment</span>
+            <input type="text" class="commentAuthor" placeholder="Name (Optional)"/>
+            <textarea class="commentsHere"></textarea>
+            <input type="submit" class="submitComment"/>
+            <span class="hideCommentBox">Cancel</span>
           </div>
         </div>
         <!-- COMMENT -->

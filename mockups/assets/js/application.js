@@ -53,6 +53,20 @@ jQuery(document).ready(function () {
     $(".commentsWindowWrap").fadeIn("fast");
 	});
 
+  //Show Hide Comment Box
+	$(".showCommentBox").click(function () {
+    $(this).fadeOut("fast");
+    $(".commentSlideWrap").fadeIn("fast");
+    $(".rateSlideWrap").fadeOut("fast");
+	});
+	$(".hideCommentBox").click(function () {
+    $(this).fadeOut("fast");
+    $(".showCommentBox").fadeIn("fast");
+    $(".commentSlideWrap").fadeOut("fast");
+    $(".rateSlideWrap").fadeIn("fast");
+	});
+
+
 
 
 });
