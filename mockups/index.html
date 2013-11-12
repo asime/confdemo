@@ -28,22 +28,44 @@
       .sliderWrap .slider{
         height: 450px;
       }
-      .barBad{
+      .barHorrible{
         width:20% !important;
-        background: #ff4800;
+      }
+      .barBad{
+        width:10% !important;
       }
       .barGood{
         width:10% !important;
-        background: #b76434;
       }
       .barGreat{
         width:40% !important;
-        background: #478a7b;
       }
       .barAwesome{
         width:80% !important;
-        background: #49be9f;
       }
+
+    .rateOptionsWrap .rateOption.rateHorrible,
+    .barHorrible{
+      background: #fc4a02;
+    }
+    .rateOptionsWrap .rateOption.rateBad,
+    .barBad{
+      background: #c17036
+    }
+    .rateOptionsWrap .rateOption.rateGood,
+    .barGood{
+      background: #938e5e;
+    }
+    .rateOptionsWrap .rateOption.rateGreat,
+    .barGreat{
+      background: #6ba882;
+    }
+    .rateOptionsWrap .rateOption.rateAwesome,
+    .barAwesome{
+      background: #4ebb9a;
+    }
+
+
     </style>
     
   </head>
@@ -283,6 +305,15 @@
               <span>10</span>
             </div>
           </div>
+
+          <div class="graphLabel">
+            <span class="name">HORRIBLE</span>
+            <div class="barGraphBg">
+              <div class="bar barHorrible"></div>
+              <span>10</span>
+            </div>
+          </div>
+
         </div>
         <!-- //GRAPH COLUMN -->
         <div class="col-sm-1 timeLapseWrap">
