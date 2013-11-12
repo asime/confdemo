@@ -14,14 +14,18 @@
 
 		channelMessages : [],
 
+		presentationVotes : [],
+
 		channelName : "agility_webrtc",
 
 		streams 	: [],
 
 		credentials : {
 			publish_key 	: 'pub-c-8f61dc72-875d-4e34-9461-9c870d7c9f57',
-			subscribe_key 	: 'sub-c-f5e33bbe-44f8-11e3-83cf-02ee2ddab7fe'
+			subscribe_key 	: 'sub-c-f5e33bbe-44f8-11e3-83cf-02ee2ddab7fe',
+			uuid 			: 'Guest'
 		},
+
 		init : function(){
 
 			var self = agility_webrtc;
@@ -32,7 +36,7 @@
 
 				self.setBinds();
 
-				var user = sessionStorage.getItem("user");
+				var user = sessionStorage.getItem("user") || window.agility_username;
 
 				if(user){
 
@@ -40,7 +44,9 @@
 					$("#login").trigger("click");
 
 				} else {
+
 					$("#login_container").slideDown(200);
+
 				}
 
 
@@ -92,8 +98,6 @@
 			agility_webrtc.connectToCallChannel();
 
 			agility_webrtc.connectToAnswerChannel();
-
-
 
 			return this;
 		
@@ -203,14 +207,11 @@
 			}
 
 		},
-		onChannelListMessage : function(message){
+		storeMessageAndDisplayMessages : function(message){
 
 			var self = agility_webrtc;
 
-			self.channelMessages.push({
-				from	: message.user.name,
-				message : message.text.replace( /[<>]/g, '' )
-			})
+			self.channelMessages.push(message)
 			
 			self.render({
 				container 	: "#channel_messages",
@@ -222,6 +223,68 @@
 			})	
 
 		},
+		changeSlide 		: function(options){
+
+		// .carousel('cycle')
+
+		// Cycles through the carousel items from left to right.
+
+		// .carousel('pause')
+
+		// Stops the carousel from cycling through items.
+
+		// .carousel(number)
+
+		// Cycles the carousel to a particular frame (0 based, similar to an array).
+
+		// .carousel('prev')
+
+		// Cycles to the previous item.
+
+		// .carousel('next')
+
+		},
+		displayAnalyticsGraphic : function(data){
+
+		},
+		displayBarsGraphic 	: function(data){
+
+		},
+		processVote 	: function(vote){
+
+			var data = [];
+
+			agility_webrtc.displayAnalyticsGraphic(data);
+
+			agility_webrtc.displayBarsGraphic(data);
+
+
+		},
+		onChannelListMessage : function(message){
+
+			var self = agility_webrtc;
+
+			switch(message.type){
+				case "VOTE":
+					agility_webrtc.processVote(message);//{ type : "VOTE" : message : "AWESOME" }
+				break;
+				case "MESSAGE":
+					
+				break;
+				case "SLIDE":
+					agility_webrtc.changeSlide({
+						slide : 3//Number, "prev", "next"
+					})
+				break;
+				default:
+					self.storeMessageAndDisplayMessages({
+						from	: message.user.name,
+						message : message.text.replace( /[<>]/g, '' )
+					})
+				break;
+			}
+
+		},
 		onChannelListPresence : function(person){
 
 			var item, newItem;
@@ -231,21 +294,25 @@
 			if (person.action === "join") {
 
 				person.id  		= person.uuid;
-				person.is_you  	= person.uuid === agility_webrtc.uuid;
+				person.is_you  	= (person.uuid === agility_webrtc.uuid);
 
 				var content = _.template($("#user-item-template").html(), person );
 
 				$("#connected_people_list").append(content);
 
-			} else if (person.action === "leave" && person.uuid !== agility_webrtc.uuid) {
+			} 
+			// else if (person.action === "leave" && person.uuid !== agility_webrtc.uuid) {
 				
-				var person_element = $("#connected_people_list li[data-user=\"" + person.uuid + "\"]");
+			// 	var person_element = $("#connected_people_list li[data-user=\"" + person.uuid + "\"]");
 				
-				$(person_element).slideUp(200, function(){
-					$(this).empty().remove();
-				})
+			// 	$(person_element).slideUp(200, function(){
+			// 		$(this).empty().remove();
+			// 	})
+
+			// 	//Remove the user from session in case he/she closed the browser...
+
 				
-			}
+			// }
 
 		},
 		onChannelListConnect 	: function(){
@@ -255,13 +322,20 @@
 			$("#login_container").slideUp(100);
 
 		},
+		onChannelListDisconnect : function(){
+			
+			//Call route /who/disconnect
+
+
+		},
 		connectToListChannel : function(){
 
 			agility_webrtc.currentUser.subscribe({
 				channel 	: agility_webrtc.channelName,
 				callback 	: agility_webrtc.onChannelListMessage,
 				presence 	: agility_webrtc.onChannelListPresence,
-				connect 	: agility_webrtc.onChannelListConnect
+				connect 	: agility_webrtc.onChannelListConnect,
+				disconnect 	: agility_webrtc.onChannelListDisconnect
 			});
 
 		},
@@ -444,12 +518,93 @@
 		},
 		setBinds : function(){
 
+			window.onbeforeunload = function(){
+
+				agility_webrtc.onChannelListDisconnect();
+
+			}
+
+
+			$(window).resize( _.debounce(function(){
+
+				console.log("Debouced resize");
+				var wHeight = $(window).height();
+				var wWidth = $(window).width();
+
+				if(wWidth > 769){
+			    	$('.commentsWindowWrap .commentsList').css('height',wHeight-288); /*Update Card Holder Height*/
+			    	$('.sliderWrap .slider').css('height',wHeight-355); /*Update Card Holder Height*/
+			    	$('.sliderWrap .sliderEspectador').css('height',wHeight-320); /*Update Card Holder Height*/
+				};
+				if(wWidth < 769){
+			    	$('.commentsWindowWrap .commentsList').css('height','auto'); /*Update Card Holder Height*/
+			    	$('.sliderWrap .slider').css('height','auto'); /*Update Card Holder Height*/
+			    	$('.sliderWrap .sliderEspectador').css('height','auto'); /*Update Card Holder Height*/
+				};
+
+			}, 500));			
+
+			$(document).on("click", ".hideCommentBox", function(e){
+				$(this).fadeOut("fast");
+				$(".showCommentBox").fadeIn("fast");
+				$(".commentSlideWrap").fadeOut("fast");
+				$(".rateSlideWrap").fadeIn("fast");
+			})
+
+			$(document).on("click", ".showCommentBox", function(e){
+				$(this).fadeOut("fast");
+				$(".commentSlideWrap").fadeIn("fast");
+				$(".rateSlideWrap").fadeOut("fast");
+			})
+
+			$(document).on("click", ".playerWindowWrap .btnShow", function(e){
+				$(".playerWindowWrap").fadeOut("fast");
+				$(".commentsWindowWrap").fadeIn("fast");
+			})
+
+			$(document).on("click", ".commentsWindowWrap .btnShow", function(e){
+
+				$(".commentsWindowWrap").fadeOut("fast");
+		    	$(".playerWindowWrap").fadeIn("fast");
+
+			})
+
+			$(document).on("click", ".cameraCall", function(e){
+
+				e.preventDefault();
+
+				$(".cameraCall").parents(".initialCall").fadeOut();
+				$(".deleteBtn").fadeOut();
+				$(".cameraBtn").fadeIn();
+				$(".doneBtn").addClass('blue').fadeIn();
+				$(".commentItem").addClass('active');
+	
+			})
+
+			$(document).on("click", ".commentsCall", function(e){
+
+	  			$(".commentsCall").parents(".initialCall").fadeOut();
+    			$(".deleteBtn").fadeIn();
+				$(".cameraBtn").fadeOut();
+				$(".doneBtn").removeClass('blue').fadeIn();
+				$(".commentItem").addClass('active');
+	
+			})
+
+			$(document).on("click", ".doneBtn", function(e){
+
+				e.preventDefault();
+
+				$(".initialCall").fadeIn();
+				$(".deleteBtn, .cameraBtn, .doneBtn").fadeOut();
+				$(".commentItem").removeClass('active');
+			})
+
 			$(document).on("click", "#hangup", function(e){
 
 				e.preventDefault();
 
 				agility_webrtc.hangupCall();
-
 
 			})
 
@@ -477,15 +632,13 @@
 
 				})
 
-				
-
-
 			})
 
 			$(document).on("click", ".modal [data-dismiss]", function(e){
 				e.preventDefault();
 				$("#ringer")[0].pause()
 				$(this).parents('.modal').hide();
+
 			});
 
 			$(document).on("click", "#answer", function(e){
@@ -510,8 +663,6 @@
 				}
 
 			})
-
-
 
 			return this;
 		
