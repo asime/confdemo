@@ -38,8 +38,8 @@
 
 				var user = sessionStorage.getItem("user") || window.agility_username;
 
-				if(user){
 
+				if(user){
 					$("#username").val(user);
 					$("#login").trigger("click");
 
@@ -51,6 +51,7 @@
 
 
 			})
+
 
 		},
 		hideControls : function(){
@@ -224,25 +225,7 @@
 
 		},
 		changeSlide 		: function(options){
-
-		// .carousel('cycle')
-
-		// Cycles through the carousel items from left to right.
-
-		// .carousel('pause')
-
-		// Stops the carousel from cycling through items.
-
-		// .carousel(number)
-
-		// Cycles the carousel to a particular frame (0 based, similar to an array).
-
-		// .carousel('prev')
-
-		// Cycles to the previous item.
-
-		// .carousel('next')
-
+			$(".slider").carousel(options.slide);
 		},
 		displayAnalyticsGraphic : function(data){
 
@@ -272,9 +255,8 @@
 					
 				break;
 				case "SLIDE":
-					agility_webrtc.changeSlide({
-						slide : 3//Number, "prev", "next"
-					})
+					
+					agility_webrtc.changeSlide(message.options);
 				break;
 				default:
 					self.storeMessageAndDisplayMessages({
@@ -650,17 +632,28 @@
 
 			})
 
-			$(document).on("click", "#login", function(e){
+			$(document).on("click", "#answer", function(e){
 
 				e.preventDefault();
+				e.stopPropagation();
 
-				var name = $("#username").val().trim();
+				agility_webrtc.answerCall(agility_webrtc.incomingCallFrom);
 
-				if(name !== ""){
+			})
 
-					agility_webrtc.login();
+			$(document).on("click", ".nextSlide", function(e){
 
-				}
+				e.preventDefault();
+				e.stopPropagation();
+				//ESTO FUE DE TEST Y SI ME FUNCO
+				//agility_webrtc.currentUser.publish({
+				//channel: agility_webrtc.channelName,
+				//message: {
+				//	type: "SLIDE",
+				//	options: {slide: 'next'}
+				//}
+			    //});
+				//alert("work");
 
 			})
 
