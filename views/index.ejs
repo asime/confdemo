@@ -73,7 +73,13 @@
 		
 	</head>
 	<body style="">
+		<div class="form-group" id="login_container">
 				
+			<label class="sr-only" for="message">Username</label>
+			<input id="username" class="form-control" placeholder="What's your name?" autocomplete="off">
+			<button id="login" class="btn btn-default">LOGIN</button>
+
+		</div>		
 		<div class="top-container">
 		
 			<div class="row">
@@ -95,32 +101,53 @@
 
 							<!-- SLIDER -->
 
-							<div class="slider carousel slide" data-ride="carousel" >
+							<div id="presentation-carousel" class="slider carousel slide" data-interval='false' data-ride="carousel" >
+								
 								<div class="carousel-inner">
 									<div class="item active">
 									<img src="images/presentation/1.png">
 									</div>
 									<div class="item">
-									<img src="images/presentation/1.png">
+									<img src="images/presentation/2.png">
+									</div>
+									<div class="item">
+									<img src="images/presentation/3.png">
+									</div>
+									<div class="item">
+									<img src="images/presentation/4.png">
+									</div>
+									<div class="item">
+									<img src="images/presentation/5.png">
 									</div>
 								</div>
+								
 							</div>
 							
 							<!-- SLIDER -->
 
 
 						</div>
-						<!-- //PRESENTATION SLIDER -->
-
+						<!-- //PRESENTATION SLIDER -->	
 						<!-- SLIDE CONTROLS -->
 						<div class="sliderControls">
-							<div class="prevSlide"><span class="glyphicon glyphicon-chevron-left"></span><span class="textSpan">Prev</span></div> 
-							<div class="nextSlide"><span class="textSpan">Next</span><span class="glyphicon glyphicon-chevron-right"></span></div> 
+							<div class="prevSlide" href="#presentation-carousel" data-slide="prev">
+								<span class="glyphicon glyphicon-chevron-left"></span>
+								<span class="textSpan">Prev</span></div> 
+							
+							<div class="nextSlide" href="#presentation-carousel" data-slide="next">
+								<span class="textSpan">Next</span>
+								<span class="glyphicon glyphicon-chevron-right"></span>
+							</div> 
+							
 							<ul class="slideCount">
-								<li>1</li>
-								<li class="active">2</li>
-								<li>3</li>
+							    <li data-target="#presentation-carousel" data-slide-to="0">1</li>
+							    <li data-target="#presentation-carousel" data-slide-to="1">2</li>
+							    <li data-target="#presentation-carousel" data-slide-to="2">3</li>
+							    <li data-target="#presentation-carousel" data-slide-to="3">4</li>
+							    <li data-target="#presentation-carousel" data-slide-to="4">5</li>
 							</ul>
+							
+							
 						</div>
 						<!-- //SLIDE CONTROLS -->
 									
@@ -340,9 +367,10 @@
 				
 				
 				<!-- //TIME LAPSED -->
-		</div></footer>
+		</div>
+		</footer>
 		
-		<!-- Load JS here for greater good =============================-->
+		
 		
 		
 		

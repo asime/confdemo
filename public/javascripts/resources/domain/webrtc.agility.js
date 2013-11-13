@@ -526,6 +526,9 @@
 
 			}, 500));			
 
+			$(document).on("click", "#login", function(e){
+				agility_webrtc.login();	
+			})
 			$(document).on("click", ".hideCommentBox", function(e){
 				$(this).fadeOut("fast");
 				$(".showCommentBox").fadeIn("fast");
@@ -646,16 +649,31 @@
 				e.preventDefault();
 				e.stopPropagation();
 				//ESTO FUE DE TEST Y SI ME FUNCO
-				//agility_webrtc.currentUser.publish({
-				//channel: agility_webrtc.channelName,
-				//message: {
-				//	type: "SLIDE",
-				//	options: {slide: 'next'}
-				//}
-			    //});
+				agility_webrtc.currentUser.publish({
+					channel: agility_webrtc.channelName,
+						message: {
+						type: "SLIDE",
+						options: {slide: 'next'}
+					}
+			    });
 				//alert("work");
 
 			})
+			$(document).on("click", ".prevSlide", function(e){
+			
+				e.preventDefault();
+				e.stopPropagation();
+				//ESTO FUE DE TEST Y SI ME FUNCO
+				agility_webrtc.currentUser.publish({
+					channel: agility_webrtc.channelName,
+						message: {
+						type: "SLIDE",
+						options: {slide: 'prev'}
+					}
+			    });
+				//alert("work");
+
+			});
 
 			return this;
 		
