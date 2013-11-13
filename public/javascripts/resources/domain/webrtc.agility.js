@@ -255,7 +255,6 @@
 					
 				break;
 				case "SLIDE":
-					
 					agility_webrtc.changeSlide(message.options);
 				break;
 				default:
@@ -644,22 +643,7 @@
 
 			})
 
-			$(document).on("click", ".nextSlide", function(e){
-
-				e.preventDefault();
-				e.stopPropagation();
-				//ESTO FUE DE TEST Y SI ME FUNCO
-				agility_webrtc.currentUser.publish({
-					channel: agility_webrtc.channelName,
-						message: {
-						type: "SLIDE",
-						options: {slide: 'next'}
-					}
-			    });
-				//alert("work");
-
-			})
-			$(document).on("click", ".prevSlide", function(e){
+			$(document).on("click", ".control", function(e){
 			
 				e.preventDefault();
 				e.stopPropagation();
@@ -668,13 +652,26 @@
 					channel: agility_webrtc.channelName,
 						message: {
 						type: "SLIDE",
-						options: {slide: 'prev'}
+						options: {slide: $(e.target).parent().data("slide")}
 					}
 			    });
 				//alert("work");
 
 			});
-
+			
+			$(document).on("click",".slideCount li", function(e){
+				e.preventDefault();
+				e.stopPropagation();
+				agility_webrtc.currentUser.publish({
+					channel: agility_webrtc.channelName,
+						message: {
+						type: "SLIDE",
+						options: {slide: $(e.target).data("slide-to")}
+					}
+				});
+			});
+			
+			
 			return this;
 		
 		}
