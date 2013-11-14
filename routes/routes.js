@@ -4,16 +4,20 @@ var routes = function (params) {
 
 	var people = [];
 
+	var PersonProvider = require('../providers/PersonProvider').PersonProvider;
+	var PersonProvider = new PersonProvider();	
 
 	app.get('/', function(req, res){
 
-		var userInSession = req.session.user;
+		var userInSession = req.session.person;
 
 		res.render('index.ejs',{
 			username : userInSession ? userInSession.username : null
 		});
 
 	})
+
+
 
 	app.post('/:who/disconnect', function(req,res){
 
@@ -25,32 +29,86 @@ var routes = function (params) {
 
 	});
 
-	app.post('/login', function(req,res){
+	app.post('/api/login', function(req,res){
 
-		//USERS...
+		//WILL REGISTER A PERSON, IF EMAIL AND USERNAME FOUND PERSON WILL BE SENT BACK AND PUT IN SESSION.
+		PersonProvider.findOne({
+			// username 	: req.body.username,
+			email 		: req.body.email
+		}, function(err, person){
 
-		var username = req.body.username;//Orange
+			if(err!=null){
 
-		var person = _.find(people, function(who) { return who.username === username } );
+				res.json({message : JSON.stringify(err)},500);
 
-		if(person !== undefined){
+			} else {
 
-			res.json({message : "Username already in use, please pick another one! ;( "}, 412);//Precondition fail
+				if(person){
+					req.session.person = person;
+					res.json(person);
+				} else {
+					//res.json({message : "User not found with those credentials"},404);
 
-		} else {
+					PersonProvider.save(req.body, function(err, person){
+						if(err!=null){
+							res.json({message : JSON.stringify(err)},500);
+						} else {
 
-			person = { username : username };
+							req.session.person = person;
+							res.json(person);
 
-			req.session.person = person;
-			
-			people.push(person);
+						}
+					})
 
-			res.render('index.ejs', { username : person.username });
 
-		}
+				}
+
+			}
+
+
+		})
 
 
 	})
+
+	app.get('/api/me', function(req,res){
+
+		var userInSession = req.session.person;
+
+		if(userInSession){
+			res.json(userInSession);
+		} else {
+			res.json({message:"Session expired"},401);
+		}
+
+	});	
+
+	// app.post('/login', function(req,res){
+
+	// 	//USERS...
+
+	// 	var username = req.body.username;//Orange
+
+	// 	var person = _.find(people, function(who) { return who.username === username } );
+
+	// 	if(person !== undefined){
+
+	// 		res.json({message : "Username already in use, please pick another one! ;( "}, 412);//Precondition fail
+
+	// 	} else {
+
+	// 		person = { username : username };
+
+	// 		req.session.person = person;
+			
+	// 		people.push(person);
+
+	// 		res.render('index.ejs', { username : person.username });
+
+	// 	}
+
+
+	// })
 
 	app.get('/demo', function(req, res){
 

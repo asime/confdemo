@@ -26,6 +26,66 @@
 			uuid 			: 'Guest'
 		},
 
+		checkSession : function(options, callback, errorCallback){
+
+			agility_webrtc.callServer({
+				data 	: options,
+				url 	: '/api/me',
+				type 	: 'GET'
+			}, function(person){
+
+				if(typeof callback === 'function'){
+					callback(person);
+				}
+
+			}, function(xhr){
+
+				console.log(xhr.status + " - getting session");
+
+				if(typeof errorCallback === 'function'){
+					errorCallback(xhr);
+				}
+
+			});			
+
+		},
+
+		callServer : function(params, callback, errorCallback){
+
+			$.support.cors = true;
+
+			agility_webrtc.connector = $.ajax({
+				type 				: params.type,
+				url 				: params.url,
+				data 				: params.data,
+				crossDomain			: true,
+				cache 				: false,
+				async 				: false,
+				dataType	 		: 'json',
+				callbackParameter 	: 'callback',
+				success 			: function(data){
+					
+					if(typeof callback === 'function'){
+						callback(data);
+					}
+
+				},
+				error: function(xhr, type){
+
+					console.log("ERROR (" + xhr.status + ") | " + xhr.statusText);
+
+					
+					if(typeof errorCallback === 'function'){
+						errorCallback(xhr);
+					}
+
+
+				}			
+
+			})			
+
+		},
+
 		init : function(){
 
 			var self = agility_webrtc;
@@ -36,29 +96,42 @@
 
 				self.setBinds();
 
-				var user = sessionStorage.getItem("user") || window.agility_username;
+				agility_webrtc.render({
+					container 	: "#content",
+					template 	: "#connecting_template",
+					data 		: {
+						message : agility_webrtc.uuid + "... please wait"
+					}
+				})				
 
 
-				if(user){
-					$("#username").val(user);
-					$("#login").trigger("click");
+				agility_webrtc.checkSession({},function(person){
 
-				} else {
+					agility_webrtc.getUser(person);					
+
+				}, function(xhr){
+
+					self.render({
+						container 	: "#content",
+						template 	: "#login_template",
+						data 		: null
+					})	
 
 					$("#login_container").slideDown(200);
-
-				}
-
+				});
 
 			})
 
 
 		},
+
+
 		hideControls : function(){
 
 			$('#video-controls').hide();
 
 		},
+
 		showControls : function(){
 
 			$('#video-controls').show();
@@ -78,27 +151,79 @@
 			}
 
 		},
+
+		showPresentationScreen : function(){
+
+
+			agility_webrtc.render({
+				container 	: "#content",
+				template 	: "#presentation_template",
+				data 		: null
+			})	
+
+
+		},
+
+		getUser : function(options){
+
+			agility_webrtc.callServer({
+				data 	: options,
+				url 	: '/api/login',
+				type 	: 'POST'
+			}, function(person){
+
+
+				agility_webrtc.uuid = person.username;
+
+				agility_webrtc.credentials.uuid = person.username;
+
+				agility_webrtc.currentUser = PUBNUB.init(agility_webrtc.credentials);	
+
+				agility_webrtc.currentUser.onNewConnection(function(uuid) {
+
+					agility_webrtc.publishStream({ uuid : uuid });
+
+				});					
+
+				agility_webrtc.connectToListChannel();
+
+				agility_webrtc.connectToCallChannel();
+
+				agility_webrtc.connectToAnswerChannel();			
+
+
+			}, function(xhr){
+
+				$("#message").html(xhr.statusText);
+
+			})
+
+		},
+
 		login : function(){
 
-			var name = $("#username").val().trim();
+			var username 		= $("#username").val().trim();
+			var email 		= $("#email").val().trim();
+			var subscribe 	= $("#subscribe").is(":checked");
 
-			agility_webrtc.uuid = name;
+			if(username === "" || email === ""){
 
-			agility_webrtc.credentials.uuid = name;
+				$("#message").html("Username and Email are required");
+				$(".alert").show().delay(3000).slideUp(300);
 
-			agility_webrtc.currentUser = PUBNUB.init(agility_webrtc.credentials);	
+			} else {
 
-			agility_webrtc.currentUser.onNewConnection(function(uuid) {
+				agility_webrtc.getUser({
+					username 	: username,
+					email 		: email,
+					subscribe 	: subscribe
+				});
 
-				agility_webrtc.publishStream({ uuid : uuid });
 
-			});					
+			}
 
-			agility_webrtc.connectToListChannel();
 
-			agility_webrtc.connectToCallChannel();
 
-			agility_webrtc.connectToAnswerChannel();
 
 			return this;
 		
@@ -298,9 +423,9 @@
 		},
 		onChannelListConnect 	: function(){
 
-			sessionStorage.setItem('user', agility_webrtc.uuid);
+			agility_webrtc.showPresentationScreen();
 
-			$("#login_container").slideUp(100);
+			//$("#login_container").slideUp(100);
 
 		},
 		onChannelListDisconnect : function(){
@@ -310,6 +435,14 @@
 
 		},
 		connectToListChannel : function(){
+
+			agility_webrtc.render({
+				container 	: "#content",
+				template 	: "#connecting_template",
+				data 		: {
+					message : agility_webrtc.uuid + "... please wait"
+				}
+			})				
 
 			agility_webrtc.currentUser.subscribe({
 				channel 	: agility_webrtc.channelName,
