@@ -351,6 +351,34 @@
 		},
 		changeSlide 		: function(options){
 			$(".slider").carousel(options.slide);
+			active_index = $(".carousel-inner .active").index();
+			switch(options.slide){
+				case "prev":
+					active_index--;
+				break;
+				case "next":
+					if(($(".slideCount li").length - 1) == active_index)
+					{
+						active_index = 0
+					}
+					else
+					{
+				 		active_index++;
+					}
+				break;
+				default:
+					if(typeof options.slide === 'number')
+					{
+						active_index = options.slide;
+					}	
+				break;
+			}	
+	
+			$(".slideCount li").removeClass("active");
+			$(".slideCount li").eq(active_index).addClass("active");
+			//$(".slideCount li").removeClass("active");
+			//(".slideCount li").removeClass("active");
+			//$(".slideCount li").get(active_index).addClass("active");
 		},
 		displayAnalyticsGraphic : function(data){
 
@@ -802,6 +830,7 @@
 						options: {slide: $(e.target).data("slide-to")}
 					}
 				});
+
 			});
 			
 			
