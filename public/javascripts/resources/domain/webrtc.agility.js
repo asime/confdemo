@@ -174,8 +174,6 @@
 				type 	: 'POST'
 			}, function(person){
 
-				console.log(options);
-
 				agility_webrtc.uuid = person.username;
 
 				agility_webrtc.credentials.uuid = person.username;
@@ -191,9 +189,6 @@
 				options.is_presenter = false;
 
 				agility_webrtc.currentUser.db.set('is_presenter',options.is_presenter);
-				
-
-				
 
 				agility_webrtc.currentUser.onNewConnection(function(uuid) { agility_webrtc.publishStream({ uuid : uuid }); });					
 
@@ -359,7 +354,7 @@
 				container 	: "#channel_messages",
 				template 	: "#channel_chat",
 				data 		: {
-					messages 	: self.messages,
+					messages 	: self.channelMessages,
 					app 		: self
 				}
 			})	
@@ -426,16 +421,13 @@
 					agility_webrtc.processVote(message);//{ type : "VOTE" : message : "AWESOME" }
 				break;
 				case "MESSAGE":
-					
-				break;
-				case "SLIDE":
-					agility_webrtc.changeSlide(message.options);
-				break;
-				default:
 					self.storeMessageAndDisplayMessages({
 						from	: message.user.name,
 						message : message.text.replace( /[<>]/g, '' )
-					})
+					})					
+				break;
+				case "SLIDE":
+					agility_webrtc.changeSlide(message.options);
 				break;
 			}
 
@@ -839,6 +831,32 @@
 				agility_webrtc.answerCall(agility_webrtc.incomingCallFrom);
 
 			})
+
+
+
+			$(document).on("click", "#btn_send_message", function(e){
+
+				var message = $(".commentsHere").val().trim();
+
+				if(message !== ""){
+
+					agility_webrtc.currentUser.publish({
+						channel: agility_webrtc.channelName,
+							message : {
+							type 	: "MESSAGE",
+							text 	: message,
+							user 	: {
+								name : agility_webrtc.currentUser.db.get("username")
+							}
+						}
+					});
+
+
+				} else {
+					$(".commentsHere").val("");
+				}
+
+			});
 
 			$(document).on("click", ".control", function(e){
 			
