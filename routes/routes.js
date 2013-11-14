@@ -31,6 +31,18 @@ var routes = function (params) {
 
 	app.post('/api/login', function(req,res){
 
+		/*
+
+		req.body:
+
+		{
+			username 	: "Orange",
+			email 		: "allan.naranjo@agilityfeat.com",
+			subscribe 	: true
+		}
+
+		*/
+
 		//WILL REGISTER A PERSON, IF EMAIL AND USERNAME FOUND PERSON WILL BE SENT BACK AND PUT IN SESSION.
 		PersonProvider.findOne({
 			// username 	: req.body.username,
@@ -47,8 +59,7 @@ var routes = function (params) {
 					req.session.person = person;
 					res.json(person);
 				} else {
-					//res.json({message : "User not found with those credentials"},404);
-
+					
 					PersonProvider.save(req.body, function(err, person){
 						if(err!=null){
 							res.json({message : JSON.stringify(err)},500);

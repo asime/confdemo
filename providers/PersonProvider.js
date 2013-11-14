@@ -17,7 +17,8 @@ var Schema = mongoose.Schema , ObjectId = Schema.ObjectId;
 var Person = new Schema({
 	username 					: String,
 	email		 				: String,
-	subscribe					: Boolean
+	subscribe					: Boolean,
+	is_presenter 				: Boolean
 })
 
 mongoose.model('Person', Person);

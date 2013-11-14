@@ -1,4 +1,4 @@
-(function(w,d,$, _){
+//(function(w,d,$, _){
 
 	var agility_webrtc = {
 
@@ -100,10 +100,9 @@
 					container 	: "#content",
 					template 	: "#connecting_template",
 					data 		: {
-						message : agility_webrtc.uuid + "... please wait"
+						message : "Please wait"
 					}
-				})				
-
+				})	
 
 				agility_webrtc.checkSession({},function(person){
 
@@ -111,13 +110,12 @@
 
 				}, function(xhr){
 
-					self.render({
+					agility_webrtc.render({
 						container 	: "#content",
 						template 	: "#login_template",
 						data 		: null
 					})	
 
-					$("#login_container").slideDown(200);
 				});
 
 			})
@@ -158,7 +156,9 @@
 			agility_webrtc.render({
 				container 	: "#content",
 				template 	: "#presentation_template",
-				data 		: null
+				data 		: {
+					user : agility_webrtc.currentUser
+				}
 			})	
 
 
@@ -166,12 +166,15 @@
 
 		getUser : function(options){
 
+			var options = options;
+
 			agility_webrtc.callServer({
 				data 	: options,
 				url 	: '/api/login',
 				type 	: 'POST'
 			}, function(person){
 
+				console.log(options);
 
 				agility_webrtc.uuid = person.username;
 
@@ -179,11 +182,20 @@
 
 				agility_webrtc.currentUser = PUBNUB.init(agility_webrtc.credentials);	
 
-				agility_webrtc.currentUser.onNewConnection(function(uuid) {
+				agility_webrtc.currentUser.db.set('email', options.email);
 
-					agility_webrtc.publishStream({ uuid : uuid });
+				agility_webrtc.currentUser.db.set('_id', options._id);
 
-				});					
+				agility_webrtc.currentUser.db.set('username', options.username);
+
+				options.is_presenter = false;
+
+				agility_webrtc.currentUser.db.set('is_presenter',options.is_presenter);
+				
+
+				
+
+				agility_webrtc.currentUser.onNewConnection(function(uuid) { agility_webrtc.publishStream({ uuid : uuid }); });					
 
 				agility_webrtc.connectToListChannel();
 
@@ -202,7 +214,7 @@
 
 		login : function(){
 
-			var username 		= $("#username").val().trim();
+			var username 	= $("#username").val().trim();
 			var email 		= $("#email").val().trim();
 			var subscribe 	= $("#subscribe").is(":checked");
 
@@ -228,6 +240,7 @@
 			return this;
 		
 		},
+
 		showStream  	: function(options){
 
 			var stream = _.find(this.streams, function(stream){
@@ -245,6 +258,7 @@
 			}
 
 		},		
+
 		requestStream : function(options,callback, errorCallback){
 
 			var stream = _.find(agility_webrtc.streams, function(stream){ return stream.who === "mine"; });			
@@ -279,6 +293,7 @@
 			}
 
 		},
+
 		publishStream : function(options){
 
 			var stream = _.find(agility_webrtc.streams, function(stream){ return stream.who === "mine"; });
@@ -333,6 +348,7 @@
 			}
 
 		},
+
 		storeMessageAndDisplayMessages : function(message){
 
 			var self = agility_webrtc;
@@ -349,6 +365,7 @@
 			})	
 
 		},
+
 		changeSlide 		: function(options){
 			$(".slider").carousel(options.slide);
 			active_index = $(".carousel-inner .active").index();
@@ -379,13 +396,17 @@
 			//$(".slideCount li").removeClass("active");
 			//(".slideCount li").removeClass("active");
 			//$(".slideCount li").get(active_index).addClass("active");
+		
 		},
+
 		displayAnalyticsGraphic : function(data){
 
 		},
+
 		displayBarsGraphic 	: function(data){
 
 		},
+
 		processVote 	: function(vote){
 
 			var data = [];
@@ -394,8 +415,8 @@
 
 			agility_webrtc.displayBarsGraphic(data);
 
-
 		},
+
 		onChannelListMessage : function(message){
 
 			var self = agility_webrtc;
@@ -419,6 +440,7 @@
 			}
 
 		},
+
 		onChannelListPresence : function(person){
 
 			var item, newItem;
@@ -449,19 +471,20 @@
 			// }
 
 		},
+
 		onChannelListConnect 	: function(){
 
 			agility_webrtc.showPresentationScreen();
 
-			//$("#login_container").slideUp(100);
-
 		},
+
 		onChannelListDisconnect : function(){
 			
 			//Call route /who/disconnect
 
 
 		},
+
 		connectToListChannel : function(){
 
 			agility_webrtc.render({
@@ -481,6 +504,7 @@
 			});
 
 		},
+
 		connectToCallChannel : function(){
 
 			agility_webrtc.currentUser.subscribe({
@@ -494,6 +518,7 @@
 			});
 
 		},
+
 		connectToAnswerChannel : function(){
 
 			agility_webrtc.currentUser.subscribe({
@@ -521,6 +546,7 @@
 			});
 
 		},
+
 		incrementTimer 		: function(){
 
 
@@ -537,11 +563,13 @@
 			agility_webrtc.setCurrentCallTime("" + minutes + ":" + seconds);
 
 		},
+
 		stopTimer 			: function(){
 
 			clearInterval(agility_webrtc.timeInterval);
 
 		},
+
 		callPerson 			: function(who){
 
 			agility_webrtc.currentCallUUID = who;
@@ -565,6 +593,7 @@
 			});
 
 		},
+
 		onIncomingCall 		: function(whoIsCalling){
 
 			var modalAnswer = $("#answer-modal");
@@ -578,6 +607,7 @@
 			$("#ringer")[0].play()
 
 		},
+
 		onCallStarted 		: function(){
 
 			agility_webrtc.showControls();
@@ -586,6 +616,7 @@
 			agility_webrtc.timeInterval = setInterval(agility_webrtc.incrementTimer, 1000);
 
 		},
+
 		answerCall 		: function(from){
 
 		 	//agility_webrtc.currentCallUUID = from;
@@ -619,12 +650,14 @@
 		 	})
 			
 		},
+
 		onEndCall 		: function(){
 
 			agility_webrtc.hideControls();
 			agility_webrtc.stopTimer();
 
 		},
+
 		render 				: function(options){
 
 			var content = _.template($(options.template).html(), options.data );
@@ -632,6 +665,7 @@
 			$(options.container).html(content);	
 
 		},
+
 		loadTemplates : function(options, callback){
 
 			$("#templatesContainer").empty().remove();
@@ -647,6 +681,7 @@
 			})
 
 		},
+
 		hangupCall : function(){
 
 			agility_webrtc.currentUser.peerConnection(agility_webrtc.incomingCallFrom, function(peerConnection) {
@@ -658,6 +693,7 @@
 			});
 
 		},
+
 		setBinds : function(){
 
 			window.onbeforeunload = function(){
@@ -843,4 +879,4 @@
 	agility_webrtc.init();
 
 
-})(window, document, $, _);
+//})(window, document, $, _ );

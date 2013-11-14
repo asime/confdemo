@@ -650,11 +650,11 @@ background: #4ebb9a;
   margin: 100px auto 0px auto;
   height: 500px;
 }
-.btn-login{
+.btn-login, .btn-presentation{
   color:#fff;
   background: #3f6274;
 }
-.btn-login:hover{
+.btn-login:hover , .btn-presentation:hover{
   color:#fff;
   background: #00a898;
   border: solid 1px #3f6274;
