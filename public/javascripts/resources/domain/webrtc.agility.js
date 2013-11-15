@@ -216,7 +216,7 @@
 
 				agility_webrtc.currentUser.db.set('is_presenter',options.is_presenter);
 
-				if(agility_webrtc.can_webrtc){
+				if(agility_webrtc.can_webrtc && agility_webrtc.currentUser){
 					agility_webrtc.currentUser.onNewConnection(function(uuid){ agility_webrtc.publishStream({ uuid : uuid }); });
 				}
 									
