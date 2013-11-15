@@ -98,8 +98,6 @@
 
 			var self = agility_webrtc;
 			
-			self.checkUserMedia();
-			
 			self.loadTemplates({
 				templates_url : "javascripts/resources/templates.html"
 			}, function(){			
@@ -114,37 +112,52 @@
 					}
 				})	
 
-				agility_webrtc.checkSession({},function(person){
+				self.checkUserMedia(function(){
 
-					agility_webrtc.getUser(person);					
+					agility_webrtc.checkSession({},function(person){
 
-				}, function(xhr){
+						agility_webrtc.getUser(person);					
 
-					agility_webrtc.render({
-						container 	: "#content",
-						template 	: "#login_template",
-						data 		: null
-					})	
+					}, function(xhr){
+
+						agility_webrtc.render({
+							container 	: "#content",
+							template 	: "#login_template",
+							data 		: null
+						})	
+
+					});
 
 				});
+
 
 			})
 
 
 		},
 
-		checkUserMedia : function(){
+		checkUserMedia : function(callback){
 				
 				agility_webrtc.can_webrtc = (navigator.getUserMedia || navigator.webkitGetUserMedia ||navigator.mozGetUserMedia ||navigator.msGetUserMedia);	
 								
 				if(agility_webrtc.can_webrtc != null){
 					$.getScript( "javascripts/resources/vendor/webrtc-beta-pubnub.js" )
-					.done(function( script, textStatus ) {
-						console.log( textStatus );
-					})
-					.fail(function( jqxhr, settings, exception ) {
-						console.log("there was an error");
-					});
+						.done(function( script, textStatus ) {
+							//console.log( textStatus );
+
+							if(typeof callback === 'function'){
+								callback();
+							}
+
+						})
+						.fail(function( jqxhr, settings, exception ) {
+							console.log("there was an error");
+						}
+					);
+				} else {
+					if(typeof callback === 'function'){
+						callback();
+					}
 				}
 				return this;
 								
@@ -216,7 +229,7 @@
 
 				agility_webrtc.currentUser.db.set('is_presenter',options.is_presenter);
 
-				if(agility_webrtc.can_webrtc && agility_webrtc.currentUser){
+				if(agility_webrtc.currentUser.onNewConnection){
 					agility_webrtc.currentUser.onNewConnection(function(uuid){ agility_webrtc.publishStream({ uuid : uuid }); });
 				}
 									
