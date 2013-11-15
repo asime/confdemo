@@ -89,7 +89,9 @@
 		init : function(){
 
 			var self = agility_webrtc;
-
+			
+			self.checkUserMedia();
+			
 			self.loadTemplates({
 				templates_url : "javascripts/resources/templates.html"
 			}, function(){			
@@ -123,7 +125,22 @@
 
 		},
 
-
+		checkUserMedia : function(){
+				
+				agility_webrtc.can_webrtc = (navigator.getUserMedia || navigator.webkitGetUserMedia ||navigator.mozGetUserMedia ||navigator.msGetUserMedia);	
+								
+				if(agility_webrtc.can_webrtc != null){
+					$.getScript( "javascripts/resources/vendor/webrtc-beta-pubnub.js" )
+					.done(function( script, textStatus ) {
+						console.log( textStatus );
+					})
+					.fail(function( jqxhr, settings, exception ) {
+						console.log("there was an error");
+					});
+				}
+				return this;
+								
+		},
 		hideControls : function(){
 
 			$('#video-controls').hide();
@@ -190,13 +207,21 @@
 
 				agility_webrtc.currentUser.db.set('is_presenter',options.is_presenter);
 
-				agility_webrtc.currentUser.onNewConnection(function(uuid) { agility_webrtc.publishStream({ uuid : uuid }); });					
+				if(agility_webrtc.can_webrtc){
+					agility_webrtc.currentUser.onNewConnection(function(uuid){ agility_webrtc.publishStream({ uuid : uuid }); });
+				}
+									
 
 				agility_webrtc.connectToListChannel();
-
-				agility_webrtc.connectToCallChannel();
-
-				agility_webrtc.connectToAnswerChannel();			
+				
+				if(agility_webrtc.can_webrtc){
+					
+					agility_webrtc.connectToCallChannel();
+					
+					agility_webrtc.connectToAnswerChannel();
+				}
+				
+							
 
 
 			}, function(xhr){
