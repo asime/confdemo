@@ -12,6 +12,14 @@
 
 		currentCallInterval : null,
 
+		slide_moods 	: [
+			{ name : "Horrible" , count : 0 },
+			{ name : "Bad", count : 0}, 
+			{ name : "Good", count : 0}, 
+			{ name : "Great", count : 0}, 
+			{ name : "Awesome", count : 0}
+		],
+
 		channelMessages : [],
 
 		presentationVotes : [],
@@ -174,7 +182,8 @@
 				container 	: "#content",
 				template 	: "#presentation_template",
 				data 		: {
-					user : agility_webrtc.currentUser
+					user 		: agility_webrtc.currentUser,
+					slide_moods : agility_webrtc.slide_moods
 				}
 			})	
 
@@ -203,7 +212,7 @@
 
 				agility_webrtc.currentUser.db.set('username', options.username);
 
-				options.is_presenter = false;
+				//options.is_presenter = false;
 
 				agility_webrtc.currentUser.db.set('is_presenter',options.is_presenter);
 
@@ -432,13 +441,37 @@
 
 		},
 
-		processVote 	: function(vote){
+		processVotes 	: function(vote){
 
-			var data = [];
+			agility_webrtc.presentationVotes.push(vote);
 
-			agility_webrtc.displayAnalyticsGraphic(data);
+			var filtered_moods = [];
 
-			agility_webrtc.displayBarsGraphic(data);
+			var mood_count, filtered_mood;
+
+			_.each(agility_webrtc.slide_moods, function(mood){
+
+				mood_count = _.countBy(agility_webrtc.presentationVotes, function(vote){ return vote.value === mood.name; }).true || 0;
+
+				filtered_mood = {
+					name 		: mood.name,
+					count 		: mood_count,
+					percentage 	: (mood_count * 100 / agility_webrtc.presentationVotes.length)
+				}
+
+				filtered_moods.push(filtered_mood);
+
+			})
+
+			_.each(filtered_moods, function(mood){
+
+				$('.bargraph div.graphLabel[data-mood-name="' + mood.name + '"] div.bar').animate({width: ((mood.percentage -1) + "%")}, 150)
+				$('.bargraph div.graphLabel[data-mood-name="' + mood.name + '"] span.mood_count').html(mood.percentage);
+			})
+
+			//agility_webrtc.displayAnalyticsGraphic(votes_filtered);
+
+			//agility_webrtc.displayBarsGraphic(votes_filtered);
 
 		},
 
@@ -448,7 +481,7 @@
 
 			switch(message.type){
 				case "VOTE":
-					agility_webrtc.processVote(message);//{ type : "VOTE" : message : "AWESOME" }
+					agility_webrtc.processVotes(message);//{ type : "VOTE" : value : "AWESOME" }
 				break;
 				case "MESSAGE":
 					
@@ -881,6 +914,24 @@
 
 
 
+			$(document).on("click", ".rateOption", function(e){
+
+				var slide_mood = $(this).data("slide-mood");
+
+				$(this).animate({ opacity : 0.5 }, 400, function(){
+					$(this).animate({ opacity : 1 }, 400);
+				})
+
+				agility_webrtc.currentUser.publish({
+					channel: agility_webrtc.channelName,
+					message : {
+						type 	: "VOTE",
+						value 	: slide_mood
+					}
+				});
+
+			})
+
 			$(document).on("click", ".deleteBtn", function(e){
 
 				e.preventDefault();
@@ -901,7 +952,7 @@
 							type 	: "DELETE_MESSAGE",
 							id 		: message_id
 						}
-					});					
+					});			
 
 				});
 
@@ -917,7 +968,7 @@
 
 					agility_webrtc.currentUser.publish({
 						channel: agility_webrtc.channelName,
-							message : {
+						message : {
 							type 	: "MESSAGE",
 							text 	: message,
 							user 	: {

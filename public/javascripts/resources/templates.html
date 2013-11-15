@@ -120,7 +120,7 @@
 				<div class="commentHeader">
 					<span class="leftText">Comments</span>
 					<div class="btnShow">Current Slide</div>
-					<% if(user.db.get("is_presenter") === "true"){%>
+					
 						<div class="actionsWrap">
 							<span class="initialCall">
 								<span class="cameraCall"><span class="glyphicon glyphicon-facetime-video"></span></span>
@@ -128,7 +128,7 @@
 							</span>
 							<span class="doneBtn">Done</span>
 						</div>
-					<%}%>
+					
 				</div>
 
 				<!-- COMMENTS WRAP -->
@@ -186,47 +186,21 @@
 					</div>
 				</div>
 				
-				<div class="col-sm-3 colGraphWrap">
+				<div class="col-sm-3 colGraphWrap bargraph">
 
-					<div class="graphLabel">
-						<span class="name">AWESOME</span>
-						<div class="barGraphBg">
-							<div class="bar barAwesome"></div>
-							<span>10</span>
-						</div>
-					</div>
 
-					<div class="graphLabel">
-						<span class="name">GREAT</span>
-						<div class="barGraphBg">
-							<div class="bar barGreat"></div>
-							<span>10</span>
-						</div>
-					</div>
+					  <% _.each(slide_moods, function(mood){%>
 
-					<div class="graphLabel">
-						<span class="name">GOOD</span>
-						<div class="barGraphBg">
-							<div class="bar barGood"></div>
-							<span>10</span>
-						</div>
-					</div>
+							<div class="graphLabel" data-mood-name="<%= mood.name %>">
+								<span class="name"><%= mood.name.toUpperCase() %></span>
+								<div class="barGraphBg">
+									<div class="bar bar<%= mood.name %>"></div>
+									<span class="mood_count"><%= mood.count %></span>
+								</div>
+							</div>
 
-					<div class="graphLabel">
-						<span class="name">BAD</span>
-						<div class="barGraphBg">
-							<div class="bar barBad"></div>
-							<span>10</span>
-						</div>
-					</div>
+					  <%});%>
 
-					<div class="graphLabel">
-						<span class="name">HORRIBLE</span>
-						<div class="barGraphBg">
-							<div class="bar barHorrible"></div>
-							<span>10</span>
-						</div>
-					</div>
 
 				</div>
 
@@ -244,26 +218,16 @@
 					<span>Rate current slide:</span>
 					<div class="rateOptionsWrap">
 					  <div class="floatClear"></div>
-					  <span class="rateOption rateHorrible">
-						<span class="inneCircle"></span>
-						<span class="label">Horrible</span>
-					  </span>
-					  <span class="rateOption rateBad">
-						<span class="inneCircle"></span>
-						<span class="label">Bad</span>
-					  </span>
-					  <span class="rateOption rateGood">
-						<span class="inneCircle"></span>
-						<span class="label">Good</span>
-					  </span>
-					  <span class="rateOption rateGreat">
-						<span class="inneCircle"></span>
-						<span class="label">Great</span>
-					  </span>
-					  <span class="rateOption rateAwesome">
-						<span class="inneCircle"></span>
-						<span class="label">Awesome</span>
-					  </span>
+
+					  <% _.each(slide_moods, function(mood){%>
+
+						  <span class="rateOption rate<%= mood.name %>" data-slide-mood="<%= mood.name %>">
+							<span class="inneCircle"></span>
+							<span class="label"><%= mood.name %></span>
+						  </span>
+
+					  <%});%>
+					 
 					</div>
 				  </div>
 				</div>

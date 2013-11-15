@@ -392,7 +392,7 @@ footer{
 .colGraphWrap .graphLabel .barGraphBg .bar{
   display:block;
   float: left;
-  width: 30px;
+  /*width: 30px;*/
   height: 10px;
   margin-top: 1px;
   margin-left: 1px;
@@ -608,19 +608,19 @@ footer{
   height: auto;
 }
 .barHorrible{
-  width:20% !important;
+  width:0%;
 }
 .barBad{
-  width:10% !important;
+  width:0%;
 }
 .barGood{
-  width:10% !important;
+  width:0%;
 }
 .barGreat{
-  width:40% !important;
+  width:0%;
 }
 .barAwesome{
-  width:80% !important;
+  width:0%;
 }
 
 .rateOptionsWrap .rateOption.rateHorrible,
