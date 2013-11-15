@@ -456,17 +456,19 @@
 				filtered_mood = {
 					name 		: mood.name,
 					count 		: mood_count,
-					percentage 	: (mood_count * 100 / agility_webrtc.presentationVotes.length)
+					percentage 	: (mood_count * 100 / agility_webrtc.presentationVotes.length).toFixed(2)
 				}
 
 				filtered_moods.push(filtered_mood);
 
 			})
 
-			_.each(filtered_moods, function(mood){
+			$('.bargraph div.graphLabel[data-mood-name] div.bar').css({width:0});
 
-				$('.bargraph div.graphLabel[data-mood-name="' + mood.name + '"] div.bar').animate({width: ((mood.percentage -1) + "%")}, 150)
-				$('.bargraph div.graphLabel[data-mood-name="' + mood.name + '"] span.mood_count').html(mood.percentage);
+			_.each(filtered_moods, function(mood){
+				//$(".progress_bar").animate({width:"-=14%"}, 800, "swingFromTo");
+				$('.bargraph div.graphLabel[data-mood-name="' + mood.name + '"] div.bar').animate({width: ((mood.percentage -1) + "%")}, 800, "swingFromTo")
+				$('.bargraph div.graphLabel[data-mood-name="' + mood.name + '"] span.mood_count').html(mood.percentage + "%");
 			})
 
 			//agility_webrtc.displayAnalyticsGraphic(votes_filtered);

@@ -683,7 +683,11 @@ background: #4ebb9a;
 @-webkit-keyframes spin { 100% { -webkit-transform: rotateY(360deg); } }
 @keyframes spin { 100% { -webkit-transform: rotateY(360deg); transform:rotateY(360deg); } }
 
-
+.mood_count{
+  position: absolute;
+  float: right !important;
+  right: 35px;
+}
 
 
 
