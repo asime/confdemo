@@ -350,11 +350,12 @@
 
 			self.channelMessages.push(message)
 			
-			self.render({
-				container 	: "#channel_messages",
+			self.render_prepend({
+				container 	: ".commentsList",
 				template 	: "#channel_chat",
 				data 		: {
 					messages 	: self.channelMessages,
+					this_message		: message,
 					app 		: self
 				}
 			})	
@@ -421,10 +422,11 @@
 					agility_webrtc.processVote(message);//{ type : "VOTE" : message : "AWESOME" }
 				break;
 				case "MESSAGE":
+					console.log(message);					
 					self.storeMessageAndDisplayMessages({
 						from	: message.user.name,
 						message : message.text.replace( /[<>]/g, '' )
-					})					
+					});
 				break;
 				case "SLIDE":
 					agility_webrtc.changeSlide(message.options);
@@ -657,7 +659,13 @@
 			$(options.container).html(content);	
 
 		},
+		render_prepend		: function(options){
 
+			var content = _.template($(options.template).html(), options.data );
+
+			$(options.container).append(content);	
+
+		},
 		loadTemplates : function(options, callback){
 
 			$("#templatesContainer").empty().remove();

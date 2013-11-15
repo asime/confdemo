@@ -319,17 +319,15 @@
 </script>
 
 <script type="text/template" id="channel_chat">
-
 	<div class="commentItem">
-		<span class="commentText">Comment Comment Comment</span>
-		<span class="commentAuthor">Author</span>
+		<span class="commentText"><%= this_message.message %></span>
+		<span class="commentAuthor"><%= this_message.from %></span>
 		<span class="cameraBtn"><span class="glyphicon glyphicon-facetime-video"></span></span>
 		<span class="deleteBtn"><span class="lineDel"></span></span>
 	</div>
-
 </script>
 
-<script type="text/template" id="channel_chat">
+<script type="text/template" id="channel_messages">
 
 	<h4>Chat in channel: <%= app.channelName %><span class="glyphicon glyphicon-trash pull-right" id="empty_messages"></span></h4>
 
