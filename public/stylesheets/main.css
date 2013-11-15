@@ -654,7 +654,7 @@ background: #4ebb9a;
   color:#fff;
   background: #3f6274;
 }
-.btn-login:hover , .btn-presentation:hover{
+.btn-login:hover , .btn-presentation:hover, .btn-presentation:focus{
   color:#fff;
   background: #00a898;
   border: solid 1px #3f6274;

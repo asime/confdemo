@@ -379,11 +379,15 @@
 				container 	: ".commentsList",
 				template 	: "#channel_chat",
 				data 		: {
-					messages 	: self.channelMessages,
-					this_message		: message,
-					app 		: self
+					messages 		: self.channelMessages,
+					this_message	: message,
+					app 			: self
 				}
 			})	
+
+			if($(".doneBtn").is(":visible")){
+				$(".deleteBtn").fadeIn();
+			}
 
 		},
 
@@ -447,11 +451,20 @@
 					agility_webrtc.processVote(message);//{ type : "VOTE" : message : "AWESOME" }
 				break;
 				case "MESSAGE":
-					console.log(message);					
+					
+					console.log(message);
+
 					self.storeMessageAndDisplayMessages({
 						from	: message.user.name,
-						message : message.text.replace( /[<>]/g, '' )
+						message : message.text.replace( /[<>]/g, '' ),
+						id 		: message.id
 					});
+
+				break;
+				case "DELETE_MESSAGE":
+					$('.commentItem[data-message-id="' + message.id + '"]').animate({right:"-100%"}, 200, function(){
+						$(this).empty().remove();
+					})
 				break;
 				case "SLIDE":
 					agility_webrtc.changeSlide(message.options);
@@ -804,6 +817,7 @@
 				$(".initialCall").fadeIn();
 				$(".deleteBtn, .cameraBtn, .doneBtn").fadeOut();
 				$(".commentItem").removeClass('active');
+
 			})
 
 			$(document).on("click", "#hangup", function(e){
@@ -867,11 +881,39 @@
 
 
 
+			$(document).on("click", ".deleteBtn", function(e){
+
+				e.preventDefault();
+
+				var message_id = $(this).data("message-id");
+
+				$(this).parents('.commentItem').animate({right:"-100%"}, 200, function(){
+					
+					$(this).empty().remove();
+
+					if($('.commentItem').length === 0 && $(".doneBtn").is(":visible")){
+						$(".doneBtn").trigger("click");	
+					}
+
+					agility_webrtc.currentUser.publish({
+						channel: agility_webrtc.channelName,
+							message : {
+							type 	: "DELETE_MESSAGE",
+							id 		: message_id
+						}
+					});					
+
+				});
+
+			})
+
 			$(document).on("click", "#btn_send_message", function(e){
 
 				var message = $(".commentsHere").val().trim();
 
 				if(message !== ""){
+
+					var username = agility_webrtc.currentUser.db.get("username");
 
 					agility_webrtc.currentUser.publish({
 						channel: agility_webrtc.channelName,
@@ -879,10 +921,13 @@
 							type 	: "MESSAGE",
 							text 	: message,
 							user 	: {
-								name : agility_webrtc.currentUser.db.get("username")
-							}
+								name : username
+							},
+							id 		: Date.now() + "-" + username.toLowerCase().replace(/ /g, '')
 						}
 					});
+
+					$(".commentsHere").val("");
 
 
 				} else {

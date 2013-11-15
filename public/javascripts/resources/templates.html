@@ -120,19 +120,15 @@
 				<div class="commentHeader">
 					<span class="leftText">Comments</span>
 					<div class="btnShow">Current Slide</div>
-					<div class="actionsWrap">
-						
-						<!-- INITIAL CALL -->
-						<span class="initialCall">
-							<span class="cameraCall"><span class="glyphicon glyphicon-facetime-video"></span></span>
-							<span class="commentsCall">Edit</span>
-						</span>
-						<!-- //INITIAL CALL -->
-
-						<!-- DONE CALL -->
-						<span class="doneBtn">Done</span>
-						<!-- //DONE CALL -->
-					</div>
+					<% if(user.db.get("is_presenter") === "true"){%>
+						<div class="actionsWrap">
+							<span class="initialCall">
+								<span class="cameraCall"><span class="glyphicon glyphicon-facetime-video"></span></span>
+								<span class="commentsCall">Edit</span>
+							</span>
+							<span class="doneBtn">Done</span>
+						</div>
+					<%}%>
 				</div>
 
 				<!-- COMMENTS WRAP -->
@@ -319,11 +315,11 @@
 </script>
 
 <script type="text/template" id="channel_chat">
-	<div class="commentItem">
+	<div class="commentItem" data-message-id="<%= this_message.id %>">
 		<span class="commentText"><%= this_message.message %></span>
 		<span class="commentAuthor"><%= this_message.from %></span>
 		<span class="cameraBtn"><span class="glyphicon glyphicon-facetime-video"></span></span>
-		<span class="deleteBtn"><span class="lineDel"></span></span>
+		<span class="deleteBtn" data-message-id="<%= this_message.id %>"><span class="lineDel"></span></span>
 	</div>
 </script>
 
