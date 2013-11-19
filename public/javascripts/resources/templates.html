@@ -62,21 +62,12 @@
 					<div id="presentation-carousel" class="slider carousel slide" data-interval='false' data-ride="carousel" >
 						
 						<div class="carousel-inner">
-							<div class="item active">
-							<img src="images/presentation/1.png">
-							</div>
-							<div class="item">
-							<img src="images/presentation/2.png">
-							</div>
-							<div class="item">
-							<img src="images/presentation/3.png">
-							</div>
-							<div class="item">
-							<img src="images/presentation/4.png">
-							</div>
-							<div class="item">
-							<img src="images/presentation/5.png">
-							</div>
+
+							<% _.each(slides, function(slide, index){%>
+								<div class="item <%= index == 0 ? 'active' : ''%>">
+								<img src="<%=slide.pic_url %>">
+								</div>
+							<%});%>
 						</div>
 						
 					</div>
@@ -98,14 +89,10 @@
 						</div> 
 						
 						<ul class="slideCount">
-							<li data-target="#presentation-carousel" data-slide-to="0">1</li>
-							<li data-target="#presentation-carousel" data-slide-to="1">2</li>
-							<li data-target="#presentation-carousel" data-slide-to="2">3</li>
-							<li data-target="#presentation-carousel" data-slide-to="3">4</li>
-							<li data-target="#presentation-carousel" data-slide-to="4">5</li>
+							<% _.each(slides, function(slide, index){%>
+								<li class = "<%= index == 0 ? 'active' : ''%>" data-target="#presentation-carousel" data-slide-to="<%= index%>"><%= index+ 1%></li>
+							<%});%>
 						</ul>
-						
-						
 					</div>
 				<%}%>
 							
@@ -206,8 +193,8 @@
 
 				<div class="col-sm-1 timeLapseWrap">
 					<span>Time Lapse</span>
-					<div class="timer">
-						00:00
+					<div class="timer" id="timerWrap">
+						<span class="hour">00</span>:<span class="minute">00</span>:<span class="second">00</span>
 					</div>
 				</div>				
 

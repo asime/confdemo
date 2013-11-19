@@ -93,9 +93,14 @@ function draw(options) {
 	var circles = dataCirclesGroup.selectAll('.data-point').data(data);
 
 	circles.enter().append('svg:circle')
-		.attr('class', 'data-point')
+		.attr('class', function(d) { 
+			return "data-point " + d.mood_name; 
+		})
 		.style('opacity', 1e-6)
 		.attr('cx', function(d) { return x(d.date) })
+		.attr('data-mood-name', function(d) { 
+			return d.mood_name; 
+		})
 		.attr('cy', function() { return y(0) })
 		.attr('r', function() { return (data.length <= maxDataPointsForDots) ? pointRadius : 0 })
 	.transition().duration(transitionDuration)

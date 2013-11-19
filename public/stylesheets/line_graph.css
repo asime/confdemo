@@ -1,19 +1,23 @@
 .data-line {
-	stroke: steelblue;
+	stroke: #3c5868;
 	stroke-width: 2;
 	fill: none;
 	stroke-dasharray: 0;
 }
 
 path {
-	stroke: #eee;
+	/*stroke: #13a897;*/
 	stroke-width: 2;
 	stroke-dasharray: 0;
 	fill: none;
 }
 
 .area {
-  	fill: lightsteelblue;
+  	fill: #3c5868;
+}
+
+.area.awesome {
+  	fill: #31b99d;
 }
 
 text {
@@ -24,16 +28,23 @@ text {
 
 line {
 	stroke: #CDCDCD;
-	stroke-width: 0.5;
+	stroke-width: 0;
 	/* stroke-dasharray: 3 3; */
 	fill: none;
 }
 
 .data-point {
-	stroke: steelblue;
+	stroke: #3c5868;
 	stroke-width: 2;
-	fill: #FFF;
+	fill: #13a897;
 }
+
+
+.data-point.Horrible { fill: #ff4820;}
+.data-point.Bad { fill: #c86e41;}
+.data-point.Good { fill: #948b64;}
+.data-point.Great { fill: #62a686;}
+.data-point.Awesome { fill: #13a897;}
 
 #chart {
         margin: 0;
