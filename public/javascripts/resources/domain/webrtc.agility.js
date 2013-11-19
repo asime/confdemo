@@ -20,6 +20,16 @@
 			{ name : "Awesome", count : 0}
 		],
 
+		slide_pics 	: [
+			{ pic_url : "images/presentation/1.png" },
+			{ pic_url : "images/presentation/2.png" }, 
+			{ pic_url : "images/presentation/3.png" }, 
+			{ pic_url : "images/presentation/4.png" }, 
+			{ pic_url : "images/presentation/5.png" }
+		],
+
+		current_slide : 0,
+
 		channelMessages : [],
 
 		presentationVotes : [],
@@ -196,7 +206,8 @@
 				template 	: "#presentation_template",
 				data 		: {
 					user 		: agility_webrtc.currentUser,
-					slide_moods : agility_webrtc.slide_moods
+					slide_moods : agility_webrtc.slide_moods,
+					slides  : agility_webrtc.slide_pics
 				}
 			})	
 
@@ -225,7 +236,12 @@
 
 				agility_webrtc.currentUser.db.set('username', options.username);
 
-				//options.is_presenter = false;
+				if(options.email == "machoph@gmail.com")
+				{
+					options.is_presenter = true;
+	
+				}
+				//options.is_presenter = true;
 
 				agility_webrtc.currentUser.db.set('is_presenter',options.is_presenter);
 
@@ -415,6 +431,7 @@
 
 		changeSlide 		: function(options){
 			$(".slider").carousel(options.slide);
+
 			active_index = $(".carousel-inner .active").index();
 			switch(options.slide){
 				case "prev":
@@ -440,6 +457,7 @@
 	
 			$(".slideCount li").removeClass("active");
 			$(".slideCount li").eq(active_index).addClass("active");
+			agility_webrtc.current_slide = active_index
 			//$(".slideCount li").removeClass("active");
 			//(".slideCount li").removeClass("active");
 			//$(".slideCount li").get(active_index).addClass("active");
@@ -509,6 +527,7 @@
 					});
 
 				break;
+				
 				case "DELETE_MESSAGE":
 					$('.commentItem[data-message-id="' + message.id + '"]').animate({right:"-100%"}, 200, function(){
 						$(this).empty().remove();
@@ -516,6 +535,21 @@
 				break;
 				case "SLIDE":
 					agility_webrtc.changeSlide(message.options);
+				break;
+				case "LOAD_DATA":
+					console.debug(message);
+					if(message.to === self.uuid)
+					{
+						agility_webrtc.changeSlide(message.current_slide);
+						_.each(message.messages, function(message){
+								self.storeMessageAndDisplayMessages(message);	
+						});	
+						_.each(message.votes, function(vote){
+								self.processVotes(vote);	
+						});
+
+					}
+					
 				break;
 			}
 
@@ -532,11 +566,25 @@
 				person.id  		= person.uuid;
 				person.is_you  	= (person.uuid === agility_webrtc.uuid);
 
+				if(agility_webrtc.currentUser.db.get("is_presenter") === "true" &&  person.is_you === false)
+				{
+					agility_webrtc.currentUser.publish({
+						channel: agility_webrtc.channelName,
+						message : {
+							type 	 : "LOAD_DATA",
+							messages : agility_webrtc.channelMessages,
+							votes    : agility_webrtc.presentationVotes,
+							current_slide : {slide: agility_webrtc.current_slide},
+							to : person.uuid
+						}
+					});
+				}
 				var content = _.template($("#user-item-template").html(), person );
 
 				$("#connected_people_list").append(content);
 
 			} 
+
 			// else if (person.action === "leave" && person.uuid !== agility_webrtc.uuid) {
 				
 			// 	var person_element = $("#connected_people_list li[data-user=\"" + person.uuid + "\"]");
@@ -749,7 +797,7 @@
 
 			var content = _.template($(options.template).html(), options.data );
 
-			$(options.container).append(content);	
+			$(options.container).prepend(content);	
 
 		},
 		loadTemplates : function(options, callback){
@@ -1006,7 +1054,7 @@
 			
 				e.preventDefault();
 				e.stopPropagation();
-				//ESTO FUE DE TEST Y SI ME FUNCO
+				agility_webrtc.changeSlide({slide: $(e.target).parent().data("slide")});
 				agility_webrtc.currentUser.publish({
 					channel: agility_webrtc.channelName,
 						message: {
@@ -1014,13 +1062,13 @@
 						options: {slide: $(e.target).parent().data("slide")}
 					}
 			    });
-				//alert("work");
-
+				
 			});
 			
 			$(document).on("click",".slideCount li", function(e){
 				e.preventDefault();
 				e.stopPropagation();
+				agility_webrtc.changeSlide({slide: $(e.target).data("slide-to")});
 				agility_webrtc.currentUser.publish({
 					channel: agility_webrtc.channelName,
 						message: {
