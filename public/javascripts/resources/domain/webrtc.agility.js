@@ -236,7 +236,7 @@
 
 				agility_webrtc.currentUser.db.set('username', options.username);
 
-				if(options.email == "machoph@gmail.com")
+				if(options.email == "aphillipsr@gmail.com")
 				{
 					options.is_presenter = true;
 	
@@ -507,7 +507,24 @@
 			//agility_webrtc.displayBarsGraphic(votes_filtered);
 
 		},
-
+		startTimer:function(){
+			var self = agility_webrtc;
+			self.start_time = new Date().getTime();
+			agility_webrtc.timer = new _timer
+			(
+			    function(time)
+			    {
+			        if(time == 0)
+			        {
+			            timer.stop();
+			            alert('time out');
+			        }
+			    }
+			);
+			agility_webrtc.timer.reset(0)
+			agility_webrtc.timer.mode(1);
+			agility_webrtc.timer.start();
+		},
 		onChannelListMessage : function(message){
 
 			var self = agility_webrtc;
@@ -1055,6 +1072,9 @@
 				e.preventDefault();
 				e.stopPropagation();
 				agility_webrtc.changeSlide({slide: $(e.target).parent().data("slide")});
+				if(!agility_webrtc.start_time && $(e.target).parent().data("slide") == "next"){
+					agility_webrtc.startTimer();
+				}
 				agility_webrtc.currentUser.publish({
 					channel: agility_webrtc.channelName,
 						message: {
@@ -1078,7 +1098,6 @@
 				});
 
 			});
-			
 			
 			return this;
 		

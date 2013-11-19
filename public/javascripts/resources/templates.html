@@ -62,8 +62,6 @@
 					<div id="presentation-carousel" class="slider carousel slide" data-interval='false' data-ride="carousel" >
 						
 						<div class="carousel-inner">
-						
-					  
 
 							<% _.each(slides, function(slide, index){%>
 								<div class="item <%= index == 0 ? 'active' : ''%>">
@@ -195,8 +193,8 @@
 
 				<div class="col-sm-1 timeLapseWrap">
 					<span>Time Lapse</span>
-					<div class="timer">
-						00:00
+					<div class="timer" id="timerWrap">
+						<span class="hour">00</span>:<span class="minute">00</span>:<span class="second">00</span>
 					</div>
 				</div>				
 
