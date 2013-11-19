@@ -13,11 +13,11 @@
 		currentCallInterval : null,
 
 		slide_moods 	: [
-			{ name : "Horrible" , count : 0 },
-			{ name : "Bad", count : 0}, 
-			{ name : "Good", count : 0}, 
-			{ name : "Great", count : 0}, 
-			{ name : "Awesome", count : 0}
+			{ name : "Horrible" , count : 0, value : 0 },
+			{ name : "Bad"		, count : 0, value : 1 }, 
+			{ name : "Good"		, count : 0, value : 2 }, 
+			{ name : "Great"	, count : 0, value : 3 },
+			{ name : "Awesome"	, count : 0, value : 4 }
 		],
 
 		channelMessages : [],
@@ -243,6 +243,7 @@
 					agility_webrtc.connectToAnswerChannel();
 				}
 				
+
 							
 
 
@@ -448,13 +449,43 @@
 
 		displayAnalyticsGraphic : function(data){
 
+			draw({
+				data 		: agility_webrtc.presentationVotes,
+				container 	: "#linesWarp",
+				width 		: $("#linesWarp").width(),
+				height 		: $("#linesWarp").height(),
+				moods 		: agility_webrtc.slide_moods
+			});
+
+			$("text, .guideWarp").hide();
+
+			setTimeout(function(){
+				$(".tipsy").hide();
+				$(".data-point:last").trigger("mouseover")
+			}, 1000);
+			
+
 		},
 
-		displayBarsGraphic 	: function(data){
+		displayBarsGraphic 	: function(filtered_moods){
+
+			$('.bargraph div.graphLabel[data-mood-name] div.bar').css({width:0});
+
+			_.each(filtered_moods, function(mood){
+				$('.bargraph div.graphLabel[data-mood-name="' + mood.name + '"] div.bar').animate({width: ((mood.percentage -1) + "%")}, 800, "swingFromTo")
+				$('.bargraph div.graphLabel[data-mood-name="' + mood.name + '"] span.mood_count').html(mood.percentage + "%");
+			})
+
 
 		},
 
 		processVotes 	: function(vote){
+
+			var mood = _.find(agility_webrtc.slide_moods, function(mood){ return mood.name === vote.mood_name; });
+
+			vote.date = new Date();
+
+			vote.value = mood.value;
 
 			agility_webrtc.presentationVotes.push(vote);
 
@@ -464,7 +495,7 @@
 
 			_.each(agility_webrtc.slide_moods, function(mood){
 
-				mood_count = _.countBy(agility_webrtc.presentationVotes, function(vote){ return vote.value === mood.name; }).true || 0;
+				mood_count = _.countBy(agility_webrtc.presentationVotes, function(vote){ return vote.mood_name === mood.name; }).true || 0;
 
 				filtered_mood = {
 					name 		: mood.name,
@@ -476,13 +507,9 @@
 
 			})
 
-			$('.bargraph div.graphLabel[data-mood-name] div.bar').css({width:0});
+			agility_webrtc.displayBarsGraphic(filtered_moods);
 
-			_.each(filtered_moods, function(mood){
-				//$(".progress_bar").animate({width:"-=14%"}, 800, "swingFromTo");
-				$('.bargraph div.graphLabel[data-mood-name="' + mood.name + '"] div.bar').animate({width: ((mood.percentage -1) + "%")}, 800, "swingFromTo")
-				$('.bargraph div.graphLabel[data-mood-name="' + mood.name + '"] span.mood_count').html(mood.percentage + "%");
-			})
+			agility_webrtc.displayAnalyticsGraphic();
 
 			//agility_webrtc.displayAnalyticsGraphic(votes_filtered);
 
@@ -555,6 +582,7 @@
 		onChannelListConnect 	: function(){
 
 			agility_webrtc.showPresentationScreen();
+			agility_webrtc.displayAnalyticsGraphic();
 
 		},
 
@@ -933,6 +961,10 @@
 
 				var slide_mood = $(this).data("slide-mood");
 
+				var mood = _.find(agility_webrtc.slide_moods, function(mood){
+					return mood.name === slide_mood;
+				})
+
 				$(this).animate({ opacity : 0.5 }, 400, function(){
 					$(this).animate({ opacity : 1 }, 400);
 				})
@@ -940,8 +972,8 @@
 				agility_webrtc.currentUser.publish({
 					channel: agility_webrtc.channelName,
 					message : {
-						type 	: "VOTE",
-						value 	: slide_mood
+						type 		: "VOTE",
+						mood_name 	: slide_mood
 					}
 				});
 
