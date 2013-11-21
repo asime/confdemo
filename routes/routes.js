@@ -17,7 +17,13 @@ var routes = function (params) {
 
 	})
 
+	app.get('/logout', function(req, res){
 
+		req.session.destroy();
+
+		res.json({message:"Bye..."});
+
+	})
 
 	app.post('/:who/disconnect', function(req,res){
 

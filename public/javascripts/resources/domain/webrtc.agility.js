@@ -150,28 +150,28 @@
 
 		checkUserMedia : function(callback){
 				
-				agility_webrtc.can_webrtc = (navigator.getUserMedia || navigator.webkitGetUserMedia ||navigator.mozGetUserMedia ||navigator.msGetUserMedia);	
-								
-				if(agility_webrtc.can_webrtc != null){
-					$.getScript( "javascripts/resources/vendor/webrtc-beta-pubnub.js" )
-						.done(function( script, textStatus ) {
-							//console.log( textStatus );
+			agility_webrtc.can_webrtc = !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||navigator.mozGetUserMedia ||navigator.msGetUserMedia);	
+			
+			if(agility_webrtc.can_webrtc === true){
+				$.getScript( "javascripts/resources/vendor/webrtc-beta-pubnub.js" )
+					.done(function( script, textStatus ) {
+						//console.log( textStatus );
 
-							if(typeof callback === 'function'){
-								callback();
-							}
-
-						})
-						.fail(function( jqxhr, settings, exception ) {
-							console.log("there was an error");
+						if(typeof callback === 'function'){
+							callback();
 						}
-					);
-				} else {
-					if(typeof callback === 'function'){
-						callback();
+
+					})
+					.fail(function( jqxhr, settings, exception ) {
+						console.log("there was an error");
 					}
+				);
+			} else {
+				if(typeof callback === 'function'){
+					callback();
 				}
-				return this;
+			}
+			return this;
 								
 		},
 		hideControls : function(){
@@ -197,6 +197,8 @@
 			if(options.who === "#you"){
 				$(".streaming_container").css({height : "300px"});
 			}
+
+			$("#conference-modal").modal("hide");			
 
 		},
 
@@ -374,6 +376,7 @@
 					stream: function(bad, event) {
 						agility_webrtc.streams.push({ who 	: "you", stream 	: event.stream });
 						agility_webrtc.showStream({ who : "you" , container : '#you'});
+						$("#conference-modal").removeClass("hide").modal("show");
 					},
 					disconnect: function(uuid, pc) {
 						agility_webrtc.hideStream({who : "#you"})
@@ -547,11 +550,6 @@
 			if((Date.now() - agility_webrtc.last_time_votes_updated) > 500){
 				agility_webrtc.displayAnalyticsGraphic();
 			}
-
-				
-
-			
-
 			
 
 			//agility_webrtc.displayAnalyticsGraphic(votes_filtered);
@@ -590,9 +588,10 @@
 					console.log(message);
 
 					self.storeMessageAndDisplayMessages({
-						from	: message.user.name,
-						message : message.text.replace( /[<>]/g, '' ),
-						id 		: message.id
+						from		: message.user.name,
+						message 	: message.text.replace( /[<>]/g, '' ),
+						id 			: message.id,
+						can_webrtc 	: message.user.can_webrtc
 					});
 
 				break;
@@ -707,11 +706,14 @@
 
 			agility_webrtc.currentUser.subscribe({
 				channel: 'call',
-				callback: function(data) {
-					if (data.callee ===  agility_webrtc.uuid) {
-						agility_webrtc.incomingCallFrom = data.caller;
-						agility_webrtc.onIncomingCall(data.caller);
-					}					
+				callback: function(call) {
+
+					if(call.action === "calling" && call.caller !== agility_webrtc.uuid){
+						agility_webrtc.incomingCallFrom = call.caller;
+						agility_webrtc.onIncomingCall(call.caller);
+					} else if(call.caller !== agility_webrtc.uuid){
+						agility_webrtc.cancelIncomingCall(call.caller);
+					}
 				}
 			});
 
@@ -776,6 +778,8 @@
 
 			modalCalling.find('.calling').text("Calling " + who + "...");
 
+			modalCalling.find(".btn-danger").data("calling-user", who);
+
 			modalCalling.modal('show');
 
 			$("#ringer")[0].play()
@@ -785,22 +789,39 @@
 			agility_webrtc.currentUser.publish({
 				channel: 'call',
 				message: {
-					caller: agility_webrtc.uuid,
-					callee: who
+					caller 	: agility_webrtc.uuid,
+					callee 	: who,
+					action 	: "calling"
 				}
 			});
 
 		},
+		cancelIncomingCall 	: function(whoIsCalling){
 
+			agility_webrtc.incomingCallFrom = null;
+
+			$("#answer-modal .modal-footer").slideUp(200, function(){
+				$('#answer-modal .caller').html("Sorry " + whoIsCalling + " hangup the call");
+				window.setTimeout(function(){
+					$("#answer-modal").fadeOut(200, function(){
+						$("#answer-modal .btn-danger").trigger("click");
+					})
+				}, 1500);
+			});
+			
+
+		},
 		onIncomingCall 		: function(whoIsCalling){
 
 			var modalAnswer = $("#answer-modal");
 
 			modalAnswer.removeClass("hide");			
 
-			modalAnswer.find('.caller').text("" + whoIsCalling + " is calling...");
+			modalAnswer
+				.removeClass("hide").find('.caller')
+				.text("" + whoIsCalling + " is calling...")
+				.end().find('.modal-footer').show().end().modal('show');
 			
-			modalAnswer.modal('show');
 
 			$("#ringer")[0].play()
 
@@ -905,6 +926,24 @@
 				agility_webrtc.onChannelListDisconnect();
 
 			}
+
+			$(document).on("click", "#calling-modal .btn-danger", function(e){
+
+				e.preventDefault();
+
+				var was_calling_who = $("#calling-modal .btn-danger").data("calling-user");
+
+				agility_webrtc.currentUser.publish({
+					channel: 'call',
+					message: {
+						caller 	: agility_webrtc.uuid,
+						callee 	: was_calling_who,
+						action 	: "hangup"
+					}
+				});				
+
+
+			})
 
 
 			$(window).resize( _.debounce(function(){
@@ -1109,7 +1148,8 @@
 							type 	: "MESSAGE",
 							text 	: message,
 							user 	: {
-								name : username
+								name : username,
+								can_webrtc : agility_webrtc.can_webrtc
 							},
 							id 		: Date.now() + "-" + username.toLowerCase().replace(/ /g, '')
 						}
