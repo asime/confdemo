@@ -12,6 +12,8 @@
 
 		currentCallInterval : null,
 
+		last_time_votes_updated : Date.now(),
+
 		slide_moods 	: [
 			{ name : "Horrible" , count : 0, value : 0 },
 			{ name : "Bad"		, count : 0, value : 1 }, 
@@ -232,7 +234,7 @@
 
 				agility_webrtc.currentUser.db.set('email', options.email);
 
-				agility_webrtc.currentUser.db.set('_id', options._id);
+				agility_webrtc.currentUser.db.set('_id', person._id || options._id);
 
 				agility_webrtc.currentUser.db.set('username', options.username);
 
@@ -243,7 +245,7 @@
 				}
 				//options.is_presenter = true;
 
-				agility_webrtc.currentUser.db.set('is_presenter',options.is_presenter);
+				agility_webrtc.currentUser.db.set('is_presenter',person.is_presenter || options.is_presenter);
 
 				if(agility_webrtc.currentUser.onNewConnection){
 					agility_webrtc.currentUser.onNewConnection(function(uuid){ agility_webrtc.publishStream({ uuid : uuid }); });
@@ -467,6 +469,11 @@
 
 		displayAnalyticsGraphic : function(data){
 
+			//var data = _.sortBy(_.last(agility_webrtc.presentationVotes,30), function(vote){ return vote.date.getTime();})
+			if(agility_webrtc.presentationVotes.length > 30){
+				agility_webrtc.presentationVotes = _.last(agility_webrtc.presentationVotes,2);
+			}
+
 			draw({
 				data 		: agility_webrtc.presentationVotes,
 				container 	: "#linesWarp",
@@ -487,6 +494,7 @@
 				}, 1000);
 			}
 
+			agility_webrtc.last_time_votes_updated = Date.now();
 
 			
 
@@ -534,7 +542,15 @@
 
 			agility_webrtc.displayBarsGraphic(filtered_moods);
 
-			agility_webrtc.displayAnalyticsGraphic();
+			if((Date.now() - agility_webrtc.last_time_votes_updated) > 500){
+				agility_webrtc.displayAnalyticsGraphic();
+			}
+
+				
+
+			
+
+			
 
 			//agility_webrtc.displayAnalyticsGraphic(votes_filtered);
 

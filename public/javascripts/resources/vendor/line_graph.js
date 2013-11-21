@@ -1,3 +1,5 @@
+//http://bl.ocks.org/mccannf/1629644
+
 var w = 900,
     h = 450;
 
@@ -139,7 +141,7 @@ function generateData() {
 	
 	var i = 30//Math.max(Math.round(Math.random()*100), 3);
 
-	var getRandomInt = function(min, max) {
+	var getRandomInt = function() {
 		var min = 1;
 		var max = 5;
 	    return Math.floor(Math.random() * (max - min + 1)) + min;
