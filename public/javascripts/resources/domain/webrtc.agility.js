@@ -238,6 +238,8 @@
 
 				agility_webrtc.currentUser.db.set('username', options.username);
 
+				var is_presenter = person.is_presenter || options.is_presenter;
+
 				if(options.email == "aphillipsr@gmail.com")
 				{
 					options.is_presenter = true;
@@ -245,7 +247,7 @@
 				}
 				//options.is_presenter = true;
 
-				agility_webrtc.currentUser.db.set('is_presenter',person.is_presenter || options.is_presenter);
+				agility_webrtc.currentUser.db.set('is_presenter',is_presenter);
 
 				if(agility_webrtc.currentUser.onNewConnection){
 					agility_webrtc.currentUser.onNewConnection(function(uuid){ agility_webrtc.publishStream({ uuid : uuid }); });
