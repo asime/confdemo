@@ -423,7 +423,7 @@ footer{
 }
 .timeLapseWrap span{
   font-size: 20px;
-  color: #ffffff;
+  /*color: #ffffff;*/
 }
 .timeLapseWrap .timer{
   height: auto;

@@ -570,7 +570,8 @@
 			//agility_webrtc.displayBarsGraphic(votes_filtered);
 
 		},
-		startTimer:function(){
+		startTimer : function(){
+
 			var self = agility_webrtc;
 			self.start_time = new Date().getTime();
 			agility_webrtc.timer = new _timer
@@ -584,9 +585,11 @@
 			        }
 			    }
 			);
+			
 			agility_webrtc.timer.reset(0)
 			agility_webrtc.timer.mode(1);
 			agility_webrtc.timer.start();
+
 		},
 		onChannelListMessage : function(message){
 
@@ -850,8 +853,6 @@
 		},
 
 		answerCall 		: function(from){
-
-		 	//agility_webrtc.currentCallUUID = from;
 
 		 	agility_webrtc.requestStream({
 		 		video : true,
