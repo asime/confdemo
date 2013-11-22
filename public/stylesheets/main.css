@@ -776,31 +776,33 @@ background: #4ebb9a;
   width: 637px;
   margin: 0px auto;
   background: #fff;
-  max-height: 530px;
+  height: 455px;
   border-radius: 10px;
   top: 40px;
+  max-height: 455px;
 }
 
 
 /* CONFERENCE VIDEO AND CONTAINERS */
 
 #me { 
-  width: 250px;
+/*  width: 250px;
   left: 58.5%;
   position: relative !important;
-  /*top: 312px;*/
-  display: none
+  top: 312px;
+  display: none;*/
 }
 #you { 
-  width: 600px;
+  /*width:430px;*/
   /*height: 500px;*/
 }
 #me,#you{
-  position: absolute;
+  /*position: absolute;*/
+  width: 50%;
   border:solid 1px #e1e1e1;
+  float: left;
 }
 .streaming_container{
-  height: 302px;
   width: 600px;
   float: left;
   overflow: hidden;

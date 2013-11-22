@@ -68,17 +68,23 @@
 
 		<div id="conference-modal" class="modal hide">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 				<h3 id="myModalLabel"><img class="phone_icon" src="images/phone.svg"/> Conference Call</h3>
 			</div>
 			<div class="modal-body">
-					<div class="streaming_container pull-left">
-						<video autoplay id="you"></video>
-						<video autoplay id="me"></video>
-					</div>				
+
+			<div class="streaming_container pull-left">
+				<video autoplay id="you"></video>
+				<video autoplay id="me"></video>
+			</div>	
+						
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Cancel</button>
+
+				<div class="span12" id="video-controls" style="display: none;">
+					<a href="#" class="btn btn-danger" id="hangup">Hang Up</a>
+					<span id="time">00:00</span>
+				</div>
+				
 			</div>
 		</div>	
 

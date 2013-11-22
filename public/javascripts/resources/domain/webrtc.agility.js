@@ -155,8 +155,7 @@
 			if(agility_webrtc.can_webrtc === true){
 				$.getScript( "javascripts/resources/vendor/webrtc-beta-pubnub.js" )
 					.done(function( script, textStatus ) {
-						//console.log( textStatus );
-
+						
 						if(typeof callback === 'function'){
 							callback();
 						}
@@ -180,6 +179,12 @@
 
 		},
 
+		hideConference : function(){
+
+			$('#conference-modal').modal('hide');
+
+		},
+
 		showControls : function(){
 
 			$('#video-controls').show();
@@ -195,7 +200,7 @@
 			$(options.who)[0].src = "";
 
 			if(options.who === "#you"){
-				$(".streaming_container").css({height : "300px"});
+				//$(".streaming_container").css({height : "300px"});
 			}
 
 			$("#conference-modal").modal("hide");			
@@ -252,8 +257,11 @@
 				agility_webrtc.currentUser.db.set('is_presenter',is_presenter);
 
 				if(agility_webrtc.currentUser.onNewConnection){
-					agility_webrtc.currentUser.onNewConnection(function(uuid){ agility_webrtc.publishStream({ uuid : uuid }); });
+					agility_webrtc.currentUser.onNewConnection(function(uuid){ 
+						agility_webrtc.publishStream({ uuid : uuid }); 
+					});
 				}
+
 									
 
 				agility_webrtc.connectToListChannel();
@@ -318,9 +326,9 @@
 
 			$(video).fadeIn(300);
 
-			if(options.container === "#you"){
-				$(".streaming_container").css({height : "500px"});
-			}
+			// if(options.container === "#you"){
+			// 	$(".streaming_container").css({height : "500px"});
+			// }
 
 		},		
 
@@ -329,7 +337,9 @@
 			var stream = _.find(agility_webrtc.streams, function(stream){ return stream.who === "mine"; });			
 
 			if(stream != null){
+
 				callback(stream.stream);
+
 			} else {
 
 				navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia ||navigator.mozGetUserMedia ||navigator.msGetUserMedia);	
@@ -349,7 +359,6 @@
 						if(typeof errorCallback === 'function'){
 							errorCallback(e);
 						}
-						
 
 					});					
 
@@ -365,12 +374,13 @@
 
 			var resumeStreaming = function(stream){
 
-				//Show my stream:
-
 				agility_webrtc.showStream({ who : "mine" , container : '#me'});
 
+				//Show my stream:
 				agility_webrtc.currentUser.publish({ user: options.uuid, stream: stream });
 				
+				agility_webrtc.incomingCallFrom = options.uuid;
+
 				agility_webrtc.currentUser.subscribe({
 					user: options.uuid,
 					stream: function(bad, event) {
@@ -379,8 +389,11 @@
 						$("#conference-modal").removeClass("hide").modal("show");
 					},
 					disconnect: function(uuid, pc) {
+
+						agility_webrtc.hangupCall();
 						agility_webrtc.hideStream({who : "#you"})
 						agility_webrtc.onEndCall();
+						
 					}
 				});				
 
@@ -872,6 +885,7 @@
 
 		onEndCall 		: function(){
 
+			agility_webrtc.hideConference();
 			agility_webrtc.hideControls();
 			agility_webrtc.stopTimer();
 
