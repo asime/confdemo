@@ -376,8 +376,10 @@
 
 				agility_webrtc.showStream({ who : "mine" , container : '#me'});
 
-				//Show my stream:
-				agility_webrtc.currentUser.publish({ user: options.uuid, stream: stream });
+				agility_webrtc.currentUser.publish({ 
+					user: options.uuid, 
+					stream: stream 
+				});
 				
 				agility_webrtc.incomingCallFrom = options.uuid;
 
@@ -879,7 +881,9 @@
 
 
 		 	}, function(){
+
 		 		alert("Unable to access stream");
+
 		 	})
 			
 		},
@@ -1051,6 +1055,7 @@
 			$(document).on("click", "[data-user]", function(e){
 
 				e.preventDefault();
+
 				e.stopPropagation();
 
 				var name;
@@ -1075,8 +1080,11 @@
 			})
 
 			$(document).on("click", ".modal [data-dismiss]", function(e){
+
 				e.preventDefault();
+				
 				$("#ringer")[0].pause()
+				
 				$(this).parents('.modal').hide();
 
 			});
