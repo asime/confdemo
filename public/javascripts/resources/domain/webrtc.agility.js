@@ -748,8 +748,11 @@
 					} else {
 
 						if(call.caller === agility_webrtc.currentCallUUID){
+							
 							//THE PERSON I'M CALLING IS HANGING UP THE CALL
 							
+							$("#ringer")[0].pause();
+
 							$('#calling-modal .calling').html("Sorry the call has been cancelled by " + agility_webrtc.currentCallUUID);
 
 							agility_webrtc.currentCallUUID = null;
@@ -920,6 +923,10 @@
 		 		audio : true
 		 	}, function(stream){
 
+		 		agility_webrtc.streams = _.reject(agility_webrtc.streams, function(stream){
+		 			return stream.who === "mine";
+		 		})
+
 		 		agility_webrtc.streams.push({ who : "mine", stream : stream });
 
 			 	agility_webrtc.publishStream({ uuid : from  });
@@ -987,13 +994,67 @@
 
 		hangupCall : function(){
 
-			agility_webrtc.currentUser.peerConnection(agility_webrtc.incomingCallFrom, function(peerConnection) {
-				
-				peerConnection.close();
-				
-				agility_webrtc.onEndCall();
+			agility_webrtc.currentUser.peerConnection(agility_webrtc.incomingCallFrom, function(peerConnection){
 
-			});
+				if(peerConnection){
+					agility_webrtc.currentUser.closeConnection(agility_webrtc.incomingCallFrom, function(){
+						
+						console.log("Call ended");
+						agility_webrtc.onEndCall();
+
+					});
+				} else {
+					agility_webrtc.onEndCall();
+				}
+
+
+			})
+
+			// agility_webrtc.currentUser.closeConnection(agility_webrtc.incomingCallFrom, function(){
+
+			// 	console.log("Call ended");
+
+			// 	//peerConnection.close();
+				
+			// 	agility_webrtc.onEndCall();
+
+			// 	// var stream = _.find(agility_webrtc.streams, function(stream){ return stream.who === "mine"});
+				
+			// 	// if(stream){
+
+			// 	// 	stream.stream.stop();
+
+			// 	// 	stream.stream = null;
+
+			// 	// }
+
+		 // 	// 	agility_webrtc.streams = _.reject(agility_webrtc.streams, function(stream){
+		 // 	// 		return stream.who === "mine";
+		 // 	// 	})					
+
+			// })
+
+			// agility_webrtc.currentUser.peerConnection(agility_webrtc.incomingCallFrom, function(peerConnection) {
+				
+			// 	peerConnection.close();
+				
+			// 	agility_webrtc.onEndCall();
+
+			// 	var stream = _.find(agility_webrtc.streams, function(stream){ return stream.who === "mine"});
+				
+			// 	if(stream){
+
+			// 		stream.stream.stop();
+
+			// 		stream.stream = null;
+
+			// 	}
+
+		 // 		agility_webrtc.streams = _.reject(agility_webrtc.streams, function(stream){
+		 // 			return stream.who === "mine";
+		 // 		})				
+
+			// });
 
 		},
 
@@ -1012,6 +1073,8 @@
 				e.stopPropagation();
 
 				$("#answer-modal").modal("hide");//CLOSE ANSWER MODAL...
+
+				$("#ringer")[0].pause();
 
 				agility_webrtc.currentUser.publish({
 					channel: 'call',
