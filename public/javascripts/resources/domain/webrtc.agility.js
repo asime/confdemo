@@ -763,7 +763,11 @@
 							
 
 
-						} else if(call.caller !== agility_webrtc.uuid){
+						} else if(
+							call.caller !== agility_webrtc.uuid
+							&&
+							call.callee === agility_webrtc.uuid
+						){
 							agility_webrtc.cancelIncomingCall(call.caller);
 						}
 
