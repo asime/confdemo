@@ -821,7 +821,19 @@ background: #4ebb9a;
   overflow: hidden;
 }
 
+.rateSlideWrap .thanks_for_rating{
+  width:100%;
+  top: 20px;
+  left: -100%;
+  position: relative;
+  color:#fff;
+}
 
+.rateSlideWrap .title{
+  position: relative;
+  left: 0px;
+  width:100%;
+}
 
 
 

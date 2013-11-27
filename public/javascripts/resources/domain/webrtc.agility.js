@@ -265,13 +265,6 @@
 
 				var is_presenter = person.is_presenter || options.is_presenter;
 
-				if(options.email == "aphillipsr@gmail.com")
-				{
-					options.is_presenter = true;
-	
-				}
-				//options.is_presenter = true;
-
 				agility_webrtc.currentUser.db.set('is_presenter',is_presenter);
 
 				if(agility_webrtc.currentUser.onNewConnection){
@@ -279,8 +272,6 @@
 						agility_webrtc.publishStream({ uuid : uuid }); 
 					});
 				}
-
-									
 
 				agility_webrtc.connectToListChannel();
 				
@@ -748,8 +739,31 @@
 					if(call.action === "calling" && call.caller !== agility_webrtc.uuid){
 						agility_webrtc.incomingCallFrom = call.caller;
 						agility_webrtc.onIncomingCall(call.caller);
-					} else if(call.caller !== agility_webrtc.uuid){
-						agility_webrtc.cancelIncomingCall(call.caller);
+					} else {
+
+						if(call.caller === agility_webrtc.currentCallUUID){
+							//THE PERSON I'M CALLING IS HANGING UP THE CALL
+							
+							$('#calling-modal .calling').html("Sorry the call has been cancelled by " + agility_webrtc.currentCallUUID);
+
+							agility_webrtc.currentCallUUID = null;
+
+							_.delay(function(){
+								$("#calling-modal").fadeOut(200, function(){
+									$("#calling-modal").modal("hide");
+								}) 
+							}, 1500);
+
+							
+
+
+						} else if(call.caller !== agility_webrtc.uuid){
+							agility_webrtc.cancelIncomingCall(call.caller);
+						}
+
+						
+
+
 					}
 				}
 			});
@@ -833,18 +847,18 @@
 			});
 
 		},
-		ignoreCall 			: function(){
+		ignoreCall 			: function(from){
 
 			agility_webrtc.currentUser.publish({
 				channel: 'call',
 				message: {
 					caller 	: agility_webrtc.uuid,
-					callee 	: agility_webrtc.incomingCallFrom,
+					callee 	: from,
 					action 	: "hangup"
 				}
 			});	
 
-			agility_webrtc.cancelIncomingCall();//REUSE THE CANCEL INCOMING CALL METHOD
+			agility_webrtc.cancelIncomingCall(agility_webrtc.incomingCallFrom);//REUSE THE CANCEL INCOMING CALL METHOD
 
 		},
 		cancelIncomingCall 	: function(whoIsCalling){
@@ -855,11 +869,11 @@
 
 			$("#answer-modal .modal-footer").slideUp(200, function(){
 				$('#answer-modal .caller').html("Sorry " + whoIsCalling + " hangup the call");
-				window.setTimeout(function(){
-					$("#answer-modal").fadeOut(200, function(){
-						$("#answer-modal .btn-danger").trigger("click");
-					})
+				
+				_.delay(function(){
+					$("#answer-modal").fadeOut(200).modal("hide");
 				}, 1500);
+				
 			});
 			
 
@@ -984,8 +998,22 @@
 			$(document).on("click", "#ignoreCall", function(e){
 
 				e.preventDefault();
+				
+				e.stopPropagation();
 
-				agility_webrtc.cancelIncomingCall(agility_webrtc.incomingCallFrom);
+				$("#answer-modal").modal("hide");//CLOSE ANSWER MODAL...
+
+				agility_webrtc.currentUser.publish({
+					channel: 'call',
+					message: {
+						caller 	: agility_webrtc.uuid,
+						callee 	: agility_webrtc.incomingCallFrom,
+						action 	: "hangup"
+					}
+				});					
+
+
+
 
 			})
 
@@ -1152,6 +1180,16 @@
 				$(this).animate({ opacity : 0.5 }, 400, function(){
 					$(this).animate({ opacity : 1 }, 400);
 				})
+
+				$(".title").animate({left : "-100%"}, 800);
+				$(".thanks_for_rating").animate({left : "0"}, 800);
+				
+				_.delay(function(){
+
+					$(".title").animate({left : "0"}, 800);
+					$(".thanks_for_rating").animate({left : "-100%"}, 800);
+
+				}, 2000);
 
 				agility_webrtc.currentUser.publish({
 					channel: agility_webrtc.channelName,
