@@ -128,7 +128,7 @@
 
 					agility_webrtc.checkSession({},function(person){
 
-						agility_webrtc.getUser(person);					
+						agility_webrtc.getUser(person);	
 
 					}, function(xhr){
 
@@ -147,7 +147,25 @@
 
 
 		},
+		applyStyles 	: function(){
 
+  
+			var parHeight = $(window).height(); /*Get Screen Height*/
+			var parWidth = $(window).width(); /*Get Screen Width*/			
+
+			if(parWidth > 769){
+				$('.commentsWindowWrap .commentsList').css('height',parHeight-288); //Update Card Holder Height
+				$('.sliderWrap .slider').css('height',parHeight-355); /*Update Card Holder Height*/
+				$('.sliderWrap .sliderEspectador').css('height',parHeight-320); /*Update Card Holder Height*/
+			};
+
+			if(parWidth < 768){
+				$('.commentsWindowWrap .commentsList').css('height','auto'); /*Update Card Holder Height*/
+				$('.sliderWrap .slider').css('height','auto'); /*Update Card Holder Height*/
+				$('.sliderWrap .sliderEspectador').css('height','auto'); /*Update Card Holder Height*/
+			};
+
+		},
 		checkUserMedia : function(callback){
 				
 			agility_webrtc.can_webrtc = !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||navigator.mozGetUserMedia ||navigator.msGetUserMedia);	
@@ -690,6 +708,7 @@
 
 			agility_webrtc.showPresentationScreen();
 			agility_webrtc.displayAnalyticsGraphic();
+			agility_webrtc.applyStyles();
 
 		},
 
@@ -814,9 +833,25 @@
 			});
 
 		},
+		ignoreCall 			: function(){
+
+			agility_webrtc.currentUser.publish({
+				channel: 'call',
+				message: {
+					caller 	: agility_webrtc.uuid,
+					callee 	: agility_webrtc.incomingCallFrom,
+					action 	: "hangup"
+				}
+			});	
+
+			agility_webrtc.cancelIncomingCall();//REUSE THE CANCEL INCOMING CALL METHOD
+
+		},
 		cancelIncomingCall 	: function(whoIsCalling){
 
 			agility_webrtc.incomingCallFrom = null;
+
+			$("#ringer")[0].pause()
 
 			$("#answer-modal .modal-footer").slideUp(200, function(){
 				$('#answer-modal .caller').html("Sorry " + whoIsCalling + " hangup the call");
@@ -945,6 +980,14 @@
 				agility_webrtc.onChannelListDisconnect();
 
 			}
+
+			$(document).on("click", "#ignoreCall", function(e){
+
+				e.preventDefault();
+
+				agility_webrtc.cancelIncomingCall(agility_webrtc.incomingCallFrom);
+
+			})
 
 			$(document).on("click", "#calling-modal .btn-danger", function(e){
 
@@ -1098,17 +1141,6 @@
 
 			})
 
-			$(document).on("click", "#answer", function(e){
-
-				e.preventDefault();
-				e.stopPropagation();
-
-				agility_webrtc.answerCall(agility_webrtc.incomingCallFrom);
-
-			})
-
-
-
 			$(document).on("click", ".rateOption", function(e){
 
 				var slide_mood = $(this).data("slide-mood");
@@ -1206,16 +1238,21 @@
 			});
 			
 			$(document).on("click",".slideCount li", function(e){
+				
 				e.preventDefault();
 				e.stopPropagation();
-				agility_webrtc.changeSlide({slide: $(e.target).data("slide-to")});
-				agility_webrtc.currentUser.publish({
-					channel: agility_webrtc.channelName,
-						message: {
-						type: "SLIDE",
-						options: {slide: $(e.target).data("slide-to")}
-					}
-				});
+
+				if($(this).data("is-presenter")){
+					agility_webrtc.changeSlide({slide: $(e.target).data("slide-to")});
+					agility_webrtc.currentUser.publish({
+						channel: agility_webrtc.channelName,
+							message: {
+							type: "SLIDE",
+							options: {slide: $(e.target).data("slide-to")}
+						}
+					});
+				}
+
 
 			});
 			

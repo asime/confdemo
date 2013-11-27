@@ -77,24 +77,31 @@
 
 				</div>
 
-				<% if(user.db.get("is_presenter") === "true"){%>
+				
 					<div class="sliderControls">
-						<div class="prevSlide control" data-slide="prev">
-							<span class="glyphicon glyphicon-chevron-left"></span>
-							<span class="textSpan">Prev</span></div> 
-						
-						<div class="nextSlide control" data-slide="next">
-							<span class="textSpan">Next</span>
-							<span class="glyphicon glyphicon-chevron-right"></span>
-						</div> 
-						
+						<% if(user.db.get("is_presenter") === "true"){%>
+							<div class="prevSlide control" data-slide="prev">
+								<span class="glyphicon glyphicon-chevron-left"></span>
+								<span class="textSpan">Prev</span></div> 
+							
+							<div class="nextSlide control" data-slide="next">
+								<span class="textSpan">Next</span>
+								<span class="glyphicon glyphicon-chevron-right"></span>
+							</div> 
+						<%}%>		
 						<ul class="slideCount">
 							<% _.each(slides, function(slide, index){%>
-								<li class = "<%= index == 0 ? 'active' : ''%>" data-target="#presentation-carousel" data-slide-to="<%= index%>"><%= index+ 1%></li>
+								<li 
+								<% if(user.db.get("is_presenter") === "true"){%>
+									data-is-presenter="true"
+								<%} else {%>
+									data-is-presenter="false"
+								<%}%>	
+								class = "<%= index == 0 ? 'active' : ''%>" data-target="#presentation-carousel" data-slide-to="<%= index%>"><%= index+ 1%></li>
 							<%});%>
 						</ul>
 					</div>
-				<%}%>
+				
 							
 			</div>
 		</div>
