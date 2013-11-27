@@ -736,7 +736,13 @@
 				channel: 'call',
 				callback: function(call) {
 
-					if(call.action === "calling" && call.caller !== agility_webrtc.uuid){
+					if(
+						call.action === "calling" 
+						&& 
+						call.caller !== agility_webrtc.uuid
+						&& 
+						call.callee === agility_webrtc.uuid
+						){
 						agility_webrtc.incomingCallFrom = call.caller;
 						agility_webrtc.onIncomingCall(call.caller);
 					} else {
