@@ -213,6 +213,7 @@
 			$('#video-controls #time').html(time);
 
 		},
+
 		hideStream : function(options){
 
 			$(options.who)[0].src = "";
@@ -335,10 +336,6 @@
 
 			$(video).fadeIn(300);
 
-			// if(options.container === "#you"){
-			// 	$(".streaming_container").css({height : "500px"});
-			// }
-
 		},		
 
 		requestStream : function(options,callback, errorCallback){
@@ -383,26 +380,43 @@
 
 			var resumeStreaming = function(stream){
 
+				agility_webrtc.incomingCallFrom = options.uuid;
+
 				agility_webrtc.showStream({ who : "mine" , container : '#me'});
 
 				agility_webrtc.currentUser.publish({ 
 					user: options.uuid, 
-					stream: stream 
+					stream: stream
 				});
-				
-				agility_webrtc.incomingCallFrom = options.uuid;
 
 				agility_webrtc.currentUser.subscribe({
 					user: options.uuid,
 					stream: function(bad, event) {
-						agility_webrtc.streams.push({ who 	: "you", stream 	: event.stream });
+						
+						//agility_webrtc.streams.push({ who 	: "you", stream 	: event.stream });
+
+						var remote_stream = _.find(agility_webrtc.streams, function(stream){
+							return stream.who === "you";
+						})
+
+						if(remote_stream){
+							remote_stream.stream = stream;
+						} else {
+							agility_webrtc.streams.push({ who : "you", stream : stream });
+						}
+
 						agility_webrtc.showStream({ who : "you" , container : '#you'});
+						
 						$("#conference-modal").removeClass("hide").modal("show");
+
+						agility_webrtc.onCallStarted();
+
 					},
 					disconnect: function(uuid, pc) {
 
-						agility_webrtc.hangupCall();
-						agility_webrtc.hideStream({who : "#you"})
+						//The caller disconnected the call...
+						//Let's just hide the conference
+
 						agility_webrtc.onEndCall();
 						
 					}
@@ -420,7 +434,17 @@
 					audio : true
 				}, function(stream){
 
-					agility_webrtc.streams.push({ who : "mine", stream : stream });
+					//agility_webrtc.streams.push({ who : "mine", stream : stream });
+
+					var my_stream = _.find(agility_webrtc.streams, function(stream){
+						return stream.who === "mine";
+					})
+
+					if(my_stream){
+						my_stream.stream = stream;
+					} else {
+						agility_webrtc.streams.push({ who : "mine", stream : stream });
+					}					
 
 					resumeStreaming(stream);
 
@@ -923,11 +947,17 @@
 		 		audio : true
 		 	}, function(stream){
 
-		 		agility_webrtc.streams = _.reject(agility_webrtc.streams, function(stream){
-		 			return stream.who === "mine";
-		 		})
+		 		agility_webrtc.currentCallUUID = agility_webrtc.incomingCallFrom;
 
-		 		agility_webrtc.streams.push({ who : "mine", stream : stream });
+				var my_stream = _.find(agility_webrtc.streams, function(stream){
+					return stream.who === "mine";
+				})
+
+				if(my_stream){
+					my_stream.stream = stream;
+				} else {
+					agility_webrtc.streams.push({ who : "mine", stream : stream });
+				}			 		
 
 			 	agility_webrtc.publishStream({ uuid : from  });
 
@@ -994,21 +1024,28 @@
 
 		hangupCall : function(){
 
-			agility_webrtc.currentUser.peerConnection(agility_webrtc.incomingCallFrom, function(peerConnection){
+			agility_webrtc.currentUser.closeConnection(agility_webrtc.currentCallUUID, function(){
 
-				if(peerConnection){
-					agility_webrtc.currentUser.closeConnection(agility_webrtc.incomingCallFrom, function(){
-						
-						console.log("Call ended");
-						agility_webrtc.onEndCall();
-
-					});
-				} else {
-					agility_webrtc.onEndCall();
-				}
-
+				//Connection with the other person was closed...
+				agility_webrtc.onEndCall();
 
 			})
+
+			// agility_webrtc.currentUser.peerConnection(agility_webrtc.incomingCallFrom, function(peerConnection){
+
+			// 	if(peerConnection){
+			// 		agility_webrtc.currentUser.closeConnection(agility_webrtc.incomingCallFrom, function(){
+						
+			// 			console.log("Call ended");
+			// 			agility_webrtc.onEndCall();
+
+			// 		});
+			// 	} else {
+			// 		agility_webrtc.onEndCall();
+			// 	}
+
+
+			// })
 
 			// agility_webrtc.currentUser.closeConnection(agility_webrtc.incomingCallFrom, function(){
 
@@ -1202,6 +1239,8 @@
 
 				e.stopPropagation();
 
+				$(".doneBtn").trigger("click");
+
 				var name;
 
 				var callingTo = $(this).data('user');
@@ -1211,7 +1250,17 @@
 					audio : true
 				}, function(stream){
 
-					agility_webrtc.streams.push({ who : "mine", stream : stream });
+					//agility_webrtc.streams.push({ who : "mine", stream : stream });
+
+					var my_stream = _.find(agility_webrtc.streams, function(stream){
+						return stream.who === "mine";
+					})
+
+					if(my_stream){
+						my_stream.stream = stream;
+					} else {
+						agility_webrtc.streams.push({ who : "mine", stream : stream });
+					}
 
 					agility_webrtc.callPerson(callingTo);
 
@@ -1299,6 +1348,12 @@
 				});
 
 			})
+
+			$(document).on("keyup",".commentsHere",function(event){
+				if(event.keyCode == 13){
+					$("#btn_send_message").click();
+				}
+			});
 
 			$(document).on("click", "#btn_send_message", function(e){
 

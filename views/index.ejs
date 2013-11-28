@@ -30,11 +30,77 @@
 	<body style="">
 
 		<div class="top-container" id="content"></div>
+
+		<!-- DEMO TESTING 
+
+		<video autoplay id="self-call-video" width="300px"></video>
+		<video autoplay id="call-video" width="300px"></video>
+
+		<div class="span12" id="video-controls">
+			<a href="#" class="btn btn-danger" id="hang-up">Hang Up</a>
+			<span id="time">10:00</span>
+		</div>
+
+		<ul id="user-list"></ul>
+
+		<div class="row">
+			<div class="form-group login_container" id="login_container">
+				<img src="images/af-brand.png"/>
+				<h3>Agilityfeat Presentation</h3>
+				<h4>Welcome to our Agilityfeat <strong>Real Time</strong> Presentation</h4>
+				<div class="alert alert-danger" style="display:none;">
+					<strong>Ooops!</strong> <span id="message"></span>.
+				</div>			
+				<label class="sr-only" for="message">Name</label>
+				<input id="username" type="text" class="form-control" placeholder="What's your name?" autocomplete="off">
+				<br>
+				<label class="sr-only" for="message">Email</label>
+				<input id="email" type="email" class="form-control" placeholder="Email" autocomplete="off">
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" id="subscribe" checked="checked"> <small>Subscribe to realtimeweb newsletter</small>
+					</label>
+				</div>
+				<button id="login" class="btn btn-login">Show Presentation</button>
+			</div>	
+		</div>		
+
+<div id="answer-modal" class="modal hide">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Incoming Call</h3>
+      </div>
+      <div class="modal-body">
+        <p class="caller">(User) is calling...</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Ignore</button>
+        <button class="btn btn-primary">Answer</button>
+      </div>
+    </div>
+
+    <div id="calling-modal" class="modal hide" aria-hidden="true" style="display: none;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Outgoing Call</h3>
+      </div>
+      <div class="modal-body">
+        <p class="calling">Calling A...</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+      </div>
+    </div>		
+
+		 END DEMO TESTING -->
 		
 		<!--[if lt IE 8]>
 			<script src="js/icon-font-ie7.js"></script>
 			<script src="js/icon-font-ie7-24.js"></script>
 		<![endif]-->
+
+		
+
 		<audio loop id="ringer">
 			<source src="medias/ring.mp3" type="audio/mpeg">
 		</audio>		
@@ -88,6 +154,7 @@
 			</div>
 		</div>	
 
+		
 
 
 
@@ -105,7 +172,9 @@
 		<script src="javascripts/resources/vendor/timer.js"></script>
 
 		<script src="http://cdn.pubnub.com/pubnub.js"></script>
-		<script src="javascripts/resources/domain/webrtc.agility.js"></script>		
+		<script src="javascripts/resources/vendor/webrtc-beta-pubnub.js"></script>
+		<script src="javascripts/resources/domain/webrtc.agility.js"></script>
+		<!--<script src="javascripts/resources/domain/new.js"></script>-->
 	
 
 </body>
