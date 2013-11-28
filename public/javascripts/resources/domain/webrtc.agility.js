@@ -214,18 +214,6 @@
 
 		},
 
-		hideStream : function(options){
-
-			$(options.who)[0].src = "";
-
-			if(options.who === "#you"){
-				//$(".streaming_container").css({height : "300px"});
-			}
-
-			$("#conference-modal").modal("hide");			
-
-		},
-
 		showPresentationScreen : function(){
 
 
@@ -393,8 +381,6 @@
 					user: options.uuid,
 					stream: function(bad, event) {
 						
-						//agility_webrtc.streams.push({ who 	: "you", stream 	: event.stream });
-
 						var remote_stream = _.find(agility_webrtc.streams, function(stream){
 							return stream.who === "you";
 						})
@@ -433,8 +419,6 @@
 					video : true,
 					audio : true
 				}, function(stream){
-
-					//agility_webrtc.streams.push({ who : "mine", stream : stream });
 
 					var my_stream = _.find(agility_webrtc.streams, function(stream){
 						return stream.who === "mine";
@@ -514,15 +498,12 @@
 			$(".slideCount li").removeClass("active");
 			$(".slideCount li").eq(active_index).addClass("active");
 			agility_webrtc.current_slide = active_index
-			//$(".slideCount li").removeClass("active");
-			//(".slideCount li").removeClass("active");
-			//$(".slideCount li").get(active_index).addClass("active");
+			
 		
 		},
 
 		displayAnalyticsGraphic : function(data){
 
-			//var data = _.sortBy(_.last(agility_webrtc.presentationVotes,30), function(vote){ return vote.date.getTime();})
 			if(agility_webrtc.presentationVotes.length > 30){
 				agility_webrtc.presentationVotes = _.last(agility_webrtc.presentationVotes,2);
 			}
@@ -598,11 +579,7 @@
 			if((Date.now() - agility_webrtc.last_time_votes_updated) > 500){
 				agility_webrtc.displayAnalyticsGraphic();
 			}
-			
 
-			//agility_webrtc.displayAnalyticsGraphic(votes_filtered);
-
-			//agility_webrtc.displayBarsGraphic(votes_filtered);
 
 		},
 		startTimer : function(){
@@ -704,19 +681,6 @@
 
 			} 
 
-			// else if (person.action === "leave" && person.uuid !== agility_webrtc.uuid) {
-				
-			// 	var person_element = $("#connected_people_list li[data-user=\"" + person.uuid + "\"]");
-				
-			// 	$(person_element).slideUp(200, function(){
-			// 		$(this).empty().remove();
-			// 	})
-
-			// 	//Remove the user from session in case he/she closed the browser...
-
-				
-			// }
-
 		},
 
 		onChannelListConnect 	: function(){
@@ -797,8 +761,6 @@
 						){
 							agility_webrtc.cancelIncomingCall(call.caller);
 						}
-
-						
 
 
 					}
@@ -1031,67 +993,6 @@
 
 			})
 
-			// agility_webrtc.currentUser.peerConnection(agility_webrtc.incomingCallFrom, function(peerConnection){
-
-			// 	if(peerConnection){
-			// 		agility_webrtc.currentUser.closeConnection(agility_webrtc.incomingCallFrom, function(){
-						
-			// 			console.log("Call ended");
-			// 			agility_webrtc.onEndCall();
-
-			// 		});
-			// 	} else {
-			// 		agility_webrtc.onEndCall();
-			// 	}
-
-
-			// })
-
-			// agility_webrtc.currentUser.closeConnection(agility_webrtc.incomingCallFrom, function(){
-
-			// 	console.log("Call ended");
-
-			// 	//peerConnection.close();
-				
-			// 	agility_webrtc.onEndCall();
-
-			// 	// var stream = _.find(agility_webrtc.streams, function(stream){ return stream.who === "mine"});
-				
-			// 	// if(stream){
-
-			// 	// 	stream.stream.stop();
-
-			// 	// 	stream.stream = null;
-
-			// 	// }
-
-		 // 	// 	agility_webrtc.streams = _.reject(agility_webrtc.streams, function(stream){
-		 // 	// 		return stream.who === "mine";
-		 // 	// 	})					
-
-			// })
-
-			// agility_webrtc.currentUser.peerConnection(agility_webrtc.incomingCallFrom, function(peerConnection) {
-				
-			// 	peerConnection.close();
-				
-			// 	agility_webrtc.onEndCall();
-
-			// 	var stream = _.find(agility_webrtc.streams, function(stream){ return stream.who === "mine"});
-				
-			// 	if(stream){
-
-			// 		stream.stream.stop();
-
-			// 		stream.stream = null;
-
-			// 	}
-
-		 // 		agility_webrtc.streams = _.reject(agility_webrtc.streams, function(stream){
-		 // 			return stream.who === "mine";
-		 // 		})				
-
-			// });
 
 		},
 
@@ -1249,8 +1150,6 @@
 					video : true,
 					audio : true
 				}, function(stream){
-
-					//agility_webrtc.streams.push({ who : "mine", stream : stream });
 
 					var my_stream = _.find(agility_webrtc.streams, function(stream){
 						return stream.who === "mine";
