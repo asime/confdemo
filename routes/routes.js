@@ -17,6 +17,12 @@ var routes = function (params) {
 
 	})
 
+	app.get('/demo', function(req, res){
+
+		res.render('simple_html.ejs');		
+
+	})	
+
 	app.get('/logout', function(req, res){
 
 		req.session.destroy();

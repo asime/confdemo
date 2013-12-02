@@ -386,9 +386,9 @@
 						})
 
 						if(remote_stream){
-							remote_stream.stream = stream;
+							remote_stream.stream = event.stream;
 						} else {
-							agility_webrtc.streams.push({ who : "you", stream : stream });
+							agility_webrtc.streams.push({ who : "you", stream : event.stream });
 						}
 
 						agility_webrtc.showStream({ who : "you" , container : '#you'});

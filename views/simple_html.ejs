@@ -1,0 +1,170 @@
+<!doctype html>
+
+<html lang="en">
+
+	<head>
+
+		<meta charset="utf-8">
+		<title>WebRTC Demo - AgilityFeat</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable = no">
+		<meta name="format-detection" content="telephone=no">
+
+		<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap-theme.css" />
+		
+		<style type="text/css">
+
+			body {
+			  padding-top: 40px;
+			  padding-bottom: 40px;
+			  background-color: #eee;
+			}
+
+			.form-signin {
+			  max-width: 330px;
+			  padding: 15px;
+			  margin: 0 auto;
+			}
+			.form-signin .form-signin-heading,
+			.form-signin .checkbox {
+			  margin-bottom: 10px;
+			}
+			.form-signin .checkbox {
+			  font-weight: normal;
+			}
+			.form-signin .form-control {
+			  position: relative;
+			  font-size: 16px;
+			  height: auto;
+			  padding: 10px;
+			  -webkit-box-sizing: border-box;
+			     -moz-box-sizing: border-box;
+			          box-sizing: border-box;
+			}
+			.form-signin .form-control:focus {
+			  z-index: 2;
+			}
+			.form-signin button{
+				margin-top: 10px;
+				width:90%;
+			}
+
+			.glyphicon{
+				font-size: 30px;
+				margin-top: 11px;
+				color: green;		
+				display: none;		
+			}
+
+
+		</style>
+
+	</head>
+
+	<body>
+
+		<div class="container">
+
+			<form class="form-signin">
+				<h2 class="form-signin-heading">Hi</h2>
+				<textarea class="form-control" rows="3" id="txt_message" autofocus=""></textarea>
+				<button class="btn btn-lg btn-default btn-block pull-left" id="btn_send_message" disabled="disabled" type="button">Connecting...</button>
+				<span class="glyphicon glyphicon-ok pull-right" id="sent"></span>
+			</form>
+
+		</div>
+
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="http://cdn.pubnub.com/pubnub.js"></script>
+
+
+		<script>
+
+			var credentials =  {
+				publish_key 	: 'pub-c-8f61dc72-875d-4e34-9461-9c870d7c9f57',
+				subscribe_key 	: 'sub-c-f5e33bbe-44f8-11e3-83cf-02ee2ddab7fe',
+				uuid 			: 'Guest'
+			}
+
+			var channelName = "agility_webrtc";
+			var you 		= PUBNUB.init(credentials);	
+			
+
+			var onChannelMessage = function(message){
+
+				if(message.user.name === you.db.get("username")){
+					console.log("You said: " + message.text.replace( /[<>]/g, '' ));
+					$("#txt_message").val("");
+					$("#btn_send_message")
+						.removeAttr("disabled")
+						.addClass("btn-primary")
+						.html("Send");
+						
+						
+						
+				}
+
+			}
+
+			var onChannelConnect = function(){
+				
+				you.db.set('username', (Date.now() + "-Guest").toLowerCase().replace(/ /g, ''));
+
+				$("#btn_send_message").removeAttr("disabled").addClass("btn-primary").html("Send");
+			}
+
+			var onChannelDisconnect = function(){
+				console.log("Disconnected");
+			}
+
+			var sendMessage = function(){
+
+				var message = $("#txt_message").val().trim();
+
+				if(message !== ""){
+
+					$("#btn_send_message").attr("disabled", "disabled").removeClass("btn-primary").html("Sending...");
+
+					you.publish({
+						channel: channelName,
+						message : {
+							type 	: "MESSAGE",
+							text 	: message,
+							user 	: {
+								name 		: you.db.get("username"),
+								can_webrtc 	: false
+							},
+							id 		: you.db.get("username")
+						}
+					});		
+
+					$("#sent").fadeIn(200).delay(2000).fadeOut(300);
+
+
+				}
+
+
+			}
+
+			$(document).on("click", "#btn_send_message", function(e){
+
+				e.preventDefault();
+
+				sendMessage();
+
+			})
+
+			you.subscribe({
+				channel 	: channelName,
+				callback 	: onChannelMessage,
+				connect 	: onChannelConnect,
+				disconnect 	: onChannelDisconnect
+			});			
+
+
+		</script>
+
+
+
+	</body>
+</html>
