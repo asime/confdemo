@@ -45,8 +45,11 @@
 			  z-index: 2;
 			}
 			.form-signin button{
-				margin-top: 10px;
+				margin: 10px auto;
 				width:90%;
+			}
+			.form-signin textarea{
+				width: 90%;
 			}
 
 			.glyphicon{
@@ -57,6 +60,7 @@
 			}
 
 
+
 		</style>
 
 	</head>
@@ -65,12 +69,192 @@
 
 		<div class="container">
 
+			<img class="loading_logo" src="images/af-brand.png"/>
+
 			<form class="form-signin">
 				<h2 class="form-signin-heading">Hi</h2>
 				<textarea class="form-control" rows="3" id="txt_message" autofocus=""></textarea>
 				<button class="btn btn-lg btn-default btn-block pull-left" id="btn_send_message" disabled="disabled" type="button">Connecting...</button>
 				<span class="glyphicon glyphicon-ok pull-right" id="sent"></span>
 			</form>
+
+			<div class="code_sample pull-left">
+
+
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;font-size:10px;"><pre style="margin: 0; line-height: 125%"><span style="color: #557799">&lt;!doctype html&gt;</span>
+
+<span style="color: #007700">&lt;html</span> <span style="color: #0000CC">lang=</span><span style="background-color: #fff0f0">&quot;en&quot;</span><span style="color: #007700">&gt;</span>
+
+	<span style="color: #007700">&lt;head&gt;</span>
+
+		<span style="color: #007700">&lt;meta</span> <span style="color: #0000CC">charset=</span><span style="background-color: #fff0f0">&quot;utf-8&quot;</span><span style="color: #007700">&gt;</span>
+		<span style="color: #007700">&lt;title&gt;</span>WebRTC Demo - AgilityFeat<span style="color: #007700">&lt;/title&gt;</span>
+		<span style="color: #007700">&lt;meta</span> <span style="color: #0000CC">name=</span><span style="background-color: #fff0f0">&quot;viewport&quot;</span> <span style="color: #0000CC">content=</span><span style="background-color: #fff0f0">&quot;width=device-width, initial-scale=1.0, user-scalable = no&quot;</span><span style="color: #007700">&gt;</span>
+		<span style="color: #007700">&lt;meta</span> <span style="color: #0000CC">name=</span><span style="background-color: #fff0f0">&quot;format-detection&quot;</span> <span style="color: #0000CC">content=</span><span style="background-color: #fff0f0">&quot;telephone=no&quot;</span><span style="color: #007700">&gt;</span>
+
+		<span style="color: #007700">&lt;link</span> <span style="color: #0000CC">rel=</span><span style="background-color: #fff0f0">&quot;stylesheet&quot;</span> <span style="color: #0000CC">type=</span><span style="background-color: #fff0f0">&quot;text/css&quot;</span> <span style="color: #0000CC">href=</span><span style="background-color: #fff0f0">&quot;stylesheets/bootstrap.min.css&quot;</span> <span style="color: #007700">/&gt;</span>
+		<span style="color: #007700">&lt;link</span> <span style="color: #0000CC">rel=</span><span style="background-color: #fff0f0">&quot;stylesheet&quot;</span> <span style="color: #0000CC">type=</span><span style="background-color: #fff0f0">&quot;text/css&quot;</span> <span style="color: #0000CC">href=</span><span style="background-color: #fff0f0">&quot;stylesheets/bootstrap-theme.css&quot;</span> <span style="color: #007700">/&gt;</span>
+		
+		<span style="color: #007700">&lt;style </span><span style="color: #0000CC">type=</span><span style="background-color: #fff0f0">&quot;text/css&quot;</span><span style="color: #007700">&gt;</span>
+
+			<span style="color: #007700">body</span> {
+			  <span style="color: #008800; font-weight: bold">padding-top</span><span style="color: #333333">:</span> <span style="color: #6600EE; font-weight: bold">40px</span>;
+			  <span style="color: #008800; font-weight: bold">padding-bottom</span><span style="color: #333333">:</span> <span style="color: #6600EE; font-weight: bold">40px</span>;
+			  <span style="color: #008800; font-weight: bold">background-color</span><span style="color: #333333">:</span> <span style="color: #6600EE; font-weight: bold">#eee</span>;
+			}
+
+			<span style="color: #BB0066; font-weight: bold">.form-signin</span> {
+			  <span style="color: #008800; font-weight: bold">max-width</span><span style="color: #333333">:</span> <span style="color: #6600EE; font-weight: bold">330px</span>;
+			  <span style="color: #008800; font-weight: bold">padding</span><span style="color: #333333">:</span> <span style="color: #6600EE; font-weight: bold">15px</span>;
+			  <span style="color: #008800; font-weight: bold">margin</span><span style="color: #333333">:</span> <span style="color: #6600EE; font-weight: bold">0</span> <span style="color: #008800; font-weight: bold">auto</span>;
+			}
+			<span style="color: #BB0066; font-weight: bold">.form-signin</span> <span style="color: #BB0066; font-weight: bold">.form-signin-heading</span><span style="color: #333333">,</span>
+			<span style="color: #BB0066; font-weight: bold">.form-signin</span> <span style="color: #BB0066; font-weight: bold">.checkbox</span> {
+			  <span style="color: #008800; font-weight: bold">margin-bottom</span><span style="color: #333333">:</span> <span style="color: #6600EE; font-weight: bold">10px</span>;
+			}
+			<span style="color: #BB0066; font-weight: bold">.form-signin</span> <span style="color: #BB0066; font-weight: bold">.checkbox</span> {
+			  <span style="color: #008800; font-weight: bold">font-weight</span><span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">normal</span>;
+			}
+			<span style="color: #BB0066; font-weight: bold">.form-signin</span> <span style="color: #BB0066; font-weight: bold">.form-control</span> {
+			  <span style="color: #008800; font-weight: bold">position</span><span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">relative</span>;
+			  <span style="color: #008800; font-weight: bold">font-size</span><span style="color: #333333">:</span> <span style="color: #6600EE; font-weight: bold">16px</span>;
+			  <span style="color: #008800; font-weight: bold">height</span><span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">auto</span>;
+			  <span style="color: #008800; font-weight: bold">padding</span><span style="color: #333333">:</span> <span style="color: #6600EE; font-weight: bold">10px</span>;
+			  <span style="color: #333333">-</span>webkit<span style="color: #333333">-</span>box<span style="color: #333333">-</span>sizing<span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">border</span><span style="color: #333333">-</span>box;
+			     <span style="color: #333333">-</span>moz<span style="color: #333333">-</span>box<span style="color: #333333">-</span>sizing<span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">border</span><span style="color: #333333">-</span>box;
+			          box<span style="color: #333333">-</span>sizing<span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">border</span><span style="color: #333333">-</span>box;
+			}
+			<span style="color: #BB0066; font-weight: bold">.form-signin</span> <span style="color: #BB0066; font-weight: bold">.form-control</span><span style="color: #555555; font-weight: bold">:focus</span> {
+			  <span style="color: #008800; font-weight: bold">z-index</span><span style="color: #333333">:</span> <span style="color: #6600EE; font-weight: bold">2</span>;
+			}
+			<span style="color: #BB0066; font-weight: bold">.form-signin</span> <span style="color: #007700">button</span>{
+				<span style="color: #008800; font-weight: bold">margin-top</span><span style="color: #333333">:</span> <span style="color: #6600EE; font-weight: bold">10px</span>;
+				<span style="color: #008800; font-weight: bold">width</span><span style="color: #333333">:</span><span style="color: #6600EE; font-weight: bold">90</span><span style="color: #333333">%</span>;
+			}
+
+			<span style="color: #BB0066; font-weight: bold">.glyphicon</span>{
+				<span style="color: #008800; font-weight: bold">font-size</span><span style="color: #333333">:</span> <span style="color: #6600EE; font-weight: bold">30px</span>;
+				<span style="color: #008800; font-weight: bold">margin-top</span><span style="color: #333333">:</span> <span style="color: #6600EE; font-weight: bold">11px</span>;
+				<span style="color: #008800; font-weight: bold">color</span><span style="color: #333333">:</span> <span style="color: #007020">green</span>;		
+				<span style="color: #008800; font-weight: bold">display</span><span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">none</span>;		
+			}
+
+
+		<span style="color: #007700">&lt;/style&gt;</span>
+
+	<span style="color: #007700">&lt;/head&gt;</span>
+
+	<span style="color: #007700">&lt;body&gt;</span>
+
+		<span style="color: #007700">&lt;div</span> <span style="color: #0000CC">class=</span><span style="background-color: #fff0f0">&quot;container&quot;</span><span style="color: #007700">&gt;</span>
+
+			<span style="color: #007700">&lt;form</span> <span style="color: #0000CC">class=</span><span style="background-color: #fff0f0">&quot;form-signin&quot;</span><span style="color: #007700">&gt;</span>
+				<span style="color: #007700">&lt;h2</span> <span style="color: #0000CC">class=</span><span style="background-color: #fff0f0">&quot;form-signin-heading&quot;</span><span style="color: #007700">&gt;</span>Hi<span style="color: #007700">&lt;/h2&gt;</span>
+				<span style="color: #007700">&lt;textarea</span> <span style="color: #0000CC">class=</span><span style="background-color: #fff0f0">&quot;form-control&quot;</span> <span style="color: #0000CC">rows=</span><span style="background-color: #fff0f0">&quot;3&quot;</span> <span style="color: #0000CC">id=</span><span style="background-color: #fff0f0">&quot;txt_message&quot;</span> <span style="color: #0000CC">autofocus=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;&lt;/textarea&gt;</span>
+				<span style="color: #007700">&lt;button</span> <span style="color: #0000CC">class=</span><span style="background-color: #fff0f0">&quot;btn btn-lg btn-default btn-block pull-left&quot;</span> <span style="color: #0000CC">id=</span><span style="background-color: #fff0f0">&quot;btn_send_message&quot;</span> <span style="color: #0000CC">disabled=</span><span style="background-color: #fff0f0">&quot;disabled&quot;</span> <span style="color: #0000CC">type=</span><span style="background-color: #fff0f0">&quot;button&quot;</span><span style="color: #007700">&gt;</span>Connecting...<span style="color: #007700">&lt;/button&gt;</span>
+				<span style="color: #007700">&lt;span</span> <span style="color: #0000CC">class=</span><span style="background-color: #fff0f0">&quot;glyphicon glyphicon-ok pull-right&quot;</span> <span style="color: #0000CC">id=</span><span style="background-color: #fff0f0">&quot;sent&quot;</span><span style="color: #007700">&gt;&lt;/span&gt;</span>
+			<span style="color: #007700">&lt;/form&gt;</span>
+
+		<span style="color: #007700">&lt;/div&gt;</span>
+
+		<span style="color: #007700">&lt;script </span><span style="color: #0000CC">src=</span><span style="background-color: #fff0f0">&quot;//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js&quot;</span><span style="color: #007700">&gt;&lt;/script&gt;</span>
+		<span style="color: #007700">&lt;script </span><span style="color: #0000CC">src=</span><span style="background-color: #fff0f0">&quot;http://cdn.pubnub.com/pubnub.js&quot;</span><span style="color: #007700">&gt;&lt;/script&gt;</span>
+
+
+		<span style="color: #007700">&lt;script&gt;</span>
+
+			<span style="color: #008800; font-weight: bold">var</span> credentials <span style="color: #333333">=</span>  {
+				publish_key 	<span style="color: #333333">:</span> <span style="background-color: #fff0f0">&#39;pub-c-8f61dc72-875d-4e34-9461-9c870d7c9f57&#39;</span>,
+				subscribe_key 	<span style="color: #333333">:</span> <span style="background-color: #fff0f0">&#39;sub-c-f5e33bbe-44f8-11e3-83cf-02ee2ddab7fe&#39;</span>,
+				uuid 			<span style="color: #333333">:</span> <span style="background-color: #fff0f0">&#39;Guest&#39;</span>
+			}
+
+			<span style="color: #008800; font-weight: bold">var</span> channelName <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&quot;agility_webrtc&quot;</span>;
+			<span style="color: #008800; font-weight: bold">var</span> you 		<span style="color: #333333">=</span> PUBNUB.init(credentials);	
+			
+
+			<span style="color: #008800; font-weight: bold">var</span> onChannelMessage <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">function</span>(message){
+
+				<span style="color: #008800; font-weight: bold">if</span>(message.user.name <span style="color: #333333">===</span> you.db.get(<span style="background-color: #fff0f0">&quot;username&quot;</span>)){
+					console.log(<span style="background-color: #fff0f0">&quot;You said: &quot;</span> <span style="color: #333333">+</span> message.text.replace( <span style="color: #000000; background-color: #fff0ff">/[&lt;&gt;]/g</span>, <span style="background-color: #fff0f0">&#39;&#39;</span> ));
+					$(<span style="background-color: #fff0f0">&quot;#txt_message&quot;</span>).val(<span style="background-color: #fff0f0">&quot;&quot;</span>);
+					$(<span style="background-color: #fff0f0">&quot;#btn_send_message&quot;</span>)
+						.removeAttr(<span style="background-color: #fff0f0">&quot;disabled&quot;</span>)
+						.addClass(<span style="background-color: #fff0f0">&quot;btn-primary&quot;</span>)
+						.html(<span style="background-color: #fff0f0">&quot;Send&quot;</span>);
+						
+						
+						
+				}
+
+			}
+
+			<span style="color: #008800; font-weight: bold">var</span> onChannelConnect <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">function</span>(){
+				
+				you.db.set(<span style="background-color: #fff0f0">&#39;username&#39;</span>, (<span style="color: #007020">Date</span>.now() <span style="color: #333333">+</span> <span style="background-color: #fff0f0">&quot;-Guest&quot;</span>).toLowerCase().replace(<span style="color: #000000; background-color: #fff0ff">/ /g</span>, <span style="background-color: #fff0f0">&#39;&#39;</span>));
+
+				$(<span style="background-color: #fff0f0">&quot;#btn_send_message&quot;</span>).removeAttr(<span style="background-color: #fff0f0">&quot;disabled&quot;</span>).addClass(<span style="background-color: #fff0f0">&quot;btn-primary&quot;</span>).html(<span style="background-color: #fff0f0">&quot;Send&quot;</span>);
+			}
+
+			<span style="color: #008800; font-weight: bold">var</span> onChannelDisconnect <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">function</span>(){
+				console.log(<span style="background-color: #fff0f0">&quot;Disconnected&quot;</span>);
+			}
+
+			<span style="color: #008800; font-weight: bold">var</span> sendMessage <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">function</span>(){
+
+				<span style="color: #008800; font-weight: bold">var</span> message <span style="color: #333333">=</span> $(<span style="background-color: #fff0f0">&quot;#txt_message&quot;</span>).val().trim();
+
+				<span style="color: #008800; font-weight: bold">if</span>(message <span style="color: #333333">!==</span> <span style="background-color: #fff0f0">&quot;&quot;</span>){
+
+					$(<span style="background-color: #fff0f0">&quot;#btn_send_message&quot;</span>).attr(<span style="background-color: #fff0f0">&quot;disabled&quot;</span>, <span style="background-color: #fff0f0">&quot;disabled&quot;</span>).removeClass(<span style="background-color: #fff0f0">&quot;btn-primary&quot;</span>).html(<span style="background-color: #fff0f0">&quot;Sending...&quot;</span>);
+
+					you.publish({
+						channel<span style="color: #333333">:</span> channelName,
+						message <span style="color: #333333">:</span> {
+							type 	<span style="color: #333333">:</span> <span style="background-color: #fff0f0">&quot;MESSAGE&quot;</span>,
+							text 	<span style="color: #333333">:</span> message,
+							user 	<span style="color: #333333">:</span> {
+								name 		<span style="color: #333333">:</span> you.db.get(<span style="background-color: #fff0f0">&quot;username&quot;</span>),
+								can_webrtc 	<span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">false</span>
+							},
+							id 		<span style="color: #333333">:</span> you.db.get(<span style="background-color: #fff0f0">&quot;username&quot;</span>)
+						}
+					});		
+
+					$(<span style="background-color: #fff0f0">&quot;#sent&quot;</span>).fadeIn(<span style="color: #0000DD; font-weight: bold">200</span>).delay(<span style="color: #0000DD; font-weight: bold">2000</span>).fadeOut(<span style="color: #0000DD; font-weight: bold">300</span>);
+
+
+				}
+
+
+			}
+
+			$(<span style="color: #007020">document</span>).on(<span style="background-color: #fff0f0">&quot;click&quot;</span>, <span style="background-color: #fff0f0">&quot;#btn_send_message&quot;</span>, <span style="color: #008800; font-weight: bold">function</span>(e){
+
+				e.preventDefault();
+
+				sendMessage();
+
+			})
+
+			you.subscribe({
+				channel 	<span style="color: #333333">:</span> channelName,
+				callback 	<span style="color: #333333">:</span> onChannelMessage,
+				connect 	<span style="color: #333333">:</span> onChannelConnect,
+				disconnect 	<span style="color: #333333">:</span> onChannelDisconnect
+			});			
+
+
+		<span style="color: #007700">&lt;/script&gt;</span>
+
+
+
+	<span style="color: #007700">&lt;/body&gt;</span>
+<span style="color: #007700">&lt;/html&gt;</span>
+</pre></div>
+
+
+			</div>
 
 		</div>
 
