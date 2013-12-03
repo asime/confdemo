@@ -450,22 +450,24 @@
 		storeMessageAndDisplayMessages : function(message){
 
 			var self = agility_webrtc;
+			if( $.inArray(message, self.channelMessages) === -1 ) {
+				self.channelMessages.push(message)
 
-			self.channelMessages.push(message)
-			
-			self.render_prepend({
-				container 	: ".commentsList",
-				template 	: "#channel_chat",
-				data 		: {
-					messages 		: self.channelMessages,
-					this_message	: message,
-					app 			: self
+				
+				self.render_prepend({
+					container 	: ".commentsList",
+					template 	: "#channel_chat",
+					data 		: {
+						messages 		: self.channelMessages,
+						this_message	: message,
+						app 			: self
+					}
+				})	
+
+				if($(".doneBtn").is(":visible")){
+					$(".deleteBtn").fadeIn();
 				}
-			})	
-
-			if($(".doneBtn").is(":visible")){
-				$(".deleteBtn").fadeIn();
-			}
+			}	
 
 		},
 
