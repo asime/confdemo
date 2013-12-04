@@ -737,7 +737,11 @@
 
 
 		},
+		onChannelListHereNow : function(presence){
 
+
+
+		},
 		connectToListChannel : function(){
 
 			agility_webrtc.render({
@@ -755,6 +759,13 @@
 				connect 	: agility_webrtc.onChannelListConnect,
 				disconnect 	: agility_webrtc.onChannelListDisconnect
 			});
+
+			//Detect presence:
+
+			agility_webrtc.currentUser.here_now({
+				channel 	: agility_webrtc.channelName,
+				callback 	: agility_webrtc.onChannelListHereNow
+			})
 
 		},
 
@@ -1089,15 +1100,15 @@
 			})		
 				
 
-			$(document).on("slide.bs.carousel", "#presentation-carousel", function(e){			
+			// $(document).on("slide.bs.carousel", "#presentation-carousel", function(e){			
 				
-				if(agility_webrtc.currentUser.db.get('is_presenter').toString() !== "true"){
-					//If the user is not a presenter, then stopPropagation...
-					e.preventDefault();
-					e.stopPropagation();
-				}
+			// 	if(agility_webrtc.currentUser.db.get('is_presenter').toString() !== "true"){
+			// 		//If the user is not a presenter, then stopPropagation...
+			// 		e.preventDefault();
+			// 		e.stopPropagation();
+			// 	}
 
-			})
+			// })
 
 			$(document).on("click", "#ignoreCall", function(e){
 
@@ -1410,7 +1421,7 @@
 				e.preventDefault();
 				e.stopPropagation();
 
-				if($(this).data("is-presenter")){
+				//if($(this).data("is-presenter")){
 					agility_webrtc.changeSlide({slide: $(e.target).data("slide-to")});
 					agility_webrtc.currentUser.publish({
 						channel: agility_webrtc.channelName,
@@ -1419,7 +1430,7 @@
 							options: {slide: $(e.target).data("slide-to")}
 						}
 					});
-				}
+				//}
 
 
 			});
