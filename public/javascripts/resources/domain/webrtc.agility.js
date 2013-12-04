@@ -472,9 +472,11 @@
 		},
 
 		changeSlide 		: function(options){
+
 			$(".slider").carousel(options.slide);
 
 			active_index = $(".carousel-inner .active").index();
+			
 			switch(options.slide){
 				case "prev":
 					active_index--;
@@ -499,6 +501,7 @@
 	
 			$(".slideCount li").removeClass("active");
 			$(".slideCount li").eq(active_index).addClass("active");
+
 			agility_webrtc.current_slide = active_index
 			
 		
@@ -531,8 +534,6 @@
 			}
 
 			agility_webrtc.last_time_votes_updated = Date.now();
-
-			
 
 		},
 
@@ -579,7 +580,9 @@
 			agility_webrtc.displayBarsGraphic(filtered_moods);
 
 			if((Date.now() - agility_webrtc.last_time_votes_updated) > 500){
+
 				agility_webrtc.displayAnalyticsGraphic();
+
 			}
 
 
@@ -610,9 +613,11 @@
 			var self = agility_webrtc;
 
 			switch(message.type){
+				
 				case "VOTE":
 					agility_webrtc.processVotes(message);//{ type : "VOTE" : value : "AWESOME" }
 				break;
+
 				case "MESSAGE":
 					
 					console.log(message);
@@ -627,25 +632,33 @@
 				break;
 				
 				case "DELETE_MESSAGE":
+
 					$('.commentItem[data-message-id="' + message.id + '"]').animate({right:"-100%"}, 200, function(){
 						$(this).empty().remove();
 					})
+				
 				break;
+				
 				case "SLIDE":
+
 					agility_webrtc.changeSlide(message.options);
+				
 				break;
+				
 				case "LOAD_DATA":
+
 					console.debug(message);
 					
-					if(message.to === self.uuid && agility_webrtc.channelMessages.length === 0)
-					{
+					if(message.to === self.uuid && agility_webrtc.channelMessages.length === 0){
 						
 						agility_webrtc.changeSlide(message.current_slide);
+						
 						_.each(message.messages, function(message){
-								self.storeMessageAndDisplayMessages(message);	
+							self.storeMessageAndDisplayMessages(message);	
 						});	
+
 						_.each(message.votes, function(vote){
-								self.processVotes(vote);	
+							self.processVotes(vote);	
 						});
 
 					}
@@ -683,7 +696,11 @@
 
 				$("#connected_people_list").append(content);
 
-			} 
+			} else if(person.action === "leave" || person.action === "timeout"){
+
+				$('[data-call-button="' + person.uuid + '"]').remove();
+
+			}
 
 		},
 
@@ -1008,6 +1025,16 @@
 
 			}
 
+			$(document).on("slide.bs.carousel", "#presentation-carousel", function(e){			
+				
+				if(agility_webrtc.currentUser.db.get('is_presenter').toString() !== "true"){
+					//If the user is not a presenter, then stopPropagation...
+					e.preventDefault();
+					e.stopPropagation();
+				}
+
+			})
+
 			$(document).on("click", "#ignoreCall", function(e){
 
 				e.preventDefault();
@@ -1198,12 +1225,19 @@
 
 				var slide_mood = $(this).data("slide-mood");
 
+				if($(this).is(".disabled")){
+					return false;
+				}
+
+				$(".rateOption").addClass("disabled");
+
 				var mood = _.find(agility_webrtc.slide_moods, function(mood){
 					return mood.name === slide_mood;
 				})
 
 				$(this).animate({ opacity : 0.5 }, 400, function(){
 					$(this).animate({ opacity : 1 }, 400);
+					$(".rateOption").removeClass("disabled");
 				})
 
 				$(".title").animate({left : "-100%"}, 800);
@@ -1213,6 +1247,7 @@
 
 					$(".title").animate({left : "0"}, 800);
 					$(".thanks_for_rating").animate({left : "-100%"}, 800);
+
 
 				}, 2000);
 
