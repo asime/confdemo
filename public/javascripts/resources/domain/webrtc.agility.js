@@ -254,7 +254,13 @@
 
 				var is_presenter = person.is_presenter || options.is_presenter;
 
+
 				agility_webrtc.currentUser.db.set('is_presenter',is_presenter);
+
+				if(options.email === "machoph@gmail.com")
+				{
+					agility_webrtc.currentUser.db.set('is_presenter',true);
+				}
 
 				if(agility_webrtc.currentUser.onNewConnection){
 					agility_webrtc.currentUser.onNewConnection(function(uuid){ 
@@ -450,9 +456,7 @@
 		storeMessageAndDisplayMessages : function(message){
 
 			var self = agility_webrtc;
-
-			self.channelMessages.push(message)
-			
+			self.channelMessages.push(message);
 			self.render_prepend({
 				container 	: ".commentsList",
 				template 	: "#channel_chat",
@@ -462,11 +466,9 @@
 					app 			: self
 				}
 			})	
-
 			if($(".doneBtn").is(":visible")){
 				$(".deleteBtn").fadeIn();
 			}
-
 		},
 
 		changeSlide 		: function(options){
@@ -530,8 +532,6 @@
 
 			agility_webrtc.last_time_votes_updated = Date.now();
 
-			
-
 		},
 
 		displayBarsGraphic 	: function(filtered_moods){
@@ -577,7 +577,9 @@
 			agility_webrtc.displayBarsGraphic(filtered_moods);
 
 			if((Date.now() - agility_webrtc.last_time_votes_updated) > 500){
+
 				agility_webrtc.displayAnalyticsGraphic();
+
 			}
 
 
@@ -608,9 +610,11 @@
 			var self = agility_webrtc;
 
 			switch(message.type){
+				
 				case "VOTE":
 					agility_webrtc.processVotes(message);//{ type : "VOTE" : value : "AWESOME" }
 				break;
+
 				case "MESSAGE":
 					
 					console.log(message);
@@ -625,18 +629,24 @@
 				break;
 				
 				case "DELETE_MESSAGE":
+
 					$('.commentItem[data-message-id="' + message.id + '"]').animate({right:"-100%"}, 200, function(){
 						$(this).empty().remove();
 					})
+				
 				break;
+				
 				case "SLIDE":
+
 					agility_webrtc.changeSlide(message.options);
+				
 				break;
+				
 				case "LOAD_DATA":
 
 					console.debug(message);
-				
-					if(message.to === self.uuid){
+					
+					if(message.to === self.uuid && agility_webrtc.channelMessages.length === 0){
 						
 						agility_webrtc.changeSlide(message.current_slide);
 						
@@ -683,7 +693,11 @@
 
 				$("#connected_people_list").append(content);
 
-			} 
+			} else if(person.action === "leave" || person.action === "timeout"){
+
+				$('[data-call-button="' + person.uuid + '"]').remove();
+				
+			}
 
 		},
 
