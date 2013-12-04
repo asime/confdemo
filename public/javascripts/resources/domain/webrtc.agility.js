@@ -633,15 +633,19 @@
 					agility_webrtc.changeSlide(message.options);
 				break;
 				case "LOAD_DATA":
+
 					console.debug(message);
-					if(message.to === self.uuid)
-					{
+				
+					if(message.to === self.uuid){
+						
 						agility_webrtc.changeSlide(message.current_slide);
+						
 						_.each(message.messages, function(message){
-								self.storeMessageAndDisplayMessages(message);	
+							self.storeMessageAndDisplayMessages(message);	
 						});	
+
 						_.each(message.votes, function(vote){
-								self.processVotes(vote);	
+							self.processVotes(vote);	
 						});
 
 					}
