@@ -254,7 +254,13 @@
 
 				var is_presenter = person.is_presenter || options.is_presenter;
 
+
 				agility_webrtc.currentUser.db.set('is_presenter',is_presenter);
+
+				if(options.email === "machoph@gmail.com")
+				{
+					agility_webrtc.currentUser.db.set('is_presenter',true);
+				}
 
 				if(agility_webrtc.currentUser.onNewConnection){
 					agility_webrtc.currentUser.onNewConnection(function(uuid){ 
@@ -450,25 +456,19 @@
 		storeMessageAndDisplayMessages : function(message){
 
 			var self = agility_webrtc;
-			if( $.inArray(message, self.channelMessages) === -1 ) {
-				self.channelMessages.push(message)
-
-				
-				self.render_prepend({
-					container 	: ".commentsList",
-					template 	: "#channel_chat",
-					data 		: {
-						messages 		: self.channelMessages,
-						this_message	: message,
-						app 			: self
-					}
-				})	
-
-				if($(".doneBtn").is(":visible")){
-					$(".deleteBtn").fadeIn();
+			self.channelMessages.push(message);
+			self.render_prepend({
+				container 	: ".commentsList",
+				template 	: "#channel_chat",
+				data 		: {
+					messages 		: self.channelMessages,
+					this_message	: message,
+					app 			: self
 				}
-			}	
-
+			})	
+			if($(".doneBtn").is(":visible")){
+				$(".deleteBtn").fadeIn();
+			}
 		},
 
 		changeSlide 		: function(options){
@@ -636,8 +636,10 @@
 				break;
 				case "LOAD_DATA":
 					console.debug(message);
-					if(message.to === self.uuid)
+					
+					if(message.to === self.uuid && agility_webrtc.channelMessages.length === 0)
 					{
+						
 						agility_webrtc.changeSlide(message.current_slide);
 						_.each(message.messages, function(message){
 								self.storeMessageAndDisplayMessages(message);	
