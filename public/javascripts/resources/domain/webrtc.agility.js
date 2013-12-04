@@ -949,6 +949,7 @@
 			agility_webrtc.showControls();
 			agility_webrtc.setCurrentCallTime("00:00")
 			agility_webrtc.currentCallTime = 0;
+			clearInterval(agility_webrtc.timeInterval);
 			agility_webrtc.timeInterval = setInterval(agility_webrtc.incrementTimer, 1000);
 
 		},
