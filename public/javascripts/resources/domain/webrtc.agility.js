@@ -472,9 +472,11 @@
 		},
 
 		changeSlide 		: function(options){
+
 			$(".slider").carousel(options.slide);
 
 			active_index = $(".carousel-inner .active").index();
+			
 			switch(options.slide){
 				case "prev":
 					active_index--;
@@ -499,6 +501,7 @@
 	
 			$(".slideCount li").removeClass("active");
 			$(".slideCount li").eq(active_index).addClass("active");
+
 			agility_webrtc.current_slide = active_index
 			
 		
@@ -696,7 +699,7 @@
 			} else if(person.action === "leave" || person.action === "timeout"){
 
 				$('[data-call-button="' + person.uuid + '"]').remove();
-				
+
 			}
 
 		},
@@ -1021,6 +1024,16 @@
 				agility_webrtc.onChannelListDisconnect();
 
 			}
+
+			$(document).on("slide.bs.carousel", "#presentation-carousel", function(e){			
+				
+				if(agility_webrtc.currentUser.db.get('is_presenter').toString() !== "true"){
+					//If the user is not a presenter, then stopPropagation...
+					e.preventDefault();
+					e.stopPropagation();
+				}
+
+			})
 
 			$(document).on("click", "#ignoreCall", function(e){
 
