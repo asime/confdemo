@@ -837,8 +837,27 @@ background: #4ebb9a;
   width:100%;
 }
 
+/***************** AUDIO CONTROLS ******************/
 
+.audio_controls{ position: absolute;top: 27px;cursor: pointer; background: white; border-radius: 50%;}
 
+#your_audio_mute{
+  left: 25px;
+}
+
+#your_audio_unmute{
+  left: 25px;
+  display: none;
+}
+
+#my_audio_mute{
+  right: 20px;
+}
+
+#my_audio_unmute{
+  right: 20px;  
+  display: none;
+}
 
 
 

@@ -972,6 +972,23 @@
 			agility_webrtc.hideConference();
 			agility_webrtc.hideControls();
 			agility_webrtc.stopTimer();
+			agility_webrtc.stopStream();
+
+
+		},
+
+		stopStream 		: function(){
+
+			var my_stream = _.find(agility_webrtc.streams, function(stream){
+				return stream.who === "mine";
+			})
+
+			if(my_stream){
+				my_stream.stream.stop();
+				agility_webrtc.streams = _.reject(agility_webrtc.streams, function(stream){
+					return stream.who === "mine";
+				})
+			}			
 
 		},
 
@@ -1024,6 +1041,34 @@
 				agility_webrtc.onChannelListDisconnect();
 
 			}
+
+			$(document).on("click", "#your_audio_mute", function(){
+				$("#you").prop('muted', true); 
+				$(this).hide();
+				$("#your_audio_unmute").show();
+			})
+
+
+			$(document).on("click", "#your_audio_unmute", function(){
+				$("#you").prop('muted', false); 
+				$(this).hide();
+				$("#your_audio_mute").show();
+			})
+
+
+			$(document).on("click", "#my_audio_mute", function(){
+				$("#me").prop('muted', true); 
+				$(this).hide();
+				$("#my_audio_unmute").show();
+			})
+
+
+			$(document).on("click", "#my_audio_unmute", function(){
+				$("#me").prop('muted', false); 
+				$(this).hide();
+				$("#my_audio_mute").show();
+			})		
+				
 
 			$(document).on("slide.bs.carousel", "#presentation-carousel", function(e){			
 				
