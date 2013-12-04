@@ -35,7 +35,7 @@
 			{ pic_url : "images/presentation/10.jpg" },
 			{ pic_url : "images/presentation/11.jpg" },
 			{ pic_url : "images/presentation/12.jpg" },
-			{ pic_url : "images/presentation/13,jpg" },
+			{ pic_url : "images/presentation/13.jpg" },
 			{ pic_url : "images/presentation/14.jpg" },
 			{ pic_url : "images/presentation/15.jpg" },
 			{ pic_url : "images/presentation/16.jpg" },
@@ -46,8 +46,7 @@
 			{ pic_url : "images/presentation/21.jpg" },
 			{ pic_url : "images/presentation/22.jpg" },
 			{ pic_url : "images/presentation/23.jpg" },
-			{ pic_url : "images/presentation/24.jpg" },
-			{ pic_url : "images/presentation/25.jpg" }
+			{ pic_url : "images/presentation/24.jpg" }
 		],
 
 		current_slide : 0,
