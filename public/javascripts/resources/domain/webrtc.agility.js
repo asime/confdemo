@@ -674,7 +674,7 @@
 						
 						_.each(message.messages, function(message){
 							self.storeMessageAndDisplayMessages(message);	
-						});	
+						});
 
 						_.each(message.votes, function(vote){
 							self.processVotes(vote);	
