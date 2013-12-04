@@ -1225,12 +1225,19 @@
 
 				var slide_mood = $(this).data("slide-mood");
 
+				if($(this).is(".disabled")){
+					return false;
+				}
+
+				$(".rateOption").addClass("disabled");
+
 				var mood = _.find(agility_webrtc.slide_moods, function(mood){
 					return mood.name === slide_mood;
 				})
 
 				$(this).animate({ opacity : 0.5 }, 400, function(){
 					$(this).animate({ opacity : 1 }, 400);
+					$(".rateOption").removeClass("disabled");
 				})
 
 				$(".title").animate({left : "-100%"}, 800);
@@ -1240,6 +1247,7 @@
 
 					$(".title").animate({left : "0"}, 800);
 					$(".thanks_for_rating").animate({left : "-100%"}, 800);
+
 
 				}, 2000);
 
