@@ -802,7 +802,7 @@
 						call.callee.uuid === agility_webrtc.uuid
 					){
 						agility_webrtc.incomingCallFrom = call.caller.uuid;
-						agility_webrtc.onIncomingCall(call.caller.uuid);
+						agility_webrtc.onIncomingCall(call.caller);
 					} else {
 
 						if(call.caller.uuid === agility_webrtc.currentCallUUID){
@@ -956,7 +956,7 @@
 			
 
 		},
-		onIncomingCall 		: function(whoIsCalling){
+		onIncomingCall 		: function(person){
 
 			var modalAnswer = $("#answer-modal");
 
@@ -964,7 +964,7 @@
 
 			modalAnswer
 				.removeClass("hide").find('.caller')
-				.text("" + whoIsCalling + " is calling...")
+				.text("" + person.username + " is calling...")
 				.end().find('.modal-footer').show().end().modal('show');
 			
 
