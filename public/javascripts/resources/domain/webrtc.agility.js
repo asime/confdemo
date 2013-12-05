@@ -1292,7 +1292,7 @@
 
 				var callingTo = {
 					uuid 		: $(this).data('user'),
-					username 	: $(this).data('username')
+					username 	: $(this).data('user-username')
 				}
 
 				agility_webrtc.requestStream({
