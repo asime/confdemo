@@ -269,7 +269,7 @@
 				agility_webrtc.uuid = options.email;//person.username;
 
 				//agility_webrtc.credentials.uuid = person.username;
-				agility_webrtc.credentials.uuid = options.email;//.substring(0,options.email.indexOf("@"));
+				agility_webrtc.credentials.uuid = PUBNUB.get_uuid();//.substring(0,options.email.indexOf("@"));
 
 				agility_webrtc.currentUser = PUBNUB.init(agility_webrtc.credentials);	
 
