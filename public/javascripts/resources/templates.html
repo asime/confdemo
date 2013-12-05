@@ -280,7 +280,7 @@
 		<span class="commentText"><%= this_message.message %></span>
 		<span class="commentAuthor"><%= this_message.from %></span>
 		<% if(this_message.can_webrtc){%>
-			<span class="cameraBtn" data-call-button="<%= this_message.from_uuid %>" data-user="<%= this_message.from %>">
+			<span class="cameraBtn" data-call-button="<%= this_message.from_uuid %>" data-user="<%= this_message.from_uuid %>">
 				<span class="glyphicon glyphicon-facetime-video"></span>
 			</span>
 		<%}%>
