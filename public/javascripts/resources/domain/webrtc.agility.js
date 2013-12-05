@@ -758,7 +758,7 @@
 				container 	: "#content",
 				template 	: "#connecting_template",
 				data 		: {
-					message : agility_webrtc.uuid + "... please wait"
+					message : "Please wait"
 				}
 			})				
 
@@ -881,15 +881,15 @@
 
 		},
 
-		callPerson 			: function(who){
+		callPerson 			: function(person){
 
-			agility_webrtc.currentCallUUID = who;
+			agility_webrtc.currentCallUUID = person.uuid;
 
 			var modalCalling = $("#calling-modal");
 
-			modalCalling.find('.calling').text("Calling " + who + "...");
+			modalCalling.find('.calling').text("Calling " + person.username + "...");
 
-			modalCalling.find(".btn-danger").data("calling-user", who);
+			modalCalling.find(".btn-danger").data("calling-user", person.uuid);
 
 			modalCalling.modal('show');
 
@@ -901,7 +901,7 @@
 				channel: 'call',
 				message: {
 					caller 	: agility_webrtc.uuid,
-					callee 	: who,
+					callee 	: person.uuid,
 					action 	: "calling"
 				}
 			});
@@ -1290,7 +1290,10 @@
 
 				var name;
 
-				var callingTo = $(this).data('user');
+				var callingTo = {
+					uuid 		: $(this).data('user'),
+					username 	: $(this).data('username')
+				}
 
 				agility_webrtc.requestStream({
 					video : true,
