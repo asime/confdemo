@@ -707,7 +707,17 @@
 				person.id  		= person.uuid;
 				person.is_you  	= (person.uuid === agility_webrtc.uuid);
 
-				if(agility_webrtc.currentUser.db.get("is_presenter") === "true" &&  person.is_you === false){
+				if(
+					agility_webrtc.currentUser.db.get("is_presenter") === "true" 
+					&&  
+					person.is_you === false
+					&& 
+					(
+						agility_webrtc.channelMessages.length > 0
+					||
+						agility_webrtc.presentationVotes.length > 0
+					)
+				){
 					agility_webrtc.currentUser.publish({
 						channel: agility_webrtc.channelName,
 						message : {
@@ -1002,8 +1012,13 @@
 				agility_webrtc.currentUser.publish({
 					channel: 'answer',
 					message: {
-						caller: agility_webrtc.incomingCallFrom,
-						callee: agility_webrtc.uuid
+						caller: {
+							uuid 		: agility_webrtc.incomingCallFrom
+						},
+						callee: {
+							uuid 		: agility_webrtc.uuid,
+							username 	: agility_webrtc.currentUser.db.get("username")
+						}
 					}
 				});
 
