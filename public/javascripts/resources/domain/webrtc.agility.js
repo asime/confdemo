@@ -521,7 +521,7 @@
 			$(".slideCount li").removeClass("active");
 			$(".slideCount li").eq(active_index).addClass("active");
 
-			agility_webrtc.current_slide = active_index
+			agility_webrtc.current_slide = active_index;
 			
 		
 		},
@@ -739,6 +739,7 @@
 		},
 		onChannelListHereNow : function(presence){
 
+			console.log(JSON.stringify(presence));
 
 
 		},
@@ -1064,14 +1065,43 @@
 
 
 		},
+		setInstore 	: function(item, key){
 
+			if(item == null){
+				return false;
+			}
+
+			var isString = (typeof item == "string" || (typeof item == "object" && item.constructor === String));
+		
+			if(!isString){
+				item = JSON.stringify(item);
+			}
+			
+			window.localStorage.setItem(key, item);
+
+		},
+		getFromStore : function(key){
+			
+			return JSON.parse(window.localStorage.getItem(key));
+
+		},
 		setBinds : function(){
 
 			window.onbeforeunload = function(){
 
+				if(agility_webrtc.currentUser.db.get('is_presenter').toString() === "true"){
+					
+					//Store messages and votes in localStorage.
+					agility_webrtc.setInstore(agility_webrtc.channelMessages, "messages");
+					agility_webrtc.setInstore(agility_webrtc.presentationVotes, "votes");
+
+				}
+
+
 				agility_webrtc.onChannelListDisconnect();
 
 			}
+
 
 			$(document).on("click", "#your_audio_mute", function(){
 				$("#you").prop('muted', true); 
