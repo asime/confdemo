@@ -65,7 +65,7 @@
 
 							<% _.each(slides, function(slide, index){%>
 								<div class="item <%= index == 0 ? 'active' : ''%>">
-								<img src="<%=slide.pic_url %>">
+									<img src="<%=slide.pic_url %>">
 								</div>
 							<%});%>
 						</div>
@@ -92,12 +92,12 @@
 						<ul class="slideCount">
 							<% _.each(slides, function(slide, index){%>
 								<li 
+								
+								class = "<%= index == 0 ? 'active' : ''%>" 
 								<% if(user.db.get("is_presenter") === "true"){%>
-									data-is-presenter="true"
-								<%} else {%>
-									data-is-presenter="false"
-								<%}%>	
-								class = "<%= index == 0 ? 'active' : ''%>" data-target="#presentation-carousel" data-slide-to="<%= index%>"><%= index+ 1%></li>
+									data-target="#presentation-carousel" data-slide-to="<%= index%>"
+								%>
+								><%= index+ 1%></li>
 							<%});%>
 						</ul>
 					</div>
