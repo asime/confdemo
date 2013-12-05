@@ -277,7 +277,7 @@
 
 				agility_webrtc.currentUser.db.set('_id', person._id || options._id);
 
-				agility_webrtc.currentUser.db.set('username', options.username);
+				agility_webrtc.currentUser.db.set('username', person.username || options.username);
 
 				var is_presenter = person.is_presenter || options.is_presenter;
 

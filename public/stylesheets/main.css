@@ -279,9 +279,10 @@ h6,
   margin: 10px;
   border-bottom:1px solid rgba(255,255,255,0.50); 
   color:#476176;
+  overflow: hidden;
 }
 .commentsWindowWrap .commentsList .commentItem.active{
-  padding-right: 30px;
+  /*padding-right: 30px;*/
 }
 .commentsWindowWrap .commentsList .commentItem:last-child{
   border: none;
@@ -295,36 +296,40 @@ h6,
 .commentsWindowWrap .commentsList .commentItem .commentText,
 .commentsWindowWrap .commentsList .commentItem .commentAuthor{
   display: block;
+  clear: both;
 }
 .commentsWindowWrap .commentsList .commentItem .commentAuthor{
   font-weight: 700;
 }
 .commentsWindowWrap .commentsList .commentItem .cameraBtn{display: none;
-  position: absolute;
+  /*position: absolute;
   top: 50%;
   right: 0;
-  margin-top: -15px;
+  margin-top: -15px;*/
   width: auto;
   height: 24px;
   font-size: 20px;
   text-align: right;
   color: #476176;
   cursor: pointer;
+  margin: -33px 24px 0px 5px;
+  float: right;
 }
 .commentsWindowWrap .commentsList .commentItem .cameraBtn:hover{
   color: #fff;
 }
 .commentsWindowWrap .commentsList .commentItem .deleteBtn{display: none;
-  position: absolute;
+  /*position: absolute;
   top: 50%;
   right: 0;
-  margin-top: -15px;
-  width: auto;
+  margin-top: -15px;*/
   width: 20px;
   height: 20px;
   border-radius: 10px;
   background: #b22f2e;
   cursor: pointer;
+  margin: -30px 0px 0px 5px;
+  float: right;
 }
 .commentsWindowWrap .commentsList .commentItem .deleteBtn .lineDel{
   display: block;
