@@ -143,6 +143,8 @@
 					}
 				})	
 
+				self.restoreDataFromStorage();
+
 				self.checkUserMedia(function(){
 
 					agility_webrtc.checkSession({},function(person){
@@ -163,6 +165,11 @@
 
 
 			})
+
+
+		},
+		restoreDataFromStorage : function(){
+
 
 
 		},
