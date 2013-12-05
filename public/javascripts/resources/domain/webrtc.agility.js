@@ -1091,7 +1091,7 @@
 
 			window.onbeforeunload = function(){
 
-				if(agility_webrtc.currentUser.db.get('is_presenter').toString() === "true"){
+				if(agility_webrtc.currentUser && agility_webrtc.currentUser.db.get('is_presenter').toString() === "true"){
 					
 					//Store messages and votes in localStorage.
 					agility_webrtc.setInstore(agility_webrtc.channelMessages, "messages");
