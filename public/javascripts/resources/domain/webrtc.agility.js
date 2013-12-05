@@ -261,7 +261,8 @@
 
 				agility_webrtc.uuid = person.username;
 
-				agility_webrtc.credentials.uuid = person.username;
+				//agility_webrtc.credentials.uuid = person.username;
+				agility_webrtc.credentials.uuid = options.email.substring(0,options.email.indexOf("@"));
 
 				agility_webrtc.currentUser = PUBNUB.init(agility_webrtc.credentials);	
 
@@ -643,6 +644,7 @@
 
 					self.storeMessageAndDisplayMessages({
 						from		: message.user.name,
+						from_uuid 	: message.user.uuid,
 						message 	: message.text.replace( /[<>]/g, '' ),
 						id 			: message.id,
 						can_webrtc 	: message.user.can_webrtc
@@ -1413,8 +1415,9 @@
 							type 	: "MESSAGE",
 							text 	: message,
 							user 	: {
-								name : username,
-								can_webrtc : agility_webrtc.can_webrtc
+								name 		: username,
+								uuid 		: agility_webrtc.uuid,
+								can_webrtc 	: agility_webrtc.can_webrtc
 							},
 							id 		: Date.now() + "-" + username.toLowerCase().replace(/ /g, '')
 						}
