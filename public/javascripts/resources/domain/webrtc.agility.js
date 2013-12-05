@@ -259,7 +259,7 @@
 				type 	: 'POST'
 			}, function(person){
 
-				agility_webrtc.uuid = person.username;
+				agility_webrtc.uuid = options.email;//person.username;
 
 				//agility_webrtc.credentials.uuid = person.username;
 				agility_webrtc.credentials.uuid = options.email;//.substring(0,options.email.indexOf("@"));
