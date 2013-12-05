@@ -787,16 +787,16 @@
 
 					if(
 						call.action === "calling" 
-						&& 
-						call.caller !== agility_webrtc.uuid
-						&& 
-						call.callee === agility_webrtc.uuid
-						){
-						agility_webrtc.incomingCallFrom = call.caller;
-						agility_webrtc.onIncomingCall(call.caller);
+							&& 
+						call.caller.uuid !== agility_webrtc.uuid
+							&& 
+						call.callee.uuid === agility_webrtc.uuid
+					){
+						agility_webrtc.incomingCallFrom = call.caller.uuid;
+						agility_webrtc.onIncomingCall(call.caller.uuid);
 					} else {
 
-						if(call.caller === agility_webrtc.currentCallUUID){
+						if(call.caller.uuid === agility_webrtc.currentCallUUID){
 							
 							//THE PERSON I'M CALLING IS HANGING UP THE CALL
 							
@@ -816,11 +816,11 @@
 
 
 						} else if(
-							call.caller !== agility_webrtc.uuid
+							call.caller.uuid !== agility_webrtc.uuid
 							&&
-							call.callee === agility_webrtc.uuid
+							call.callee.uuid === agility_webrtc.uuid
 						){
-							agility_webrtc.cancelIncomingCall(call.caller);
+							agility_webrtc.cancelIncomingCall(call.caller.uuid);
 						}
 
 
@@ -836,9 +836,9 @@
 				channel: 'answer',
 				callback: function(data) {
 
-					if (data.caller === agility_webrtc.uuid) {
+					if (data.caller.uuid === agility_webrtc.uuid) {
 						
-						agility_webrtc.publishStream({ uuid :  data.callee });
+						agility_webrtc.publishStream({ uuid :  data.callee.uuid });
 
 						var modalCalling = $("#calling-modal");
 
@@ -900,8 +900,14 @@
 			agility_webrtc.currentUser.publish({
 				channel: 'call',
 				message: {
-					caller 	: agility_webrtc.uuid,
-					callee 	: person.uuid,
+					caller 	: {
+						uuid 		: agility_webrtc.uuid,
+						username 	: agility_webrtc.currentUser.db.get("username")
+					},
+					callee 	: { 
+						uuid 		: person.uuid,
+						username 	: person.username
+					},
 					action 	: "calling"
 				}
 			});
@@ -912,7 +918,10 @@
 			agility_webrtc.currentUser.publish({
 				channel: 'call',
 				message: {
-					caller 	: agility_webrtc.uuid,
+					caller 	: {
+						uuid 		: agility_webrtc.uuid,
+						username 	: agility_webrtc.currentUser.db.get("username")
+					},
 					callee 	: from,
 					action 	: "hangup"
 				}
@@ -1163,8 +1172,13 @@
 				agility_webrtc.currentUser.publish({
 					channel: 'call',
 					message: {
-						caller 	: agility_webrtc.uuid,
-						callee 	: agility_webrtc.incomingCallFrom,
+						caller 	: {
+							uuid 		: agility_webrtc.uuid,
+							username 	: agility_webrtc.currentUser.db.get("username")
+						},
+						callee 	: {
+							uuid 	: agility_webrtc.incomingCallFrom
+						},
 						action 	: "hangup"
 					}
 				});					
@@ -1183,8 +1197,13 @@
 				agility_webrtc.currentUser.publish({
 					channel: 'call',
 					message: {
-						caller 	: agility_webrtc.uuid,
-						callee 	: was_calling_who,
+						caller 	: {
+							uuid  		: agility_webrtc.uuid,
+							username 	: agility_webrtc.currentUser.db.get("username")
+						},
+						callee 	: {
+							uuid 	: 	was_calling_who
+						},
 						action 	: "hangup"
 					}
 				});				
