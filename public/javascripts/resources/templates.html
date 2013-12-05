@@ -97,8 +97,7 @@
 
 								<% if(user.db.get("is_presenter") === "true"){%>
 									data-target="#presentation-carousel" data-slide-to="<%= index%>"
-								%>
-								
+								<%}%>	
 								><%= index+ 1%></li>
 							<%});%>
 						</ul>
