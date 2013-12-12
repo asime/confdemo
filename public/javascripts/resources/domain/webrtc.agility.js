@@ -61,8 +61,7 @@
 
 		credentials : {
 			publish_key 	: 'pub-c-8f61dc72-875d-4e34-9461-9c870d7c9f57',
-			subscribe_key 	: 'sub-c-f5e33bbe-44f8-11e3-83cf-02ee2ddab7fe',
-			uuid 			: 'Guest'
+			subscribe_key 	: 'sub-c-f5e33bbe-44f8-11e3-83cf-02ee2ddab7fe'
 		},
 
 		checkSession : function(options, callback, errorCallback){
@@ -197,23 +196,24 @@
 			agility_webrtc.can_webrtc = !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||navigator.mozGetUserMedia ||navigator.msGetUserMedia);	
 			
 			if(agility_webrtc.can_webrtc === true){
+
 				$.getScript( "javascripts/resources/vendor/webrtc-beta-pubnub.js" )
 					.done(function( script, textStatus ) {
-						
 						if(typeof callback === 'function'){
 							callback();
 						}
-
 					})
 					.fail(function( jqxhr, settings, exception ) {
 						console.log("there was an error");
 					}
 				);
+
 			} else {
 				if(typeof callback === 'function'){
 					callback();
 				}
 			}
+
 			return this;
 								
 		},
@@ -266,10 +266,9 @@
 				type 	: 'POST'
 			}, function(person){
 
-				agility_webrtc.uuid = PUBNUB.get_uuid();//person.username;
+				agility_webrtc.uuid = PUBNUB.get_uuid();
 
-				agility_webrtc.credentials.uuid = agility_webrtc.uuid;//person.username;
-				//agility_webrtc.credentials.uuid = PUBNUB.get_uuid();//.substring(0,options.email.indexOf("@"));
+				agility_webrtc.credentials.uuid = agility_webrtc.uuid;
 
 				agility_webrtc.currentUser = PUBNUB.init(agility_webrtc.credentials);	
 
@@ -281,13 +280,7 @@
 
 				var is_presenter = person.is_presenter || options.is_presenter;
 
-
 				agility_webrtc.currentUser.db.set('is_presenter',is_presenter);
-
-				if(options.email === "machoph@gmail.com")
-				{
-					agility_webrtc.currentUser.db.set('is_presenter',true);
-				}
 
 				if(agility_webrtc.currentUser.onNewConnection){
 					agility_webrtc.currentUser.onNewConnection(function(uuid){ 
@@ -811,7 +804,7 @@
 							
 							$("#ringer")[0].pause();
 
-							$('#calling-modal .calling').html("Sorry the call has been cancelled by " + agility_webrtc.currentCallUUID);
+							$('#calling-modal .calling').html("Sorry the call has been canceled");
 
 							agility_webrtc.currentCallUUID = null;
 
@@ -902,7 +895,7 @@
 
 			modalCalling.modal('show');
 
-			$("#ringer")[0].play()
+			$("#ringer")[0].play();
 
 			modalCalling.removeClass("hide");
 
@@ -968,7 +961,7 @@
 				.end().find('.modal-footer').show().end().modal('show');
 			
 
-			$("#ringer")[0].play()
+			$("#ringer")[0].play();
 
 		},
 
@@ -1097,7 +1090,7 @@
 
 
 		},
-		setInstore 	: function(item, key){
+		setInStore 	: function(item, key){
 
 			if(item == null){
 				return false;
@@ -1124,11 +1117,10 @@
 				if(agility_webrtc.currentUser && agility_webrtc.currentUser.db.get('is_presenter').toString() === "true"){
 					
 					//Store messages and votes in localStorage.
-					agility_webrtc.setInstore(agility_webrtc.channelMessages, "messages");
-					agility_webrtc.setInstore(agility_webrtc.presentationVotes, "votes");
+					agility_webrtc.setInStore(agility_webrtc.channelMessages, "messages");
+					agility_webrtc.setInStore(agility_webrtc.presentationVotes, "votes");
 
 				}
-
 
 				agility_webrtc.onChannelListDisconnect();
 
