@@ -656,17 +656,56 @@ background: #6ba882;
 background: #4ebb9a;
 }
 
-.login_container {
-  padding: 16px;
-  width: 45%;
-  margin: 100px auto 0px auto;
-  height: 500px;
+/*Login Style*/
+
+
+.login_container{
+  width: 300px;
+  height: auto;
+  padding: 0;
+  margin: 100px auto;
+  border: 1px solid #fff;
+  background: #cfeae5;
+  border-radius: 10px;
 }
-.btn-login{
+.login_container .header{
+  background: #f1fffc;
+  width: 100%;
+  height: auto;
+  padding: 10px 0;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  text-align: center;
+}
+.login_container .body{
+  width: 100%;
+  height: auto;
+  padding: 0 10px;
+}
+.login_container .body h4{
+  line-height: 26px;
+  border-bottom: 1px solid #d9f2ed;
+  padding-bottom: 4px;
+}
+.login_container .body input{
+  margin-bottom: 10px;
+}
+
+.login_container .footer{
+  background: #f1fffc;
+  width: 100%;
+  height: 55px;
+  padding:10px 10px 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.login_container .footer .btn-login{
   color:#fff;
   background: #3f6274;
+  float: right;
 }
-.btn-login:hover{
+.login_container .footer .btn-login:hover{
   color:#fff;
   background: #00a898;
   border: solid 1px #3f6274;
@@ -683,7 +722,13 @@ background: #4ebb9a;
 /* LOADING AGILITY */
 
 .connecting{
+  width: 165px;
+  height: auto;
+  padding: 10px 0 5px;
   margin: 250px auto;
+  border: 1px solid #fff;
+  background: #cfeae5;
+  border-radius: 10px;
 }
 
 .loading_logo {
