@@ -60,8 +60,8 @@
 		streams 	: [],
 
 		credentials : {
-			publish_key 	: 'pub-c-8f61dc72-875d-4e34-9461-9c870d7c9f57',
-			subscribe_key 	: 'sub-c-f5e33bbe-44f8-11e3-83cf-02ee2ddab7fe'
+			publish_key 	: 'pub-c-9c1afa7f-d91a-40ea-b218-031c4662d160',
+			subscribe_key 	: 'sub-c-c6f7e5ea-87ae-11e3-95f2-02ee2ddab7fe'
 		},
 
 		checkSession : function(options, callback, errorCallback){
