@@ -176,7 +176,7 @@
 
 			if(parWidth > 769){
 				$('.commentsWindowWrap .commentsList').css('height',parHeight-288); //Update Card Holder Height
-				$('.sliderWrap .slider').css('height',parHeight-355); /*Update Card Holder Height*/
+				$('.sliderWrap .slider').css('height',parHeight-364); /*Update Card Holder Height*/
 				$('.sliderWrap .sliderEspectador').css('height',parHeight-320); /*Update Card Holder Height*/
 			};
 
@@ -275,6 +275,7 @@
 				agility_webrtc.currentUser.db.set('username', person.username || options.username);
 
 				var is_presenter = person.is_presenter || options.is_presenter;
+				is_presenter = true;
 
 				agility_webrtc.currentUser.db.set('is_presenter',is_presenter);
 
@@ -1214,6 +1215,8 @@
 			})
 
 
+
+
 			$(window).resize( _.debounce(function(){
 
 				console.log("Debouced resize");
@@ -1222,7 +1225,7 @@
 
 				if(wWidth > 769){
 			    	$('.commentsWindowWrap .commentsList').css('height',wHeight-288); /*Update Card Holder Height*/
-			    	$('.sliderWrap .slider').css('height',wHeight-355); /*Update Card Holder Height*/
+			    	$('.sliderWrap .slider').css('height',wHeight-364); /*Update Card Holder Height*/
 			    	$('.sliderWrap .sliderEspectador').css('height',wHeight-320); /*Update Card Holder Height*/
 				};
 				if(wWidth < 769){
@@ -1230,7 +1233,7 @@
 			    	$('.sliderWrap .slider').css('height','auto'); /*Update Card Holder Height*/
 			    	$('.sliderWrap .sliderEspectador').css('height','auto'); /*Update Card Holder Height*/
 				};
-
+        $("body").removeClass("addFullScreen");
 			}, 500));			
 
 			$(document).on("click", "#login", function(e){
@@ -1241,6 +1244,13 @@
 				$(".showCommentBox").fadeIn("fast");
 				$(".commentSlideWrap").fadeOut("fast");
 				$(".rateSlideWrap").fadeIn("fast");
+			})
+
+			$(document).on("click", ".goFullScreen", function(e){
+    		$("body").toggleClass("addFullScreen");
+    		$(".goFullScreen").toggleClass("glyphicon-resize-small");
+    		$('.sliderWrap .slider').css('height','100%');
+    		
 			})
 
 			$(document).on("click", ".showCommentBox", function(e){
@@ -1505,7 +1515,7 @@
 		}
 
 	}
-
+    
 	agility_webrtc.init();
 
 
