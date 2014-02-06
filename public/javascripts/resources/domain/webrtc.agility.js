@@ -1493,7 +1493,7 @@
 				return false;
 			}
 
-			item = _.isString(item) ? JSON.stringify(item) : item;
+			item = _.isString(item) ? item : JSON.stringify(item);
 			
 			window.localStorage.setItem(key, item);
 
