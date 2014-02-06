@@ -60,8 +60,8 @@
 		streams 	: [],
 
 		credentials : {
-			publish_key 	: 'pub-c-9c1afa7f-d91a-40ea-b218-031c4662d160',
-			subscribe_key 	: 'sub-c-c6f7e5ea-87ae-11e3-95f2-02ee2ddab7fe'
+			publish_key 	: 'pub-c-24de4b19-9284-43ee-b600-5e7b38d31f5b',
+			subscribe_key 	: 'sub-c-9cc28534-8892-11e3-baad-02ee2ddab7fe'
 		},
 
 		checkSession : function(options, callback, errorCallback){
@@ -152,9 +152,11 @@
 
 					}, function(xhr){
 
+						var template_to_render = window.location.pathname === "/login" ?  "#full_login_template" : "#login_template";
+
 						agility_webrtc.render({
 							container 	: "#content",
-							template 	: "#login_template",
+							template 	: template_to_render,
 							data 		: null
 						})	
 
@@ -253,10 +255,72 @@
 				}
 			})	
 
+			//UI IS LOADED...
+
+			if(agility_webrtc.currentUser.db.get('is_presenter') === "true"){
+				agility_webrtc.showStream({ who : "mine" , container : '#broadcasted_video'});
+			}
+
+			if( agility_webrtc.currentUser.db.get("is_presenter") === "true" ){
+				agility_webrtc.getVotes();
+			}
+
+			agility_webrtc.getComments();
+
+			
+
+
+		},
+
+		initPubnubUser : function(person){
+
+			var UUID_from_storage = agility_webrtc.getFromStore("uuid");
+
+			if(UUID_from_storage){
+				agility_webrtc.uuid = UUID_from_storage.uuid;
+			} else {
+				agility_webrtc.uuid = PUBNUB.get_uuid();
+				agility_webrtc.setInStore({ "uuid" : agility_webrtc.uuid }, "uuid");
+			}
+
+			agility_webrtc.credentials.uuid = agility_webrtc.uuid;
+
+			console.log(JSON.stringify(agility_webrtc.credentials, null, 4));
+
+			agility_webrtc.currentUser = PUBNUB.init(agility_webrtc.credentials);	
+
+			agility_webrtc.currentUser.db.set('email', person.email);
+
+			agility_webrtc.currentUser.db.set('_id', person._id);
+
+			agility_webrtc.currentUser.db.set('username', person.username);
+
+			var is_presenter = person.is_presenter;
+
+			agility_webrtc.currentUser.db.set('is_presenter',is_presenter);
+
+			if(agility_webrtc.currentUser.onNewConnection){
+				agility_webrtc.currentUser.onNewConnection(function(uuid){ 
+					console.log("onNewConnection triggered...");
+					agility_webrtc.publishStream({ uuid : uuid }); 
+				});
+			}
+
+			agility_webrtc.connectToListChannel();
+			
+			if(agility_webrtc.can_webrtc){
+				
+				agility_webrtc.connectToCallChannel();
+				
+				agility_webrtc.connectToAnswerChannel();
+			}
+				
 
 		},
 
 		getUser : function(options){
+
+			console.log("GETTING PERSON...");
 
 			var options = options;
 
@@ -266,39 +330,37 @@
 				type 	: 'POST'
 			}, function(person){
 
-				agility_webrtc.uuid = PUBNUB.get_uuid();
-
-				agility_webrtc.credentials.uuid = agility_webrtc.uuid;
-
-				agility_webrtc.currentUser = PUBNUB.init(agility_webrtc.credentials);	
-
-				agility_webrtc.currentUser.db.set('email', options.email);
-
-				agility_webrtc.currentUser.db.set('_id', person._id || options._id);
-
-				agility_webrtc.currentUser.db.set('username', person.username || options.username);
 
 				var is_presenter = person.is_presenter || options.is_presenter;
 
-				agility_webrtc.currentUser.db.set('is_presenter',is_presenter);
+				if(is_presenter){
 
-				if(agility_webrtc.currentUser.onNewConnection){
-					agility_webrtc.currentUser.onNewConnection(function(uuid){ 
-						agility_webrtc.publishStream({ uuid : uuid }); 
-					});
+
+					agility_webrtc.requestStream({
+						video : true,
+						audio : true
+					}, function(stream){
+
+						var my_stream = _.find(agility_webrtc.streams, function(stream){
+							return stream.who === "mine";
+						})
+
+						if(my_stream){
+							my_stream.stream = stream;
+						} else {
+							agility_webrtc.streams.push({ who : "mine", stream : stream });
+						}	
+
+						agility_webrtc.initPubnubUser(person);
+
+
+					})
+
+				} else {
+
+					agility_webrtc.initPubnubUser(person);
+
 				}
-
-				agility_webrtc.connectToListChannel();
-				
-				if(agility_webrtc.can_webrtc){
-					
-					agility_webrtc.connectToCallChannel();
-					
-					agility_webrtc.connectToAnswerChannel();
-				}
-				
-
-							
 
 
 			}, function(xhr){
@@ -306,6 +368,40 @@
 				$("#message").html(xhr.statusText);
 
 			})
+
+		},
+
+		full_login : function(){
+
+			var username = $("#username").val().trim();
+			var password = $("#password").val().trim();
+
+
+			if(username !== "" && password !== ""){
+
+				agility_webrtc.callServer({
+					data 	: {
+						username : username,
+						password : password
+					},
+					url 	: '/api/login',
+					type 	: 'POST'
+				}, function(person){
+
+					window.location.href = "/";
+
+				}, function(xhr){
+
+					console.log(xhr.status + " - getting session");
+
+					if(typeof errorCallback === 'function'){
+						errorCallback(xhr);
+					}
+
+				});		
+
+			}		
+
 
 		},
 
@@ -385,6 +481,47 @@
 				}
 
 			}
+
+		},
+
+		receiveStream : function(options){
+
+			agility_webrtc.currentCallUUID = options.uuid;
+
+			agility_webrtc.currentUser.subscribe({
+				user: options.uuid,
+				stream: function(bad, event) {
+					
+					var remote_stream = _.find(agility_webrtc.streams, function(stream){
+						return stream.who === "you";
+					})
+
+					if(remote_stream){
+						remote_stream.stream = event.stream;
+					} else {
+						agility_webrtc.streams.push({ who : "you", stream : event.stream });
+					}
+
+					agility_webrtc.showStream({ who : "you" , container : '#broadcasted_video'});
+					
+				},
+				disconnect: function(uuid, pc) {
+
+					//The caller disconnected the call...
+					//Let's just hide the conference
+
+					agility_webrtc.currentCallUUID = uuid;
+
+					console.log("CLOSING CONNECTION WITH" + uuid);
+
+					$("#broadcasted_video").fadeOut(100);
+
+					agility_webrtc.onEndCall();
+
+					window.location.reload(true);
+					
+				}
+			});	
 
 		},
 
@@ -569,15 +706,7 @@
 
 		},
 
-		processVotes 	: function(vote){
-
-			var mood = _.find(agility_webrtc.slide_moods, function(mood){ return mood.name === vote.mood_name; });
-
-			vote.date = new Date();
-
-			vote.value = mood.value;
-
-			agility_webrtc.presentationVotes.push(vote);
+		filter_moods : function(){
 
 			var filtered_moods = [];
 
@@ -596,6 +725,24 @@
 				filtered_moods.push(filtered_mood);
 
 			})
+
+			return filtered_moods;
+
+		},
+
+		processVotes 	: function(vote){
+
+			var mood = _.find(agility_webrtc.slide_moods, function(mood){ return mood.name === vote.mood_name; });
+
+			vote.date = vote.created_on ? new Date(vote.created_on) : new Date();
+
+			console.log(vote.date);
+
+			vote.value = mood.value;
+
+			agility_webrtc.presentationVotes.push(vote);
+
+			filtered_moods = agility_webrtc.filter_moods();
 
 			agility_webrtc.displayBarsGraphic(filtered_moods);
 
@@ -697,31 +844,78 @@
 
 			if (person.action === "join") {
 
+				console.log("PERSON LOGGED IN..." + person.uuid);
+
 				person.id  		= person.uuid;
 				person.is_you  	= (person.uuid === agility_webrtc.uuid);
 
-				if(
-					agility_webrtc.currentUser.db.get("is_presenter") === "true" 
-					&&  
-					person.is_you === false
-					&& 
-					(
-						agility_webrtc.channelMessages.length > 0
-					||
-						agility_webrtc.presentationVotes.length > 0
-					)
-				){
-					agility_webrtc.currentUser.publish({
-						channel: agility_webrtc.channelName,
-						message : {
-							type 	 : "LOAD_DATA",
-							messages : agility_webrtc.channelMessages,
-							votes    : agility_webrtc.presentationVotes,
-							current_slide : {slide: agility_webrtc.current_slide},
-							to : person.uuid
-						}
-					});
-				}
+
+				// if(
+				// 	agility_webrtc.currentUser.db.get("is_presenter") === "true" 
+				// 	&&  
+				// 	person.is_you === false
+				// 	&& 
+				// 	(
+				// 		agility_webrtc.channelMessages.length > 0
+				// 	||
+				// 		agility_webrtc.presentationVotes.length > 0
+				// 	)
+				// ){
+
+				// 	//The logged in user is not you but is the presenter...
+
+				// 	agility_webrtc.currentUser.publish({
+				// 		channel: agility_webrtc.channelName,
+				// 		message : {
+				// 			type 	 : "LOAD_DATA",
+				// 			messages : agility_webrtc.channelMessages,
+				// 			votes    : agility_webrtc.presentationVotes,
+				// 			current_slide : {slide: agility_webrtc.current_slide},
+				// 			to : person.uuid
+				// 		}
+				// 	});
+
+
+				// } else 
+
+				// if(person.is_you === true && agility_webrtc.currentUser.db.get("is_presenter") !== "true" ){
+
+				// 	//The user is NOT the presenter...
+
+				// 	console.log( agility_webrtc.currentUser.db.get("username") + " - " + person.action);
+
+				// 	agility_webrtc.currentUser.publish({
+				// 		channel: 'call',
+				// 		message: {
+				// 			caller 	: {
+				// 				uuid 		: agility_webrtc.uuid,
+				// 				username 	: agility_webrtc.currentUser.db.get("username")
+				// 			},
+				// 			action 	: "broadcast_stream"
+				// 		}
+				// 	});	
+
+				// } 
+
+				// if(person.is_you === true && agility_webrtc.currentUser.db.get("is_presenter") === "true" ){
+
+				// 	//You logged in and you are the presenter...
+				// 	//Notify the users to discover themselves
+
+				// 	agility_webrtc.currentUser.publish({
+				// 		channel: 'call',
+				// 		message: {
+				// 			caller 	: {
+				// 				uuid 		: agility_webrtc.uuid,
+				// 				username 	: agility_webrtc.currentUser.db.get("username")
+				// 			},
+				// 			action 	: "broadcast_to_me"
+				// 		}
+				// 	});	
+
+
+				// }
+
 				var content = _.template($("#user-item-template").html(), person );
 
 				$("#connected_people_list").append(content);
@@ -748,12 +942,12 @@
 
 
 		},
-		onChannelListHereNow : function(presence){
+		// onChannelListHereNow : function(presence){
 
-			console.log(JSON.stringify(presence));
+		// 	console.log(JSON.stringify(presence));
 
 
-		},
+		// },
 		connectToListChannel : function(){
 
 			agility_webrtc.render({
@@ -763,6 +957,8 @@
 					message : "Please wait"
 				}
 			})				
+
+			console.log("User connecting to list channel...");
 
 			agility_webrtc.currentUser.subscribe({
 				channel 	: agility_webrtc.channelName,
@@ -774,10 +970,10 @@
 
 			//Detect presence:
 
-			agility_webrtc.currentUser.here_now({
-				channel 	: agility_webrtc.channelName,
-				callback 	: agility_webrtc.onChannelListHereNow
-			})
+			// agility_webrtc.currentUser.here_now({
+			// 	channel 	: agility_webrtc.channelName,
+			// 	callback 	: agility_webrtc.onChannelListHereNow
+			// })
 
 		},
 
@@ -787,46 +983,108 @@
 				channel: 'call',
 				callback: function(call) {
 
-					if(
-						call.action === "calling" 
-							&& 
-						call.caller.uuid !== agility_webrtc.uuid
-							&& 
-						call.callee.uuid === agility_webrtc.uuid
-					){
-						agility_webrtc.incomingCallFrom = call.caller.uuid;
-						agility_webrtc.onIncomingCall(call.caller);
-					} else {
+					switch(call.action){
 
-						if(call.caller.uuid === agility_webrtc.currentCallUUID){
-							
-							//THE PERSON I'M CALLING IS HANGING UP THE CALL
-							
-							$("#ringer")[0].pause();
+						case "request_stream":
 
-							$('#calling-modal .calling').html("Sorry the call has been canceled");
+							if( call.caller.uuid !== agility_webrtc.uuid){
+								agility_webrtc.receiveStream({
+									uuid : call.caller.uuid
+								});
+							}
 
-							agility_webrtc.currentCallUUID = null;
+						break;
 
-							_.delay(function(){
-								$("#calling-modal").fadeOut(200, function(){
-									$("#calling-modal").modal("hide");
-								}) 
-							}, 1500);
-
-							
+						case "broadcast_stream":
 
 
-						} else if(
-							call.caller.uuid !== agility_webrtc.uuid
-							&&
-							call.callee.uuid === agility_webrtc.uuid
-						){
-							agility_webrtc.cancelIncomingCall(call.caller.uuid);
-						}
 
+							if(agility_webrtc.currentUser.db.get('is_presenter') === "true"){
+
+								//A person who just joined is requesting the presenter stream...
+
+								agility_webrtc.currentUser.publish({
+									channel: 'call',
+									message: {
+										caller 	: {
+											uuid 		: agility_webrtc.uuid,
+											username 	: agility_webrtc.currentUser.db.get("username")
+										},
+										action 	: "request_stream"
+									}
+								});	
+
+								console.log(call.caller.username + " (" + call.caller.uuid + ") is requesting stream...");
+
+								var my_stream = _.find(agility_webrtc.streams, function(stream){
+									return stream.who === "mine";
+								})
+
+								if(my_stream){
+									
+									agility_webrtc.currentCallUUID = call.caller.uuid;
+
+									agility_webrtc.currentUser.publish({ 
+										user 	: call.caller.uuid, 
+										stream 	: my_stream.stream
+									});
+
+								}
+
+							}
+
+						break;
+
+						case "broadcast_to_me":
+
+							if(agility_webrtc.currentUser.db.get('is_presenter') === "true"){
+
+								console.log("MESSAGE RECEIVED TO SEND STREAM TO " + call.caller.username);
+
+								// agility_webrtc.receiveStream({
+								// 	uuid : call.caller.uuid
+								// });
+
+							}
+
+						break;
+
+						case "calling":
+
+							if(call.caller.uuid !== agility_webrtc.uuid && call.callee.uuid === agility_webrtc.uuid){
+								agility_webrtc.incomingCallFrom = call.caller.uuid;
+								agility_webrtc.onIncomingCall(call.caller);
+							}
+
+						break;
+
+						default :
+
+							if(call.caller.uuid === agility_webrtc.currentCallUUID){
+								
+								//THE PERSON I'M CALLING IS HANGING UP THE CALL
+								
+								$("#ringer")[0].pause();
+
+								$('#calling-modal .calling').html("Sorry the call has been canceled");
+
+								agility_webrtc.currentCallUUID = null;
+
+								_.delay(function(){
+									$("#calling-modal").fadeOut(200, function(){
+										$("#calling-modal").modal("hide");
+									}) 
+								}, 1500);
+
+							} else if( call.caller.uuid !== agility_webrtc.uuid && call.callee.uuid === agility_webrtc.uuid){
+								agility_webrtc.cancelIncomingCall(call.caller.uuid);
+							}
+
+						break;
 
 					}
+
+					
 				}
 			});
 
@@ -882,6 +1140,7 @@
 			clearInterval(agility_webrtc.timeInterval);
 
 		},
+
 
 		callPerson 			: function(person){
 
@@ -1056,6 +1315,148 @@
 			$(options.container).html(content);	
 
 		},
+		saveVote 			: function(vote, callback){
+
+			agility_webrtc.callServer({
+				data 	: vote,
+				url 	: '/api/vote/save',
+				type 	: 'POST'
+			}, function(vote){
+
+				if(typeof callback === 'function'){
+					callback(vote);
+				}
+
+			}, function(xhr){
+
+				console.log(xhr.status + " - saving vote");
+
+				if(typeof errorCallback === 'function'){
+					errorCallback(xhr);
+				}
+
+			});				
+
+		},
+		getVotes			: function(params, callback){
+
+			var self = this;
+
+			agility_webrtc.callServer({
+				data 	: params || {},
+				url 	: '/api/votes',
+				type 	: 'GET'
+			}, function(votes){
+
+				if(typeof callback === 'function'){
+					callback(votes);
+				} else {
+
+					//No callback passed let's display the votes...
+
+					agility_webrtc.presentationVotes = [];
+
+					var mood;
+
+					_.each(votes, function(vote){
+
+						mood = _.find(agility_webrtc.slide_moods, function(mood){ return mood.name === vote.value; });
+
+						agility_webrtc.presentationVotes.push({
+							date 		: new Date(vote.created_on),
+							mood_name 	: vote.value,
+							value 		: mood.value,
+							type 		: "VOTE"
+						})
+						
+
+					});		
+
+					agility_webrtc.displayAnalyticsGraphic();
+
+				}
+
+			}, function(xhr){
+
+				console.log(xhr.status + " - getting votes");
+
+				if(typeof errorCallback === 'function'){
+					errorCallback(xhr);
+				}
+
+			});				
+
+		},
+		getComments			: function(params, callback){
+
+			var self = this;
+
+			agility_webrtc.callServer({
+				data 	: params,
+				url 	: '/api/comments',
+				type 	: 'GET'
+			}, function(comments){
+
+				if(typeof callback === 'function'){
+					callback(comments);
+				} else {
+
+					comments.reverse();
+
+					_.each(comments, function(comment){
+
+						self.storeMessageAndDisplayMessages({
+							from		: comment.from_username,
+							from_uuid 	: Date.now(),
+							message 	: comment.content.replace( /[<>]/g, '' ),
+							id 			: Date.now() + "-" + comment.from_username.toLowerCase().replace(/ /g, ''),
+							can_webrtc 	: false
+						});
+
+					})
+
+				}
+
+			}, function(xhr){
+
+				console.log(xhr.status + " - getting comments");
+
+				if(typeof errorCallback === 'function'){
+					errorCallback(xhr);
+				}
+
+			});				
+
+		},	
+
+		saveComment 			: function(comment, callback){
+
+			agility_webrtc.callServer({
+				data 	: comment,
+				url 	: '/api/comment/save',
+				type 	: 'POST'
+			}, function(comment){
+
+				if(typeof callback === 'function'){
+					
+					callback(comment);
+
+				}
+
+			}, function(xhr){
+
+				console.log(xhr.status + " - saving comment");
+
+				if(typeof errorCallback === 'function'){
+				
+					errorCallback(xhr);
+
+				}
+
+			});				
+
+		},
+
 		render_prepend		: function(options){
 
 			var content = _.template($(options.template).html(), options.data );
@@ -1096,11 +1497,7 @@
 				return false;
 			}
 
-			var isString = (typeof item == "string" || (typeof item == "object" && item.constructor === String));
-		
-			if(!isString){
-				item = JSON.stringify(item);
-			}
+			item = _.isString(item) ? JSON.stringify(item) : item;
 			
 			window.localStorage.setItem(key, item);
 
@@ -1112,20 +1509,46 @@
 		},
 		setBinds : function(){
 
-			window.onbeforeunload = function(){
+			// window.onbeforeunload = function(){
 
-				if(agility_webrtc.currentUser && agility_webrtc.currentUser.db.get('is_presenter').toString() === "true"){
+			// 	if(agility_webrtc.currentUser && agility_webrtc.currentUser.db.get('is_presenter').toString() === "true"){
 					
-					//Store messages and votes in localStorage.
-					agility_webrtc.setInStore(agility_webrtc.channelMessages, "messages");
-					agility_webrtc.setInStore(agility_webrtc.presentationVotes, "votes");
+			// 		//Store messages and votes in localStorage.
+			// 		agility_webrtc.setInStore(agility_webrtc.channelMessages, "messages");
+			// 		agility_webrtc.setInStore(agility_webrtc.presentationVotes, "votes");
 
-				}
 
-				agility_webrtc.onChannelListDisconnect();
+			// 	}
 
-			}
+			// 	agility_webrtc.onChannelListDisconnect();
 
+			// 	agility_webrtc.hangupCall();
+
+			// 	return "Are you sure you want to exit the presentation?";
+
+			// }
+
+			$(document).on("click", ".broadcast_stream", function(){
+
+				agility_webrtc.requestStream({
+					video : true,
+					audio : true
+				}, function(stream){
+
+					var my_stream = _.find(agility_webrtc.streams, function(stream){
+						return stream.who === "mine";
+					})
+
+					if(my_stream){
+						my_stream.stream = stream;
+					} else {
+						agility_webrtc.streams.push({ who : "mine", stream : stream });
+					}	
+
+				})
+
+
+			})
 
 			$(document).on("click", "#your_audio_mute", function(){
 				$("#you").prop('muted', true); 
@@ -1155,15 +1578,6 @@
 			})		
 				
 
-			// $(document).on("slide.bs.carousel", "#presentation-carousel", function(e){			
-				
-			// 	if(agility_webrtc.currentUser.db.get('is_presenter').toString() !== "true"){
-			// 		//If the user is not a presenter, then stopPropagation...
-			// 		e.preventDefault();
-			// 		e.stopPropagation();
-			// 	}
-
-			// })
 
 			$(document).on("click", "#ignoreCall", function(e){
 
@@ -1236,6 +1650,17 @@
 				};
 
 			}, 500));			
+
+
+
+			$(document).on("click", "#presenter_login", function(e){
+
+				e.preventDefault();
+				e.stopPropagation();
+
+				agility_webrtc.full_login();
+
+			})
 
 			$(document).on("click", "#login", function(e){
 				agility_webrtc.login();	
@@ -1394,12 +1819,23 @@
 
 				}, 2000);
 
+
+
 				agility_webrtc.currentUser.publish({
 					channel: agility_webrtc.channelName,
 					message : {
 						type 		: "VOTE",
 						mood_name 	: slide_mood
 					}
+				});
+
+				//ONCE PUBLISHED LET'S SAVE THE VOTE IN THE DB:
+
+				agility_webrtc.saveVote({
+					from_username 	: agility_webrtc.currentUser.db.get("username"),
+					from_email 		: agility_webrtc.currentUser.db.get("email"),
+					value 			: slide_mood,
+					slide_number	: Number($(".slideCount li.active").html())
 				});
 
 			})
@@ -1457,6 +1893,15 @@
 							id 		: Date.now() + "-" + username.toLowerCase().replace(/ /g, '')
 						}
 					});
+
+					//ONCE SENT VIA PUBNUB LET'S SAVE THE COMMENT...
+
+					agility_webrtc.saveComment({
+						from_username 	: agility_webrtc.currentUser.db.get('username'),
+						from_email 		: agility_webrtc.currentUser.db.get('email'),
+						content 		: message
+					});
+
 
 					$(".commentsHere").val("");
 

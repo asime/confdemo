@@ -261,6 +261,28 @@ h6,
  line-height: 28px;
 }
 
+.broadcast_stream.glyphicon.glyphicon-facetime-video {
+  margin-top: 10px;
+  font-size: 23px;
+  color: #476176;
+  cursor: pointer;
+}
+
+.broadcasted_video{
+  width: 132px;
+  border: solid 1px #cc3300;
+  height: 100px;
+  float: right;
+  position: absolute;
+  z-index: 1000;
+  left: 1px;
+  bottom: 1px;
+}
+
+.broadcasted_video video{
+  width: 100%;
+}
+
 .commentsWindowWrap .commentHeader .actionsWrap .initialCall .commentsCall{
  border-top-right-radius: 4px;
  border-bottom-right-radius: 4px;

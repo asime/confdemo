@@ -52,6 +52,9 @@
 					<!-- SLIDER HEADER -->
 					<div class="slideHeader">
 						<span class="af-brand"></span>
+						<% if(user.db.get("is_presenter") === "true"){%>
+							<!--<span class="broadcast_stream glyphicon glyphicon-facetime-video"></span>-->
+						<%}%>
 						<span class="rightText">Code Samples : agilityfeat.com/cs</span>
 						<div class="btnShow">View Comments</div>
 					</div>  
@@ -60,8 +63,13 @@
 					<!-- SLIDER -->
 
 					<div id="presentation-carousel" class="slider carousel slide" data-interval='false' data-ride="carousel" >
+
 						
 						<div class="carousel-inner">
+
+							<div class="broadcasted_video">
+								<video autoplay id="broadcasted_video"></video>
+							</div>
 
 							<% _.each(slides, function(slide, index){%>
 								<div class="item <%= index == 0 ? 'active' : ''%>">
@@ -247,6 +255,33 @@
 		</div>
 	</footer>
 
+
+</script>
+
+<script type="text/template" id="full_login_template">
+
+	<div class="row">
+		<div class="form-group login_container" id="login_container">
+		  <div class="header">
+			  <img src="images/af-brand.png"/>
+		  </div>	
+
+		<div class="body">
+        	<h4>Welcome</h4>
+			<div class="alert alert-danger" style="display:none;">
+				<strong>Ooops!</strong> <span id="message"></span>.
+			</div>				
+  			<label class="sr-only" for="message">Username</label>
+  			<input id="username" type="text" class="form-control" placeholder="USERNAME" autocomplete="off">
+  			
+  			<label class="sr-only" for="message">Password</label>
+  			<input id="password" type="password" class="form-control" placeholder="PASSWORD" autocomplete="off">
+		  </div>
+			<div class="footer">			
+				<button id="presenter_login" class="btn btn-login">Log In</button>
+			</div>
+		</div>	
+	</div>
 
 </script>
 

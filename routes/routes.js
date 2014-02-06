@@ -7,6 +7,26 @@ var routes = function (params) {
 	var PersonProvider = require('../providers/PersonProvider').PersonProvider;
 	var PersonProvider = new PersonProvider();	
 
+	var CommentProvider = require('../providers/CommentProvider').CommentProvider;
+	var CommentProvider = new CommentProvider();	
+
+	var VoteProvider = require('../providers/VoteProvider').VoteProvider;
+	var VoteProvider = new VoteProvider();		
+
+
+	var checkSession = function(req, res, next){
+
+		var userInSession = req.session.person;
+
+		if(userInSession){
+			next();
+		} else {
+			res.json({message:"Session expired"},401);
+		}
+
+	}
+
+
 	app.get('/', function(req, res){
 
 		var userInSession = req.session.person;
@@ -14,13 +34,18 @@ var routes = function (params) {
 		res.render('index.ejs',{
 			username : userInSession ? userInSession.username : null
 		});
-
 	})
+
+	app.get('/login', function(req, res){
+
+		req.session.destroy();
+
+		res.render('login.ejs');
+	})	
 
 	app.get('/demo', function(req, res){
 
 		res.render('simple_html.ejs');		
-
 	})	
 
 	app.get('/logout', function(req, res){
@@ -28,7 +53,6 @@ var routes = function (params) {
 		req.session.destroy();
 
 		res.json({message:"Bye..."});
-
 	})
 
 	app.post('/:who/disconnect', function(req,res){
@@ -38,28 +62,68 @@ var routes = function (params) {
 		req.session.destroy();
 
 		res.json({message : "User logged out"});
-
 	});
+
+	/********** API RELATED ***********/
+
+	app.post('/api/vote/save', checkSession, function(req, res){
+
+		var vote_data = req.body;
+
+		vote_data.slide_number = Number(vote_data.slide_number);
+		vote_data.created_on = new Date();
+
+
+		VoteProvider.save(vote_data,function(err, vote){
+			
+			if(err!=null){
+				res.json({ message: JSON.stringify(err) },500);
+			} else {
+				res.json(vote);
+			}
+
+		})
+
+	})
+
+	app.post('/api/comment/save', checkSession, function(req, res){
+
+		var comment_data = req.body;
+
+		comment_data.created_on = new Date();
+
+		CommentProvider.save(comment_data,function(err, comment){
+			
+			if(err!=null){
+				res.json({ message: JSON.stringify(err) },500);
+			} else {
+				res.json(comment);
+			}
+
+		})
+
+	})	
 
 	app.post('/api/login', function(req,res){
 
-		/*
+		var params = req.body;
 
-		req.body:
+		var query;
 
-		{
-			username 	: "Orange",
-			email 		: "allan.naranjo@agilityfeat.com",
-			subscribe 	: true
+		if(params.email){
+			query = {
+				email : params.email
+			}
+		} else {
+			query = {
+				username : params.username,
+				password : params.password
+			}
 		}
 
-		*/
 
 		//WILL REGISTER A PERSON, IF EMAIL AND USERNAME FOUND PERSON WILL BE SENT BACK AND PUT IN SESSION.
-		PersonProvider.findOne({
-			// username 	: req.body.username,
-			email 		: req.body.email
-		}, function(err, person){
+		PersonProvider.findOne(req.body, function(err, person){
 
 			if(err!=null){
 
@@ -90,8 +154,6 @@ var routes = function (params) {
 
 
 		})
-
-
 	})
 
 	app.get('/api/me', function(req,res){
@@ -103,35 +165,79 @@ var routes = function (params) {
 		} else {
 			res.json({message:"Session expired"},401);
 		}
-
 	});	
 
-	// app.post('/login', function(req,res){
-
-	// 	//USERS...
-
-	// 	var username = req.body.username;//Orange
-
-	// 	var person = _.find(people, function(who) { return who.username === username } );
-
-	// 	if(person !== undefined){
-
-	// 		res.json({message : "Username already in use, please pick another one! ;( "}, 412);//Precondition fail
-
-	// 	} else {
-
-	// 		person = { username : username };
-
-	// 		req.session.person = person;
-			
-	// 		people.push(person);
-
-	// 		res.render('index.ejs', { username : person.username });
-
-	// 	}
+	app.get('/api/votes', checkSession, function(req, res){
 
 
-	// })
+
+		var params = {
+			query 	: {},
+			fields 	: { 
+				from_username : 1,
+				created_on : 1 , 
+				value : 1, 
+				slide_number : 1,
+				_id : 0
+			},
+			sort 	: { 'created_on' : -1 }
+		}
+
+		VoteProvider.findLight(params,function(err, votes){			
+
+			if(err!=null){
+				res.json({message : JSON.stringify(err)}, 500);
+			} else {
+
+				res.json(votes);
+
+			}
+
+		})		
+	
+
+	})
+
+	app.get('/api/comments', checkSession, function(req, res){
+
+		/*
+
+		MODEL ATTRIBUTES:
+	
+		from_username 				: String,
+		from_email 					: String,
+		content		 				: String,
+		created_on					: Date
+
+		*/
+	
+		var params = {
+			query 	: {},
+			fields 	: { 
+				from_username 	: 1,
+				created_on 		: 1, 
+				content 		: 1,
+				_id 			: 0
+			},
+			sort 	: { 'created_on' : -1 }
+		}
+
+		CommentProvider.findLight(params,function(err, comments){			
+
+			if(err!=null){
+
+				res.json({message : JSON.stringify(err)}, 500);
+
+			} else {
+
+				res.json(comments);
+
+			}
+
+		})	
+
+
+	})	
 
 	app.get('/demo', function(req, res){
 
@@ -139,8 +245,6 @@ var routes = function (params) {
 			id : "",
 			name : ""
 		});
-
-
 	})	
 
 
