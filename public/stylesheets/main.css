@@ -154,7 +154,7 @@ h6,
 
 .sliderControls ul.slideCount li{
   list-style: none;
-  margin: 0;
+  margin: 0 0 5px 0;
   padding: 0;
   display: inline-block;
   width: 24px;
@@ -740,6 +740,73 @@ background: #4ebb9a;
 .btn-presentation:hover, .btn-presentation:focus{
   background: #ccc;
 }
+
+
+/*Go Full Screen*/
+
+.goFullScreen{
+  float: right;
+  min-width: 50px;
+  height: 50px;
+  line-height: 44px;
+  text-align: center;
+  font-size: 26px;
+  border-left: 1px solid rgba(255,255,255,0.50);
+  color: #476176;
+}
+.goFullScreen:hover{
+  text-decoration: none;
+}
+.addFullScreen .slider{
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 500;
+  height: 100%;
+}
+.addFullScreen a.goFullScreen{
+  position: fixed;
+  top:0;
+  right:0;
+  z-index: 1000;
+  border: none;
+}
+.addFullScreen .sliderControls .prevSlide,
+.addFullScreen .sliderControls .nextSlide{
+  position: fixed;
+  top:0;
+  width: 50%;
+  height: 100%;
+  z-index: 600;
+  margin: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+}
+.addFullScreen .sliderControls .prevSlide span,
+.addFullScreen .sliderControls .nextSlide span{
+  display: none;
+}
+.addFullScreen .sliderControls .prevSlide{
+  left: 0;
+}
+.addFullScreen .sliderControls .nextSlide{
+  right:0;
+}
+.addFullScreen .sliderControls ul.slideCount li.active{
+  position: fixed;
+  top:10px;
+  left: 10px;
+  z-index: 500;
+  margin: 0;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  line-height: 35px;
+  font-size: 20px;
+}
+
 
 /* LOADING AGILITY */
 

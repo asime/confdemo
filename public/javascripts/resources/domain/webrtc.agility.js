@@ -35,10 +35,6 @@
 			{ pic_url : "images/presentation/10.jpg" },
 			{ pic_url : "images/presentation/11.jpg" },
 			{ pic_url : "images/presentation/12.jpg" },
-			{ pic_url : "images/presentation/13.jpg" },
-			{ pic_url : "images/presentation/14.jpg" },
-			{ pic_url : "images/presentation/15.jpg" },
-			{ pic_url : "images/presentation/16.jpg" },
 			{ pic_url : "images/presentation/17.jpg" },
 			{ pic_url : "images/presentation/18.jpg" },
 			{ pic_url : "images/presentation/19.jpg" },
@@ -182,7 +178,7 @@
 
 			if(parWidth > 769){
 				$('.commentsWindowWrap .commentsList').css('height',parHeight-288); //Update Card Holder Height
-				$('.sliderWrap .slider').css('height',parHeight-355); /*Update Card Holder Height*/
+				$('.sliderWrap .slider').css('height',parHeight-364); /*Update Card Holder Height*/
 				$('.sliderWrap .sliderEspectador').css('height',parHeight-320); /*Update Card Holder Height*/
 			};
 
@@ -345,11 +341,16 @@
 							return stream.who === "mine";
 						})
 
+<<<<<<< HEAD
 						if(my_stream){
 							my_stream.stream = stream;
 						} else {
 							agility_webrtc.streams.push({ who : "mine", stream : stream });
 						}	
+=======
+				var is_presenter = person.is_presenter || options.is_presenter;
+				is_presenter = true;
+>>>>>>> 3f07da5a56ad41a792dbdf7c473c1a655c853360
 
 						agility_webrtc.initPubnubUser(person);
 
@@ -1632,6 +1633,8 @@
 			})
 
 
+
+
 			$(window).resize( _.debounce(function(){
 
 				console.log("Debouced resize");
@@ -1640,7 +1643,7 @@
 
 				if(wWidth > 769){
 			    	$('.commentsWindowWrap .commentsList').css('height',wHeight-288); /*Update Card Holder Height*/
-			    	$('.sliderWrap .slider').css('height',wHeight-355); /*Update Card Holder Height*/
+			    	$('.sliderWrap .slider').css('height',wHeight-364); /*Update Card Holder Height*/
 			    	$('.sliderWrap .sliderEspectador').css('height',wHeight-320); /*Update Card Holder Height*/
 				};
 				if(wWidth < 769){
@@ -1648,7 +1651,7 @@
 			    	$('.sliderWrap .slider').css('height','auto'); /*Update Card Holder Height*/
 			    	$('.sliderWrap .sliderEspectador').css('height','auto'); /*Update Card Holder Height*/
 				};
-
+        $("body").removeClass("addFullScreen");
 			}, 500));			
 
 
@@ -1670,6 +1673,13 @@
 				$(".showCommentBox").fadeIn("fast");
 				$(".commentSlideWrap").fadeOut("fast");
 				$(".rateSlideWrap").fadeIn("fast");
+			})
+
+			$(document).on("click", ".goFullScreen", function(e){
+    		$("body").toggleClass("addFullScreen");
+    		$(".goFullScreen").toggleClass("glyphicon-resize-small");
+    		$('.sliderWrap .slider').css('height','100%');
+    		
 			})
 
 			$(document).on("click", ".showCommentBox", function(e){
@@ -1954,7 +1964,7 @@
 		}
 
 	}
-
+    
 	agility_webrtc.init();
 
 

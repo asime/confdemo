@@ -43,7 +43,7 @@ jQuery(document).ready(function () {
 	
 	if(parWidth > 769){
 		$('.commentsWindowWrap .commentsList').css('height',parHeight-288); /*Update Card Holder Height*/
-		$('.sliderWrap .slider').css('height',parHeight-355); /*Update Card Holder Height*/
+		$('.sliderWrap .slider').css('height',parHeight-364); /*Update Card Holder Height*/
 		$('.sliderWrap .sliderEspectador').css('height',parHeight-320); /*Update Card Holder Height*/
 	};
 	if(parWidth < 768){
