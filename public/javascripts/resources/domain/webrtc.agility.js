@@ -341,16 +341,11 @@
 							return stream.who === "mine";
 						})
 
-<<<<<<< HEAD
 						if(my_stream){
 							my_stream.stream = stream;
 						} else {
 							agility_webrtc.streams.push({ who : "mine", stream : stream });
 						}	
-=======
-				var is_presenter = person.is_presenter || options.is_presenter;
-				is_presenter = true;
->>>>>>> 3f07da5a56ad41a792dbdf7c473c1a655c853360
 
 						agility_webrtc.initPubnubUser(person);
 
