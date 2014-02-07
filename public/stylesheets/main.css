@@ -794,7 +794,9 @@ background: #4ebb9a;
 }
 .addFullScreen .sliderControls .prevSlide span,
 .addFullScreen .sliderControls .nextSlide span{
+  
   display: block;
+
 }
 .addFullScreen .sliderControls .prevSlide{
   left: 0;
