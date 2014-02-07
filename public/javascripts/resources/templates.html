@@ -343,7 +343,7 @@
 				<%= this_message.message %>
 			<%}%>
 		</span>
-		<% if(this_message.type === "MESSAGE"){%>
+		<% if(this_message.type !== "HAND-UP"){%>
 			<span class="commentAuthor"><%= this_message.from %></span>
 		<%}%>
 		<span class="deleteBtn" data-message-id="<%= this_message.id %>"><span class="lineDel"></span></span>
