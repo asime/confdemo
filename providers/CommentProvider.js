@@ -43,8 +43,6 @@ CommentProvider.prototype.save = function(params, callback){
 
 CommentProvider.prototype.findLight = function(params, callback){
 
-	console.log("Params: " + JSON.stringify(params));
-
 	var query 	= params.query;
 	var fields 	= params.fields;
 	var sort 	= params.sort;

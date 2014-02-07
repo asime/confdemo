@@ -303,6 +303,9 @@ h6,
   color:#476176;
   overflow: hidden;
 }
+.commentsWindowWrap .commentsList .commentItem .glyphicon-facetime-video{
+  margin-top: 10px;
+}
 .commentsWindowWrap .commentsList .commentItem.active{
   /*padding-right: 30px;*/
 }
@@ -319,6 +322,9 @@ h6,
 .commentsWindowWrap .commentsList .commentItem .commentAuthor{
   display: block;
   clear: both;
+}
+.commentsWindowWrap .commentsList .commentItem .commentText{
+  line-height: 30px;
 }
 .commentsWindowWrap .commentsList .commentItem .commentAuthor{
   font-weight: 700;
@@ -481,7 +487,9 @@ footer{
 .rateSlideWrap{
   margin-top: 10px;
   height: 105px;
-  
+}
+.rateSlideWrap .tooltip-arrow{
+  bottom: 1px;
 }
 .rateSlideWrap > span{
   font-size: 20px;
@@ -494,6 +502,7 @@ footer{
   height: 60px;
   margin: 0 20px;  
   margin-right: 180px;
+  clear: both;
 }
 .rateOptionsWrap .rateOption{
   position: absolute;
@@ -960,7 +969,7 @@ background: #4ebb9a;
   overflow: hidden;
 }
 
-
+.tooltip.top .tooltip-arrow
 
 .rateSlideWrap .thanks_for_rating{
   width:100%;
@@ -973,7 +982,11 @@ background: #4ebb9a;
 .rateSlideWrap .title{
   position: relative;
   left: 0px;
-  width:100%;
+  width:90%;
+}
+
+.glyphicon-hand-up{
+  cursor: pointer;
 }
 
 /***************** AUDIO CONTROLS ******************/
@@ -998,6 +1011,23 @@ background: #4ebb9a;
   display: none;
 }
 
+
+/********* HANDUP ANIMATION **************/
+
+.commentText .glyphicon-hand-up.bouncing {
+  -webkit-animation-name: 'bounce';
+  -webkit-animation-duration: 0.7s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: ease-in-out;  
+  font-size: 22px;
+  margin: -11px 0px 0px 0px
+}
+
+@-webkit-keyframes 'bounce'{
+     from {top: 20px;}
+     50%  {top: 10px;}
+     to   {top: 20px;}
+}
 
 
 

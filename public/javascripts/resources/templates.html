@@ -222,7 +222,8 @@
 				<div class="col-sm-6">
 				  <div class="rateSlideWrap">
 				  	<div class="thanks_for_rating">Thanks for rating the presentation</div>
-					<span class="title">Rate current slide:</span>
+					<span class="title pull-left">Rate current slide:</span>
+					<span class="glyphicon glyphicon-hand-up pull-right"></span>
 					<div class="rateOptionsWrap">
 					  <div class="floatClear"></div>
 
@@ -323,8 +324,28 @@
 
 <script type="text/template" id="channel_chat">
 	<div class="commentItem" data-message-id="<%= this_message.id %>">
-		<span class="commentText"><%= this_message.message %></span>
-		<span class="commentAuthor"><%= this_message.from %></span>
+		<span class="commentText">
+			<% if(this_message.type === "HAND-UP"){%>
+				
+				<% if(this_message.is_your_message === true){%>
+					You have a question
+				<%} else {%>
+					<strong><%= this_message.from %></strong> has a question...
+				<%}%>
+
+				
+				<span class="glyphicon glyphicon-hand-up 
+					<% if(this_message.is_your_message !== true){%>
+						bouncing
+					<%}%>
+				pull-right"></span>
+			<%} else {%>
+				<%= this_message.message %>
+			<%}%>
+		</span>
+		<% if(this_message.type === "MESSAGE"){%>
+			<span class="commentAuthor"><%= this_message.from %></span>
+		<%}%>
 		<span class="deleteBtn" data-message-id="<%= this_message.id %>"><span class="lineDel"></span></span>
 		<% if(this_message.can_webrtc){%>
 			<span class="cameraBtn" 

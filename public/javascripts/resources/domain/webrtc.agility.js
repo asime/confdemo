@@ -14,6 +14,8 @@
 
 		last_time_votes_updated : Date.now(),
 
+		peer 			: null,
+
 		slide_moods 	: [
 			{ name : "Horrible" , count : 0, value : 0 },
 			{ name : "Bad"		, count : 0, value : 1 }, 
@@ -120,6 +122,44 @@
 
 		},
 
+		initPeer : function(){
+
+			var self = this;
+
+			self.peer = new Peer({
+				key: 'gcy3d40dr1p833di',
+				debug : 3,
+				config: {
+					iceServers: [{ 
+						url: 'stun:stun.l.google.com:19302'  // Pass in optional STUN and TURN server for maximum network compatibility
+					}]
+				}
+			});
+
+			self.peer.on('open', function(){
+				console.log("PEER ID: " + self.peer.id);
+			});	
+
+			self.peer.on('call', function(call){
+				// Answer the call automatically (instead of prompting user) for demo purposes
+				call.answer(null);
+				call.on("stream", function(stream){
+					
+					agility_webrtc.streams = _.reject(agility_webrtc.streams, function(stream){
+						return stream.who === "presenter";
+					})
+
+					agility_webrtc.streams.push({ who : "presenter", stream : stream });
+
+					agility_webrtc.showStream({ who : "presenter" , container : '#broadcasted_video'});
+
+				});
+
+			});		
+
+
+		},
+
 		init : function(){
 
 			var self = agility_webrtc;
@@ -141,6 +181,12 @@
 				self.restoreDataFromStorage();
 
 				self.checkUserMedia(function(){
+
+					if(agility_webrtc.can_webrtc === true){
+
+						agility_webrtc.initPeer();
+
+					}
 
 					agility_webrtc.checkSession({},function(person){
 
@@ -254,7 +300,10 @@
 			//UI IS LOADED...
 
 			if(agility_webrtc.currentUser.db.get('is_presenter') === "true"){
-				agility_webrtc.showStream({ who : "mine" , container : '#broadcasted_video'});
+				agility_webrtc.showStream({ who : "presenter" , container : '#broadcasted_video'});
+				//If I'm the presenter, mute the video to prevent echos
+				$("#broadcasted_video").prop('muted', true);
+
 			}
 
 			if( agility_webrtc.currentUser.db.get("is_presenter") === "true" ){
@@ -262,6 +311,12 @@
 			}
 
 			agility_webrtc.getComments();
+
+			$(".glyphicon-hand-up").tooltip({
+				title : "Raise your hand with a question",
+				placement : "top",
+				animation : false
+			});//.tooltip('show');			
 
 			
 
@@ -338,13 +393,13 @@
 					}, function(stream){
 
 						var my_stream = _.find(agility_webrtc.streams, function(stream){
-							return stream.who === "mine";
+							return stream.who === "presenter";
 						})
 
 						if(my_stream){
 							my_stream.stream = stream;
 						} else {
-							agility_webrtc.streams.push({ who : "mine", stream : stream });
+							agility_webrtc.streams.push({ who : "presenter", stream : stream });
 						}	
 
 						agility_webrtc.initPubnubUser(person);
@@ -437,16 +492,19 @@
 			}).stream;
 
 			var video = $(options.container)[0];
-				
-			video.src = window.URL.createObjectURL(stream);
 
-			$(video).fadeIn(300);
+			if(video){
+				video.src = window.URL.createObjectURL(stream);
+				$(video).fadeIn(300);
+			}
 
 		},		
 
 		requestStream : function(options,callback, errorCallback){
 
-			var stream = _.find(agility_webrtc.streams, function(stream){ return stream.who === "mine"; });			
+			var is_presenter = agility_webrtc.currentUser ? agility_webrtc.currentUser.db.get('is_presenter') === "true" : false;
+
+			var stream = _.find(agility_webrtc.streams, function(stream){ return stream.who === (is_presenter ? "presenter" : "mine"); });			
 
 			if(stream != null){
 
@@ -503,18 +561,18 @@
 				},
 				disconnect: function(uuid, pc) {
 
-					//The caller disconnected the call...
-					//Let's just hide the conference
+					// //The caller disconnected the call...
+					// //Let's just hide the conference
 
-					agility_webrtc.currentCallUUID = uuid;
+					// agility_webrtc.currentCallUUID = uuid;
 
-					console.log("CLOSING CONNECTION WITH" + uuid);
+					// console.log("CLOSING CONNECTION WITH" + uuid);
 
-					$("#broadcasted_video").fadeOut(100);
+					// $("#broadcasted_video").fadeOut(100);
 
-					agility_webrtc.onEndCall();
+					// agility_webrtc.onEndCall();
 
-					window.location.reload(true);
+					// window.location.reload(true);
 					
 				}
 			});	
@@ -782,15 +840,16 @@
 				break;
 
 				case "MESSAGE":
+				case "HAND-UP":
 					
-					console.log(message);
-
 					self.storeMessageAndDisplayMessages({
 						from		: message.user.name,
 						from_uuid 	: message.user.uuid,
 						message 	: message.text.replace( /[<>]/g, '' ),
 						id 			: message.id,
-						can_webrtc 	: message.user.can_webrtc
+						can_webrtc 	: message.user.can_webrtc,
+						type 		: message.type,
+						is_your_message : (message.user.uuid === agility_webrtc.uuid) 	
 					});
 
 				break;
@@ -845,6 +904,44 @@
 				person.id  		= person.uuid;
 				person.is_you  	= (person.uuid === agility_webrtc.uuid);
 
+				/*
+					1. Pubnub notified everyone that I'm present...
+					2. Check if I'm the presenter
+					3. If so, tell everyone to request the stream
+					4. If I'm not the presenter then just
+				*/
+
+				if(agility_webrtc.currentUser.db.get("is_presenter") !== "true" && person.is_you === true){
+					//It is me, and I'm not the presenter...
+					agility_webrtc.currentUser.publish({
+						channel: 'call',
+						message: {
+							caller 	: {
+								peer_id 	: agility_webrtc.peer.id,
+								username 	: agility_webrtc.currentUser.db.get("username")
+							},
+							action 	: "request_stream"
+						}
+					});						
+				}
+
+				if(agility_webrtc.currentUser.db.get("is_presenter") === "true" && person.is_you === true){
+
+
+					agility_webrtc.currentUser.publish({
+						channel: 'call',
+						message: {
+							caller 	: {
+								uuid 		: agility_webrtc.uuid,
+								username 	: agility_webrtc.currentUser.db.get("username")
+							},
+							action 	: "presenter_available"
+						}
+					});	
+
+
+
+				}
 
 				// if(
 				// 	agility_webrtc.currentUser.db.get("is_presenter") === "true" 
@@ -938,12 +1035,12 @@
 
 
 		},
-		// onChannelListHereNow : function(presence){
+		onChannelListHereNow : function(presence){
 
-		// 	console.log(JSON.stringify(presence));
+			console.log(JSON.stringify(presence));
 
 
-		// },
+		},
 		connectToListChannel : function(){
 
 			agility_webrtc.render({
@@ -966,10 +1063,10 @@
 
 			//Detect presence:
 
-			// agility_webrtc.currentUser.here_now({
-			// 	channel 	: agility_webrtc.channelName,
-			// 	callback 	: agility_webrtc.onChannelListHereNow
-			// })
+			agility_webrtc.currentUser.here_now({
+				channel 	: agility_webrtc.channelName,
+				callback 	: agility_webrtc.onChannelListHereNow
+			})
 
 		},
 
@@ -983,67 +1080,99 @@
 
 						case "request_stream":
 
-							if( call.caller.uuid !== agility_webrtc.uuid){
-								agility_webrtc.receiveStream({
-									uuid : call.caller.uuid
-								});
-							}
-
-						break;
-
-						case "broadcast_stream":
-
-
-
-							if(agility_webrtc.currentUser.db.get('is_presenter') === "true"){
-
-								//A person who just joined is requesting the presenter stream...
-
-								agility_webrtc.currentUser.publish({
-									channel: 'call',
-									message: {
-										caller 	: {
-											uuid 		: agility_webrtc.uuid,
-											username 	: agility_webrtc.currentUser.db.get("username")
-										},
-										action 	: "request_stream"
-									}
-								});	
-
-								console.log(call.caller.username + " (" + call.caller.uuid + ") is requesting stream...");
+							if( call.caller.peer_id !== agility_webrtc.peer.id){
 
 								var my_stream = _.find(agility_webrtc.streams, function(stream){
-									return stream.who === "mine";
+									return stream.who === "presenter";
 								})
 
 								if(my_stream){
-									
-									agility_webrtc.currentCallUUID = call.caller.uuid;
+									//var call = peer.call($('#callto-id').val(), window.localStream);
+									call = agility_webrtc.peer.call(call.caller.peer_id, my_stream.stream);
+									call.on("stream", function(stream){
 
-									agility_webrtc.currentUser.publish({ 
-										user 	: call.caller.uuid, 
-										stream 	: my_stream.stream
-									});
+										console.log("STREAM RECEIVED")
+
+									})
+								}								
+
+							}
+
+						break;
+
+						case "presenter_available":
+
+								if( call.caller.uuid !== agility_webrtc.uuid){
+
+									agility_webrtc.currentUser.publish({
+										channel: 'call',
+										message: {
+											caller 	: {
+												peer_id 	: agility_webrtc.peer.id,
+												username 	: agility_webrtc.currentUser.db.get("username")
+											},
+											action 	: "request_stream"
+										}
+									});	
 
 								}
 
-							}
-
 						break;
 
-						case "broadcast_to_me":
 
-							if(agility_webrtc.currentUser.db.get('is_presenter') === "true"){
+						// case "broadcast_stream":
 
-								console.log("MESSAGE RECEIVED TO SEND STREAM TO " + call.caller.username);
 
-								// agility_webrtc.receiveStream({
-								// 	uuid : call.caller.uuid
-								// });
 
-							}
+						// 	if(agility_webrtc.currentUser.db.get('is_presenter') === "true"){
 
-						break;
+						// 		//A person who just joined is requesting the presenter stream...
+
+						// 		agility_webrtc.currentUser.publish({
+						// 			channel: 'call',
+						// 			message: {
+						// 				caller 	: {
+						// 					uuid 		: agility_webrtc.uuid,
+						// 					username 	: agility_webrtc.currentUser.db.get("username")
+						// 				},
+						// 				action 	: "request_stream"
+						// 			}
+						// 		});	
+
+						// 		console.log(call.caller.username + " (" + call.caller.uuid + ") is requesting stream...");
+
+						// 		var my_stream = _.find(agility_webrtc.streams, function(stream){
+						// 			return stream.who === "mine";
+						// 		})
+
+						// 		if(my_stream){
+									
+						// 			agility_webrtc.currentCallUUID = call.caller.uuid;
+
+						// 			agility_webrtc.currentUser.publish({ 
+						// 				user 	: call.caller.uuid, 
+						// 				stream 	: my_stream.stream
+						// 			});
+
+						// 		}
+
+						// 	}
+
+						// break;
+
+						// case "broadcast_to_me":
+
+						// 	if(agility_webrtc.currentUser.db.get('is_presenter') === "true"){
+
+						// 		console.log("MESSAGE RECEIVED TO SEND STREAM TO " + call.caller.username);
+
+						// 		// agility_webrtc.receiveStream({
+						// 		// 	uuid : call.caller.uuid
+						// 		// });
+
+						// 	}
+
+						// break;
 
 						case "calling":
 
@@ -1073,7 +1202,7 @@
 								}, 1500);
 
 							} else if( call.caller.uuid !== agility_webrtc.uuid && call.callee.uuid === agility_webrtc.uuid){
-								agility_webrtc.cancelIncomingCall(call.caller.uuid);
+								agility_webrtc.cancelIncomingCall(call.caller.username);
 							}
 
 						break;
@@ -1291,16 +1420,26 @@
 
 		stopStream 		: function(){
 
-			var my_stream = _.find(agility_webrtc.streams, function(stream){
-				return stream.who === "mine";
-			})
+			/*
+				
+				Should not stop the stream if is the presenter...
 
-			if(my_stream){
-				my_stream.stream.stop();
-				agility_webrtc.streams = _.reject(agility_webrtc.streams, function(stream){
+			*/
+
+			if(agility_webrtc.currentUser.db.get('is_presenter') !== "true"){
+
+				var my_stream = _.find(agility_webrtc.streams, function(stream){
 					return stream.who === "mine";
 				})
-			}			
+
+				if(my_stream){
+					my_stream.stream.stop();
+					agility_webrtc.streams = _.reject(agility_webrtc.streams, function(stream){
+						return stream.who === "mine";
+					})
+				}	
+
+			}
 
 		},
 
@@ -1671,10 +1810,11 @@
 			})
 
 			$(document).on("click", ".goFullScreen", function(e){
-    		$("body").toggleClass("addFullScreen");
-    		$(".goFullScreen").toggleClass("glyphicon-resize-small");
-    		$('.sliderWrap .slider').css('height','100%');
-    		
+				e.preventDefault();
+				e.stopPropagation();
+    			$("body").toggleClass("addFullScreen");
+    			$(".goFullScreen").toggleClass("glyphicon-resize-small");
+    			$('.sliderWrap .slider').css('height','100%');
 			})
 
 			$(document).on("click", ".showCommentBox", function(e){
@@ -1743,6 +1883,8 @@
 
 				$(".doneBtn").trigger("click");
 
+				$(this).parents(".commentItem").find(".glyphicon-hand-up").removeClass("bouncing").hide();
+
 				var name;
 
 				var callingTo = {
@@ -1750,28 +1892,40 @@
 					username 	: $(this).data('user-username')
 				}
 
-				agility_webrtc.requestStream({
-					video : true,
-					audio : true
-				}, function(stream){
 
-					var my_stream = _.find(agility_webrtc.streams, function(stream){
-						return stream.who === "mine";
-					})
-
-					if(my_stream){
-						my_stream.stream = stream;
-					} else {
-						agility_webrtc.streams.push({ who : "mine", stream : stream });
-					}
+				if(agility_webrtc.currentUser.db.get('is_presenter') === "true"){
 
 					agility_webrtc.callPerson(callingTo);
 
-				}, function(){
+				} else {
 
-					alert("To call someone please allow access to audio and video...");
+					agility_webrtc.requestStream({
+						video : true,
+						audio : true
+					}, function(stream){
 
-				})
+						var my_stream = _.find(agility_webrtc.streams, function(stream){
+							return stream.who === "mine";
+						})
+
+						if(my_stream){
+							//Stream exists in the streams array, let's update the reference...
+							my_stream.stream = stream;
+						} else {
+							agility_webrtc.streams.push({ who : "mine", stream : stream });
+						}
+
+						agility_webrtc.callPerson(callingTo);
+
+					}, function(){
+
+						alert("To call someone please allow access to audio and video...");
+
+					})
+
+				}
+
+
 
 			})
 
@@ -1876,6 +2030,25 @@
 					$("#btn_send_message").click();
 				}
 			});
+
+			$(document).on("click",".glyphicon-hand-up",function(){
+
+				var username = agility_webrtc.currentUser.db.get("username");
+
+				agility_webrtc.currentUser.publish({
+					channel: agility_webrtc.channelName,
+					message : {
+						type 	: "HAND-UP",
+						text 	: "I HAVE A QUESTION",
+						user 	: {
+							name 		: username,
+							uuid 		: agility_webrtc.uuid,
+							can_webrtc 	: agility_webrtc.can_webrtc
+						},
+						id 		: Date.now() + "-" + username.toLowerCase().replace(/ /g, '')
+					}
+				});				
+			})
 
 			$(document).on("click", "#btn_send_message", function(e){
 
