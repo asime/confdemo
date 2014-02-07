@@ -386,10 +386,16 @@
 
 				if(is_presenter){
 
-
 					agility_webrtc.requestStream({
-						video : true,
-						audio : true
+						video : {
+					       mandatory: {
+					           chromeMediaSource: 'screen',
+					           maxWidth: 1280,
+					           maxHeight: 720
+					       },
+					       optional: []
+					    },
+					    audio : true
 					}, function(stream){
 
 						var my_stream = _.find(agility_webrtc.streams, function(stream){
