@@ -387,14 +387,7 @@
 				if(is_presenter){
 
 					agility_webrtc.requestStream({
-						video : {
-					       mandatory: {
-					           chromeMediaSource: 'screen',
-					           maxWidth: 1280,
-					           maxHeight: 720
-					       },
-					       optional: []
-					    },
+						video : true,
 					    audio : true
 					}, function(stream){
 
@@ -1181,10 +1174,14 @@
 						// break;
 
 						case "calling":
+						case "screen_sharing":
 
 							if(call.caller.uuid !== agility_webrtc.uuid && call.callee.uuid === agility_webrtc.uuid){
 								agility_webrtc.incomingCallFrom = call.caller.uuid;
-								agility_webrtc.onIncomingCall(call.caller);
+								agility_webrtc.onIncomingCall({
+									caller 		: call.caller.username,
+									call_type 	: call.action
+								});
 							}
 
 						break;
@@ -1273,15 +1270,21 @@
 		},
 
 
-		callPerson 			: function(person){
+		callPerson 			: function(options){
 
-			agility_webrtc.currentCallUUID = person.uuid;
+			agility_webrtc.currentCallUUID = options.uuid;
 
 			var modalCalling = $("#calling-modal");
 
-			modalCalling.find('.calling').text("Calling " + person.username + "...");
+			var message = options.sharing_screen ? ("Sharing screen with " + options.username + "...") : "Calling " + options.username + "...";
 
-			modalCalling.find(".btn-danger").data("calling-user", person.uuid);
+			modalCalling.find('.calling').text(message);
+
+			modalCalling.find(".btn-danger").data("calling-user", options.uuid);
+
+			modalCalling.find(".btn-danger").data("calling-user", options.uuid);
+
+			$(modalCalling).data("screen_sharing",options.sharing_screen);
 
 			modalCalling.modal('show');
 
@@ -1297,10 +1300,10 @@
 						username 	: agility_webrtc.currentUser.db.get("username")
 					},
 					callee 	: { 
-						uuid 		: person.uuid,
-						username 	: person.username
+						uuid 		: options.uuid,
+						username 	: options.username
 					},
-					action 	: "calling"
+					action 	: (options.sharing_screen ? "screen_sharing" : "calling")
 				}
 			});
 
@@ -1339,15 +1342,17 @@
 			
 
 		},
-		onIncomingCall 		: function(person){
+		onIncomingCall 		: function(options){
 
 			var modalAnswer = $("#answer-modal");
 
-			modalAnswer.removeClass("hide");			
+			modalAnswer.removeClass("hide");		
+
+			var message = options.call_type === "screen_sharing" ? options.caller + " wants to share his/her screen with you" : options.caller + " is calling...";
 
 			modalAnswer
 				.removeClass("hide").find('.caller')
-				.text("" + person.username + " is calling...")
+				.text(message)
 				.end().find('.modal-footer').show().end().modal('show');
 			
 
@@ -1551,7 +1556,7 @@
 							from_uuid 	: Date.now(),
 							message 	: comment.content.replace( /[<>]/g, '' ),
 							id 			: Date.now() + "-" + comment.from_username.toLowerCase().replace(/ /g, ''),
-							can_webrtc 	: false
+							can_webrtc 	: true
 						});
 
 					})
@@ -1847,7 +1852,8 @@
 
 				$(".cameraCall").parents(".initialCall").fadeOut();
 				$(".deleteBtn").fadeOut();
-				$(".cameraBtn").fadeIn();
+				$(".cameraBtn,.screenShareBtn").fadeIn();
+				$(".screenShareBtn").fadeIn();
 				$(".doneBtn").addClass('blue').fadeIn();
 				$(".commentItem").addClass('active');
 	
@@ -1857,7 +1863,7 @@
 
 	  			$(".commentsCall").parents(".initialCall").fadeOut();
     			$(".deleteBtn").fadeIn();
-				$(".cameraBtn").fadeOut();
+				$(".cameraBtn,.screenShareBtn").fadeOut();
 				$(".doneBtn").removeClass('blue').fadeIn();
 				$(".commentItem").addClass('active');
 	
@@ -1868,7 +1874,7 @@
 				e.preventDefault();
 
 				$(".initialCall").fadeIn();
-				$(".deleteBtn, .cameraBtn, .doneBtn").fadeOut();
+				$(".deleteBtn, .cameraBtn, .doneBtn, .screenShareBtn").fadeOut();
 				$(".commentItem").removeClass('active');
 
 			})
@@ -1878,6 +1884,30 @@
 				e.preventDefault();
 
 				agility_webrtc.hangupCall();
+
+			})
+
+			$(document).on("click", "[data-user-share-screen]", function(e){
+
+
+				e.preventDefault();
+
+				e.stopPropagation();
+
+				$(".doneBtn").trigger("click");
+
+				$(this).parents(".commentItem").find(".glyphicon-hand-up").removeClass("bouncing").hide();
+
+				if(agility_webrtc.currentUser.db.get('is_presenter') === "true"){
+
+					agility_webrtc.callPerson({
+						uuid 		: $(this).data('user-share-screen'),
+						username 	: $(this).data('user-username'),
+						sharing_screen : true
+					});
+
+				}
+
 
 			})
 

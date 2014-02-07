@@ -354,6 +354,13 @@
 				data-user="<%= this_message.from_uuid %>">
 				<span class="glyphicon glyphicon-facetime-video"></span>
 			</span>
+			<span class="screenShareBtn" 
+				data-call-button="<%= this_message.from_uuid %>" 
+				data-user-username="<%= this_message.from %>" 
+				data-user-share-screen="<%= this_message.from_uuid %>"
+			>
+				<span class="glyphicon glyphicon-new-window"></span>
+			</span>
 		<%}%>
 	</div>
 </script>

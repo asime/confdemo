@@ -794,7 +794,7 @@ background: #4ebb9a;
 }
 .addFullScreen .sliderControls .prevSlide span,
 .addFullScreen .sliderControls .nextSlide span{
-  display: none;
+  display: block;
 }
 .addFullScreen .sliderControls .prevSlide{
   left: 0;
@@ -988,6 +988,17 @@ background: #4ebb9a;
 .glyphicon-hand-up{
   cursor: pointer;
 }
+
+.screenShareBtn{
+  display: none;
+}
+.glyphicon-new-window{
+  float: right;
+  margin: -21px 53px 0px 0px;
+  cursor: pointer;
+}
+
+
 
 /***************** AUDIO CONTROLS ******************/
 
