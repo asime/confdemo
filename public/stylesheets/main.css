@@ -284,7 +284,7 @@ h6,
 .broadcasted_video{
   /*width: 132px;*/
   /*border: solid 1px #cc3300;*/
-  height: 100px;
+  /*height: 100px;*/
   float: right;
   position: absolute;
   z-index: 1000;
