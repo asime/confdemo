@@ -30,8 +30,8 @@
 			name : "vga",//Regular
 			constraints : {
 				mandatory : {
-					maxWidth 	: 320,
-					maxHeight 	: 180
+					maxWidth 	: 640,
+					maxHeight 	: 360
 				}
 			}
 		},{
@@ -1717,6 +1717,18 @@
 
 			// }
 
+			$(document).on("click", ".glyphicon-fullscreen", function(){
+
+				var video = $("#broadcasted_video")[0];
+
+				if(video.mozRequestFullScreen){
+					video.mozRequestFullScreen();
+				} else if(video.webkitEnterFullScreen){
+					video.webkitEnterFullScreen();
+				}
+
+			})
+
 			$(document).on("click", ".broadcast_screen", function(){
 
 
@@ -1732,8 +1744,8 @@
 						video : {
 							mandatory: {
 								chromeMediaSource: 'screen'
-								// maxWidth: 640,
-								// maxHeight: 480
+								maxWidth: 640,
+								maxHeight: 480
 							}
 						}
 					}, function(stream){

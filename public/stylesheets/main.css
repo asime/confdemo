@@ -282,8 +282,7 @@ h6,
 
 .broadcasted_video{
   /*width: 132px;*/
-  width: 176px;
-  border: solid 1px #cc3300;
+  /*border: solid 1px #cc3300;*/
   height: 100px;
   float: right;
   position: absolute;
@@ -292,8 +291,13 @@ h6,
   bottom: 1px;
 }
 
+
+
 .broadcasted_video video{
-  width: 100%;
+  max-width: 294px;
+  display: block;
+  position: relative;
+  float: left;
 }
 
 .commentsWindowWrap .commentHeader .actionsWrap .initialCall .commentsCall{
@@ -1000,6 +1004,15 @@ background: #4ebb9a;
 
 .glyphicon-hand-up{
   cursor: pointer;
+}
+
+.glyphicon.glyphicon-fullscreen{
+  width: 1em;
+  display: block;
+  position: relative;
+  float: right;
+  z-index: 1000;  
+  margin-left: -15px;
 }
 
 .screenShareBtn{
