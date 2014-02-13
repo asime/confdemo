@@ -56,6 +56,10 @@ h6,
   height: auto;  
   margin-bottom: 10px;
 }
+
+.carousel-inner{
+  overflow: visible;
+}
 .carousel-inner > .active{
   text-align: center;
 }
