@@ -58,7 +58,8 @@ h6,
 }
 
 .carousel-inner{
-  overflow: visible;
+  /*overflow: visible;*/
+  overflow-x: hidden;
 }
 .carousel-inner > .active{
   text-align: center;
@@ -298,6 +299,10 @@ h6,
   display: block;
   position: relative;
   float: left;
+}
+
+.broadcasted_video.fullscreen video{
+  max-width: 100%;
 }
 
 .commentsWindowWrap .commentHeader .actionsWrap .initialCall .commentsCall{
@@ -1013,6 +1018,7 @@ background: #4ebb9a;
   float: right;
   z-index: 1000;  
   margin-left: -15px;
+  cursor: pointer
 }
 
 .screenShareBtn{
@@ -1051,13 +1057,18 @@ background: #4ebb9a;
 
 /********* HANDUP ANIMATION **************/
 
-.commentText .glyphicon-hand-up.bouncing {
+.commentSlideWrap .glyphicon-hand-up.bouncing {
   -webkit-animation-name: 'bounce';
   -webkit-animation-duration: 0.7s;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-timing-function: ease-in-out;  
   font-size: 22px;
   margin: -11px 0px 0px 0px
+}
+
+.raise_hand_label{
+  font-size: 15px;
+  margin-right: 4px;
 }
 
 @-webkit-keyframes 'bounce'{

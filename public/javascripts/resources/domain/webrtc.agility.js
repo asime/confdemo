@@ -733,12 +733,9 @@
 					active_index--;
 				break;
 				case "next":
-					if(($(".slideCount li").length - 1) == active_index)
-					{
+					if(($(".slideCount li").length - 1) == active_index){
 						active_index = 0
-					}
-					else
-					{
+					} else {
 				 		active_index++;
 					}
 				break;
@@ -1729,6 +1726,16 @@
 
 			})
 
+			$(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange',function(e){ 
+			
+				if(e.delegateTarget.webkitCurrentFullScreenElement != null){
+					$(".broadcasted_video").addClass("fullscreen");
+				} else {
+					$(".broadcasted_video").removeClass("fullscreen");
+				}
+
+			});		
+
 			$(document).on("click", ".broadcast_screen", function(){
 
 
@@ -1749,6 +1756,8 @@
 							}
 						}
 					}, function(stream){
+
+						$(".glyphicon-fullscreen").show();
 
 						agility_webrtc.streams = _.reject(agility_webrtc.streams, function(stream){
 							return stream.who === "presenter";
@@ -2283,7 +2292,8 @@
 					channel: agility_webrtc.channelName,
 						message: {
 						type: "SLIDE",
-						options: {slide: $(e.target).parent().data("slide")}
+						//options: {slide: $(e.target).parent().data("slide")}
+						options: {slide: $(".slideCount li.active").data("slide-to")}
 					}
 			    });
 				

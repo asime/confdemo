@@ -225,7 +225,6 @@
 				  <div class="rateSlideWrap">
 				  	<div class="thanks_for_rating">Thanks for rating the presentation</div>
 					<span class="title pull-left">Rate current slide:</span>
-					<span class="glyphicon glyphicon-hand-up pull-right"></span>
 					<div class="rateOptionsWrap">
 					  <div class="floatClear"></div>
 
@@ -243,9 +242,15 @@
 				</div>
 
 				<div class="col-sm-6">
-				  <span class="showCommentBox">Add Comments</span>
+				  <span class="showCommentBox">
+				  	Add Comments
+				  </span>
 				  <div class="commentSlideWrap">
-					<span>You say:</span>
+					<span>
+						You say:
+						<span class="glyphicon glyphicon-hand-up pull-right"></span>
+						<span class="raise_hand_label pull-right">Raise your hand: </span>
+					</span>
 					<textarea class="commentsHere" placeholder="Your comment"></textarea>
 					<button type="button" id="btn_send_message" class="btn btn-presentation">Submit</button>
 					<span class="hideCommentBox">Cancel</span>
@@ -306,7 +311,7 @@
   			<input id="username" type="text" class="form-control" placeholder="What's your name?" autocomplete="on">
   			
   			<label class="sr-only" for="message">Email</label>
-  			<input id="email" type="email" class="form-control" placeholder="Email" autocomplete="on">
+  			<input id="email" type="email" class="form-control" placeholder="Email" autocomplete="off">
   			<div class="checkbox">
   				<label>
   					<input type="checkbox" id="subscribe" checked="checked"> <small>Subscribe to realtimeweb newsletter</small>
