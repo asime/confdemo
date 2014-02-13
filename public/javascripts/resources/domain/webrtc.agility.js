@@ -1735,8 +1735,7 @@
 								// maxWidth: 640,
 								// maxHeight: 480
 							}
-						},
-						audio : true
+						}
 					}, function(stream){
 
 						agility_webrtc.streams = _.reject(agility_webrtc.streams, function(stream){
