@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 
 mongoose.connect('mongodb://usr_agility_rtc:87a97d34cca370779e49c2ff32a87fa51c58a118e2ba3a680a591dd61852dbfe@ds053818.mongolab.com:53818/agility_rtc_presentation', function(err) {
     if (err != null){
-		console.log("Unable to connect: " + err);
+		console.log("Unable to connect: " + err + " @ VoteProvider");
 	} else {
 		console.log("Connected to database...");
 	}

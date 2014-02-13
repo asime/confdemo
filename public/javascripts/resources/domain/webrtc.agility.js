@@ -299,13 +299,6 @@
 
 			//UI IS LOADED...
 
-			if(agility_webrtc.currentUser.db.get('is_presenter') === "true"){
-				agility_webrtc.showStream({ who : "presenter" , container : '#broadcasted_video'});
-				//If I'm the presenter, mute the video to prevent echos
-				$("#broadcasted_video").prop('muted', true);
-
-			}
-
 			if( agility_webrtc.currentUser.db.get("is_presenter") === "true" ){
 				agility_webrtc.getVotes();
 			}
@@ -382,35 +375,37 @@
 			}, function(person){
 
 
-				var is_presenter = person.is_presenter || options.is_presenter;
+				agility_webrtc.initPubnubUser(person);
 
-				if(is_presenter){
+				// var is_presenter = person.is_presenter || options.is_presenter;
 
-					agility_webrtc.requestStream({
-						video : true,
-					    audio : true
-					}, function(stream){
+				// if(is_presenter){
 
-						var my_stream = _.find(agility_webrtc.streams, function(stream){
-							return stream.who === "presenter";
-						})
+				// 	agility_webrtc.requestStream({
+				// 		video : true,
+				// 	    audio : true
+				// 	}, function(stream){
 
-						if(my_stream){
-							my_stream.stream = stream;
-						} else {
-							agility_webrtc.streams.push({ who : "presenter", stream : stream });
-						}	
+				// 		var my_stream = _.find(agility_webrtc.streams, function(stream){
+				// 			return stream.who === "presenter";
+				// 		})
 
-						agility_webrtc.initPubnubUser(person);
+				// 		if(my_stream){
+				// 			my_stream.stream = stream;
+				// 		} else {
+				// 			agility_webrtc.streams.push({ who : "presenter", stream : stream });
+				// 		}	
+
+				// 		agility_webrtc.initPubnubUser(person);
 
 
-					})
+				// 	})
 
-				} else {
+				// } else {
 
-					agility_webrtc.initPubnubUser(person);
+				// 	agility_webrtc.initPubnubUser(person);
 
-				}
+				// }
 
 
 			}, function(xhr){
@@ -497,7 +492,17 @@
 				$(video).fadeIn(300);
 			}
 
-		},		
+		},	
+
+		is_broadcasting	: function(){
+
+			return (
+				_.find(agility_webrtc.streams, function(stream){ return stream.who === "presenter"; }) != null 
+				&& 
+				agility_webrtc.currentUser.db.get("is_presenter") === "true"
+			);
+
+		},
 
 		requestStream : function(options,callback, errorCallback){
 
@@ -524,6 +529,10 @@
 					}, function(e) {
 
 						console.log('No access to getUserMedia!', e);
+
+						if(e.name === "PermissionDeniedError" && window.location.protocol !== "https:"){
+							alert("Must be behind a SSL...");
+						}
 						
 						if(typeof errorCallback === 'function'){
 							errorCallback(e);
@@ -1674,24 +1683,78 @@
 
 			// }
 
-			$(document).on("click", ".broadcast_stream", function(){
+			$(document).on("click", ".broadcast_screen", function(){
 
-				agility_webrtc.requestStream({
-					video : true,
-					audio : true
-				}, function(stream){
 
-					var my_stream = _.find(agility_webrtc.streams, function(stream){
-						return stream.who === "mine";
+				var is_presenter = agility_webrtc.currentUser.db.get("is_presenter") === "true";
+
+				if(is_presenter){
+
+					agility_webrtc.streams = _.reject(agility_webrtc.streams, function(stream){
+						return stream.who === "presenter";
+					})					
+
+					agility_webrtc.requestStream({
+						video : {
+							mandatory: {
+								chromeMediaSource: 'screen'
+								// maxWidth: 640,
+								// maxHeight: 480
+							}
+						}
+					}, function(stream){
+
+						agility_webrtc.streams = _.reject(agility_webrtc.streams, function(stream){
+							return stream.who === "presenter";
+						})
+
+						agility_webrtc.streams.push({ who : "presenter", stream : stream });
+
+						agility_webrtc.showStream({ who : "presenter" , container : '#broadcasted_video'});
+						//If I'm the presenter, mute the video to prevent echos
+						$("#broadcasted_video").prop('muted', true);
+
+
 					})
 
-					if(my_stream){
-						my_stream.stream = stream;
-					} else {
-						agility_webrtc.streams.push({ who : "mine", stream : stream });
-					}	
+				}	
 
-				})
+
+			})
+
+			$(document).on("click", ".broadcast_stream", function(){
+
+				var is_presenter = agility_webrtc.currentUser.db.get("is_presenter") === "true";
+
+				if(is_presenter){
+
+					agility_webrtc.requestStream({
+						video : true,
+					    audio : true
+					}, function(stream){
+
+						var my_stream = _.find(agility_webrtc.streams, function(stream){
+							return stream.who === "presenter";
+						})
+
+						if(my_stream){
+							my_stream.stream = stream;
+						} else {
+							agility_webrtc.streams.push({ who : "presenter", stream : stream });
+						}	
+
+						if(agility_webrtc.currentUser.db.get('is_presenter') === "true"){
+							agility_webrtc.showStream({ who : "presenter" , container : '#broadcasted_video'});
+							//If I'm the presenter, mute the video to prevent echos
+							$("#broadcasted_video").prop('muted', true);
+
+						}
+						
+
+
+					})
+
+				}				
 
 
 			})

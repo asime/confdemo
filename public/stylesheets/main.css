@@ -64,6 +64,14 @@ h6,
 .sliderWrap{
   height: auto;
 }
+.slideHeader .glyphicon-new-window{
+  float: right;
+  margin: 20px 0px 0px 7px !important;
+  cursor: pointer;
+  position: absolute;
+  font-size: 18px;
+  color: #476176;
+}
 .sliderWrap .slider,
 .sliderWrap .sliderEspectador{
   width: 100%;

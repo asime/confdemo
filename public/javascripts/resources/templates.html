@@ -53,7 +53,8 @@
 					<div class="slideHeader">
 						<span class="af-brand"></span>
 						<% if(user.db.get("is_presenter") === "true"){%>
-							<!--<span class="broadcast_stream glyphicon glyphicon-facetime-video"></span>-->
+							<span class="broadcast_stream glyphicon glyphicon-facetime-video"></span>
+							<span class="broadcast_screen glyphicon glyphicon-new-window"></span>
 						<%}%>
 						<a href="#" class="goFullScreen glyphicon glyphicon-resize-full"></a>
 						<span class="rightText">Code Samples : agilityfeat.com/cs</span>
@@ -354,6 +355,7 @@
 				data-user="<%= this_message.from_uuid %>">
 				<span class="glyphicon glyphicon-facetime-video"></span>
 			</span>
+			<!--
 			<span class="screenShareBtn" 
 				data-call-button="<%= this_message.from_uuid %>" 
 				data-user-username="<%= this_message.from %>" 
@@ -361,6 +363,7 @@
 			>
 				<span class="glyphicon glyphicon-new-window"></span>
 			</span>
+			-->
 		<%}%>
 	</div>
 </script>
