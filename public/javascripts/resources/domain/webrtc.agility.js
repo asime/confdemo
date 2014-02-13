@@ -1728,6 +1728,10 @@
 
 				if(is_presenter){
 
+					agility_webrtc.streams = _.reject(agility_webrtc.streams, function(stream){
+						return stream.who === "presenter";
+					})	
+
 					agility_webrtc.requestStream({
 						video : true,
 					    audio : true
