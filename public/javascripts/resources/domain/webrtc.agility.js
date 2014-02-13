@@ -16,6 +16,34 @@
 
 		peer 			: null,
 
+		video_constraint_default : "qvga",
+
+		video_constraints 	: [{
+			name : "qvga",//Low def
+			constraints : {
+				mandatory : {
+					maxWidth 	: 320,
+					maxHeight 	: 180
+				}
+			}
+		},{
+			name : "vga",//Regular
+			constraints : {
+				mandatory : {
+					maxWidth 	: 320,
+					maxHeight 	: 180
+				}
+			}
+		},{
+			name : "hd",//Regular
+			constraints : {
+				mandatory : {
+					maxWidth 	: 1280,
+					maxHeight 	: 720
+				}
+			}
+		}],
+
 		slide_moods 	: [
 			{ name : "Horrible" , count : 0, value : 0 },
 			{ name : "Bad"		, count : 0, value : 1 }, 
@@ -640,8 +668,12 @@
 
 			if(stream == null){
 
+				var video_constraints = _.find(agility_webrtc.video_constraints, function(video_constraint){
+					return video_constraint.name === agility_webrtc.video_constraint_default;
+				}).constraints;
+
 				agility_webrtc.requestStream({
-					video : true,
+					video : video_constraints,
 					audio : true
 				}, function(stream){
 
@@ -933,23 +965,21 @@
 					});						
 				}
 
-				if(agility_webrtc.currentUser.db.get("is_presenter") === "true" && person.is_you === true){
+				// if(agility_webrtc.currentUser.db.get("is_presenter") === "true" && person.is_you === true){
 
 
-					agility_webrtc.currentUser.publish({
-						channel: 'call',
-						message: {
-							caller 	: {
-								uuid 		: agility_webrtc.uuid,
-								username 	: agility_webrtc.currentUser.db.get("username")
-							},
-							action 	: "presenter_available"
-						}
-					});	
+				// 	agility_webrtc.currentUser.publish({
+				// 		channel: 'call',
+				// 		message: {
+				// 			caller 	: {
+				// 				uuid 		: agility_webrtc.uuid,
+				// 				username 	: agility_webrtc.currentUser.db.get("username")
+				// 			},
+				// 			action 	: "presenter_available"
+				// 		}
+				// 	});	
 
-
-
-				}
+				// }
 
 				// if(
 				// 	agility_webrtc.currentUser.db.get("is_presenter") === "true" 
@@ -1381,8 +1411,12 @@
 
 		answerCall 		: function(from){
 
+			var video_constraints = _.find(agility_webrtc.video_constraints, function(video_constraint){
+				return video_constraint.name === agility_webrtc.video_constraint_default;
+			}).constraints;			
+
 		 	agility_webrtc.requestStream({
-		 		video : true,
+		 		video : video_constraints,
 		 		audio : true
 		 	}, function(stream){
 
@@ -1715,6 +1749,17 @@
 						//If I'm the presenter, mute the video to prevent echos
 						$("#broadcasted_video").prop('muted', true);
 
+						agility_webrtc.currentUser.publish({
+							channel: 'call',
+							message: {
+								caller 	: {
+									uuid 		: agility_webrtc.uuid,
+									username 	: agility_webrtc.currentUser.db.get("username")
+								},
+								action 	: "presenter_available"
+							}
+						});							
+
 
 					})
 
@@ -1733,8 +1778,12 @@
 						return stream.who === "presenter";
 					})	
 
+					var video_constraints = _.find(agility_webrtc.video_constraints, function(video_constraint){
+						return video_constraint.name === agility_webrtc.video_constraint_default;
+					}).constraints;						
+
 					agility_webrtc.requestStream({
-						video : true,
+						video : video_constraints,
 					    audio : true
 					}, function(stream){
 
@@ -1754,6 +1803,19 @@
 							$("#broadcasted_video").prop('muted', true);
 
 						}
+
+						//Publish to everyone that my stream (PRESENTER) is available
+
+						agility_webrtc.currentUser.publish({
+							channel: 'call',
+							message: {
+								caller 	: {
+									uuid 		: agility_webrtc.uuid,
+									username 	: agility_webrtc.currentUser.db.get("username")
+								},
+								action 	: "presenter_available"
+							}
+						});							
 						
 
 
@@ -2003,8 +2065,12 @@
 
 				} else {
 
+					var video_constraints = _.find(agility_webrtc.video_constraints, function(video_constraint){
+						return video_constraint.name === agility_webrtc.video_constraint_default;
+					}).constraints;						
+
 					agility_webrtc.requestStream({
-						video : true,
+						video : video_constraints,
 						audio : true
 					}, function(stream){
 
