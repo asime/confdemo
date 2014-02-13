@@ -1743,7 +1743,7 @@
 					agility_webrtc.requestStream({
 						video : {
 							mandatory: {
-								chromeMediaSource: 'screen'
+								chromeMediaSource: 'screen',
 								maxWidth: 640,
 								maxHeight: 480
 							}
