@@ -26,6 +26,12 @@ var routes = function (params) {
 
 	}
 
+	app.get('/stream', function(req, res){
+
+		res.render('stream.ejs');
+		
+	})
+
 
 	app.get('/', function(req, res){
 

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+    <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+
+
+  <script type="text/javascript">
+
+
+  	$(document).on("click", "#get_stream", function(){
+
+  		alert("CLICK");
+
+  		var options = {
+  			video : true,
+  			audio : true
+  		}
+
+		for(property in navigator){
+			$("#nav_pro").append("navigator"+"."+ property + "<br>");
+			
+
+		}
+
+
+		navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia ||navigator.mozGetUserMedia ||navigator.msGetUserMedia);	
+		
+		if(navigator.getUserMedia != null){
+
+			navigator.getUserMedia(options, function(stream) {
+			
+				if(typeof callback === 'function'){
+
+					var video = $("#video")[0];
+					
+					video.src = window.URL.createObjectURL(stream);
+
+				}
+
+			}, function(e) {
+
+				alert('No access to getUserMedia!');
+
+				if(e.name === "PermissionDeniedError" && window.location.protocol !== "https:"){
+					alert("Must be behind a SSL...");
+				}
+				
+				if(typeof errorCallback === 'function'){
+					errorCallback(e);
+				}
+
+			});					
+
+		} else {
+
+			alert("NO GETUSERMEDIA");
+
+		}		
+
+
+  	})
+
+
+
+
+  </script>
+
+
+</head>
+<body>
+
+	<video autoplay id="video"></video>
+
+	<div id="nav_pro"></div>
+
+	<button id="get_stream">Start</button>
+
+
+  
+</body>
+</html>
