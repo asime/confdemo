@@ -25,15 +25,15 @@
 		],
 
 		slide_pics 	: [
-			{ pic_url : "images/presentation/1.jpg" },
-			{ pic_url : "images/presentation/2.jpg" }, 
-			{ pic_url : "images/presentation/3.jpg" }, 
-			{ pic_url : "images/presentation/4.jpg" }, 
-			{ pic_url : "images/presentation/5.jpg" },
-			{ pic_url : "images/presentation/6.jpg" },
-			{ pic_url : "images/presentation/7.jpg" },
-			{ pic_url : "images/presentation/8.jpg" },
-			{ pic_url : "images/presentation/9.jpg" },
+			{ pic_url : "images/presentation/01.jpg" },
+			{ pic_url : "images/presentation/02.jpg" }, 
+			{ pic_url : "images/presentation/03.jpg" }, 
+			{ pic_url : "images/presentation/04.jpg" }, 
+			{ pic_url : "images/presentation/05.jpg" },
+			{ pic_url : "images/presentation/06.jpg" },
+			{ pic_url : "images/presentation/07.jpg" },
+			{ pic_url : "images/presentation/08.jpg" },
+			{ pic_url : "images/presentation/09.jpg" },
 			{ pic_url : "images/presentation/10.jpg" },
 			{ pic_url : "images/presentation/11.jpg" },
 			{ pic_url : "images/presentation/12.jpg" },
@@ -45,6 +45,12 @@
 			{ pic_url : "images/presentation/22.jpg" },
 			{ pic_url : "images/presentation/23.jpg" },
 			{ pic_url : "images/presentation/24.jpg" }
+			{ pic_url : "images/presentation/25.jpg" },
+			{ pic_url : "images/presentation/26.jpg" },
+			{ pic_url : "images/presentation/27.jpg" },
+			{ pic_url : "images/presentation/28.jpg" },
+			{ pic_url : "images/presentation/29.jpg" },
+			{ pic_url : "images/presentation/30.jpg" }
 		],
 
 		current_slide : 0,
