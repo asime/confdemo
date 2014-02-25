@@ -150,19 +150,25 @@ h6,
 .sliderControls .nextSlide .textSpan{
   margin: 0 5px;
 }
-.sliderControls .prevSlide .glyphicon{
-  display: inline-block;
-  font-size: 22px;
-  line-height: 28px;
-  margin-left: 34px;
-  float: left;
-}
+.sliderControls .prevSlide .glyphicon,
 .sliderControls .nextSlide .glyphicon{
   display: inline-block;
   font-size: 22px;
-  line-height: 28px;
+  line-height: 52px;
+}
+
+.addFullScreen .sliderControls .nextSlide .glyphicon,
+.addFullScreen .sliderControls .prevSlide .glyphicon{
   margin-right: 34px;
+  line-height: 28px;
+}
+.addFullScreen .sliderControls .nextSlide .glyphicon{
   float: right;
+  margin-right: 20px;
+}
+.addFullScreen .sliderControls .prevSlide .glyphicon{
+  float: left;
+  margin-left: 20px;
 }
 .sliderControls ul.slideCount{
   margin: 2px 120px;
@@ -813,7 +819,7 @@ background: #4ebb9a;
 .addFullScreen .sliderControls .nextSlide{
   position: fixed;
   top: 50px;
-  width: 11%;
+  width: 13%;
   height: 100%;
   z-index: 1000;
   margin: 0;
