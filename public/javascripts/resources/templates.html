@@ -107,7 +107,7 @@
 								class = "<%= index == 0 ? 'active' : ''%>" 
 
 								<% if(user.db.get("is_presenter") === "true"){%>
-									data-target="#presentation-carousel" data-slide-to="<%= index%>"
+									data-target="#presentation-carousel" data-slide-to="<%= index + 1%>"
 								<%}%>	
 								><%= index+ 1%></li>
 							<%});%>
