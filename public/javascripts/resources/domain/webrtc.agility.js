@@ -2351,7 +2351,7 @@
 				e.preventDefault();
 				e.stopPropagation();
 
-				if($(this).data("is-presenter") === "true"){
+				if( agility_webrtc.currentUser.db.get("is_presenter") === "true" ){
 
 					var el = $(e.target);
 					var slide_to = Number($(el).data("slide-to"));
