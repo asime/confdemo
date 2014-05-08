@@ -367,6 +367,8 @@
 
 			agility_webrtc.currentUser = PUBNUB.init(agility_webrtc.credentials);	
 
+			agility_webrtc.uuid = agility_webrtc.currentUser.UUID;
+
 			agility_webrtc.currentUser.db.set('email', person.email);
 
 			agility_webrtc.currentUser.db.set('_id', person._id);
@@ -635,6 +637,8 @@
 					user: options.uuid, 
 					stream: stream
 				});
+
+				console.log("Publishing stream: " + JSON.stringify(options, 4, null));
 
 				agility_webrtc.currentUser.subscribe({
 					user: options.uuid,
@@ -2330,11 +2334,10 @@
 
 				//agility_webrtc.changeSlide({slide: slide_to});
 
-				
-
 				if(!agility_webrtc.start_time && $(e.target).parent().data("slide") == "next"){
 					agility_webrtc.startTimer();
 				}
+
 				agility_webrtc.currentUser.publish({
 					channel: agility_webrtc.channelName,
 						message: {
