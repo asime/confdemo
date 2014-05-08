@@ -353,7 +353,7 @@
 			if(UUID_from_storage){
 				agility_webrtc.uuid = UUID_from_storage.uuid;
 			} else {
-				agility_webrtc.uuid = PUBNUB.get_uuid();
+				agility_webrtc.uuid = PUBNUB.uuid();
 				agility_webrtc.setInStore({ "uuid" : agility_webrtc.uuid }, "uuid");
 			}
 
@@ -377,7 +377,7 @@
 
 			if(agility_webrtc.currentUser.onNewConnection){
 				agility_webrtc.currentUser.onNewConnection(function(uuid){ 
-					console.log("onNewConnection triggered...");
+					console.info("onNewConnection triggered...");
 					agility_webrtc.publishStream({ uuid : uuid }); 
 				});
 			}
@@ -1445,7 +1445,7 @@
 					agility_webrtc.streams.push({ who : "mine", stream : stream });
 				}			 		
 
-			 	agility_webrtc.publishStream({ uuid : from  });
+			 	//agility_webrtc.publishStream({ uuid : from  });
 
 				var modalAnswer = $("#answer-modal");
 
