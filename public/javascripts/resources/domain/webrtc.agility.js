@@ -1705,8 +1705,22 @@
 
 		},
 		getFromStore : function(key){
+
+			var self = this;
 			
-			return JSON.parse(window.localStorage.getItem(key));
+			try{
+				return JSON.parse(window.localStorage.getItem(key));
+			} catch (e){
+				var item = window.localStorage.getItem(key);
+				if(item && key === "uuid" && _.isString(item)){
+					var item = { uuid : item };
+					self.setInStore(item,key);
+					return item
+				} else {
+					return null;
+				}
+			}
+			
 
 		},
 		setBinds : function(){
